@@ -5,11 +5,14 @@ pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
                latex2exp, ggfortify, janitor, readxl)
 
 
-
+# Indhentning af data
 jernbanedata <- read_excel("data/jernbanetransport af passagerer.xlsx",
                            sheet = "BANE25"
                            )
 
+# Dataforberedelse --------------------------------------------------------
+
+# Her forberedes datasættet
 jernbanedata <- jernbanedata %>%
   clean_names() %>%
   mutate(kvartal = str_replace(kvartal, "K", "Q")) %>%
@@ -17,81 +20,128 @@ jernbanedata <- jernbanedata %>%
   filter(key %in% c("International trafik i alt", "Over Storebælt")) %>%
   as_tsibble(index = kvartal, key = key)
 
-# Husk index, key og flere tidsserier
-
-# filter_index(. ~ "2006Q1")
-
-# Husk at tilføje labels, titler og figurnummer
-
-jernbanedata %>%
-  autoplot(x1000_passagerer)
-# Trend
-# Sæson
-# Hetroeksadicitet(denne del kan vi godt lide er væk) - box cox eller logaritme
-jernbanedata %>%
-  autoplot(log(x1000_passagerer))
-
-# Kapitel 2
-jernbanedata %>% 
-  gg_season()
-
-jernbanedata %>% 
-  gg_subseries()
-
-# Hvis det ikke bidrager med noget nyt - lad vær
-
-# Her fjerner vi corona perioden
+# Her laves der et eksternt datasæt, hvor coronaperioden fjernes da det er et
+# fænomen, som vil påvirke resultatet
 jernbanedata_corona <- jernbanedata %>%
-  filter_index(. ~ "2019 Q4", "2022 Q2" ~ .)
-
-jernbanedata_corona <- jernbanedata_corona %>%
+  filter_index(. ~ "2019 Q4", "2022 Q2" ~ .) %>%
   tsibble::fill_gaps() %>%
   group_by_key() %>%
   mutate(x1000_passagerer = forecast::na.interp(x1000_passagerer)) %>%
   ungroup()
 
-jernbanedata_corona %>% 
-  gg_season()
 
-jernbanedata_corona %>% 
-  gg_subseries()
+# Tidsserieplot -----------------------------------------------------------
 
+# Rå passagertal inkl. corona
+jernbanedata %>%
+  autoplot(x1000_passagerer) +
+  labs(title = "Jernbanepassagerer inkl. corona",
+       y = "1.000 passagerer", x = NULL)
+
+# Rå passagertal uden corona
+jernbanedata_corona %>%
+  autoplot(x1000_passagerer) +
+  labs(title = "Jernbanepassagerer uden corona",
+       y = "1.000 passagerer", x = NULL)
+
+# Log-transformeret (stabiliserer varians)
+jernbanedata %>%
+  autoplot(log(x1000_passagerer)) +
+  labs(title = "Log-transformerede jernbanepassagerer inkl. corona",
+       y = "log(1.000 passagerer)", x = NULL)
 
 jernbanedata_corona %>%
-  autoplot(x1000_passagerer)
+autoplot(log(x1000_passagerer)) +
+  labs(title = "Log-transformerede jernbanepassagerer uden corona",
+       y = "log(1.000 passagerer)", x = NULL)
 
-# ACF med Corona
-# Forklar hvorfor vi vælger 12
+
+# Sæsonplot ---------------------------------------------------------------
+
+# Sæsonplot inkl. corona
+jernbanedata %>%
+  gg_season(x1000_passagerer) +
+  labs(title = "Sæsonplot inkl. corona",
+       y = "1.000 passagerer", x = NULL)
+
+# Sæsonplot uden corona
 jernbanedata_corona %>%
-  ACF(lag_max = 12) %>%
-  autoplot()
+  gg_season(x1000_passagerer) +
+  labs(title = "Sæsonplot uden corona",
+       y = "1.000 passagerer", x = NULL)
+
+# Subserie-plot inkl. corona
+jernbanedata %>%
+  gg_subseries(x1000_passagerer) +
+  labs(title = "Subserie-plot inkl. corona",
+       y = "1.000 passagerer", x = NULL)
+
+# Subserie-plot uden corona
+jernbanedata_corona %>%
+  gg_subseries(x1000_passagerer) +
+  labs(title = "Subserie-plot uden corona",
+       y = "1.000 passagerer", x = NULL)
+
+
+
+
+# ACF ---------------------------------------------------------------------
+
+# ACF inkl. corona - lag_max = 12 (3 år ved kvartalsdata)
+jernbanedata %>%
+  ACF(x1000_passagerer, lag_max = 12) %>%
+  autoplot() +
+  labs(title = "ACF inkl. corona")
 
 # ACF uden corona
-# Vær opmærksom på fill_gaps() - pro og cons
 jernbanedata_corona %>%
-  ACF(lag_max = 12) %>%
-  autoplot()
-# Vil gå år før vi er under konfidenspunkt
+  ACF(x1000_passagerer, lag_max = 12) %>%
+  autoplot() +
+  labs(title = "ACF uden corona")
 
-# PACF & ACF
-# Hvad betyder de forskellige informationer på visualiseringerne
-# International trafik i alt
+
+
+# ACF + PACF (gg_tdisplay) ------------------------------------------------
+# Er der grund til kun at anvende ACF når begge er inkluderet lige her?
+
+
+# International trafik i alt - log-skala
+jernbanedata %>%
+  filter(key == "International trafik i alt") %>%
+  mutate(x1000_passagerer = log(x1000_passagerer)) %>%
+  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12) +
+  labs(title = "ACF + PACF – International trafik i alt (log, inkl. corona)")
+
+# Over Storebælt - log-skala
+jernbanedata %>%
+  filter(key == "Over Storebælt") %>%
+  mutate(x1000_passagerer = log(x1000_passagerer)) %>%
+  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12) +
+  labs(title = "ACF + PACF – Over Storebælt (log, inkl. corona)")
+
+# International trafik i alt - uden corona
 jernbanedata_corona %>%
   filter(key == "International trafik i alt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
-  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12)
+  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12) +
+  labs(title = "ACF + PACF – International trafik i alt (log, uden corona)")
 
-# Over Storebælt
+# Over Storebælt - uden corona
 jernbanedata_corona %>%
   filter(key == "Over Storebælt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
-  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12)
+  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12) +
+  labs(title = "ACF + PACF – Over Storebælt (log, uden corona)")
 
 
-# Deskriptive statistikker
-# Deskriptive statistikker per serie
 
-# Med Corona
+# Vil gå år før vi er under konfidenspunkt
+
+
+
+# Deskriptive statistikker ------------------------------------------------
+
+# Med corona
 jernbanedata %>%
   as_tibble() %>%
   group_by(key) %>%
@@ -101,12 +151,11 @@ jernbanedata %>%
     sd     = sd(x1000_passagerer, na.rm = TRUE),
     min    = min(x1000_passagerer, na.rm = TRUE),
     max    = max(x1000_passagerer, na.rm = TRUE)
-)
+  ) %>%
+  kbl(caption = "Deskriptive statistikker inkl. corona", digits = 1) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 
-jernbanedata %>%
-  features(x1000_passagerer, feat_stl)
-
-# Uden Corona
+# Uden corona
 jernbanedata_corona %>%
   as_tibble() %>%
   group_by(key) %>%
@@ -116,175 +165,227 @@ jernbanedata_corona %>%
     sd     = sd(x1000_passagerer, na.rm = TRUE),
     min    = min(x1000_passagerer, na.rm = TRUE),
     max    = max(x1000_passagerer, na.rm = TRUE)
-  )
+  ) %>%
+  kbl(caption = "Deskriptive statistikker uden corona", digits = 1) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# STL features - trend og sæsonstyrke
+jernbanedata %>%
+  features(x1000_passagerer, feat_stl) %>%
+  kbl(caption = "Trend- og sæsonstyrke inkl. corona", digits = 3) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 
 jernbanedata_corona %>%
-  features(x1000_passagerer, feat_stl)
+  features(x1000_passagerer, feat_stl) %>%
+  kbl(caption = "Trend- og sæsonstyrke uden corona", digits = 3) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 
-#STL med corona
+# Transformation ----------------------------------------------------------
+
+# Box-Cox / Guerrero
+# Guerrero optimal lambda per serie
+jernbanedata %>%
+  features(x1000_passagerer, features = guerrero) %>%
+  rename(Lambda_Guerrero = lambda_guerrero) %>%
+  kbl(caption = "Guerrero-optimeret Box-Cox lambda inkl. corona",
+      digits = 3) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+jernbanedata_corona %>%
+  features(x1000_passagerer, features = guerrero) %>%
+  rename(Lambda_Guerrero = lambda_guerrero) %>%
+  kbl(caption = "Guerrero-optimeret Box-Cox lambda uden corona",
+      digits = 3) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Rå vs. log-transformeret - inkl. corona
+bind_rows(
+  jernbanedata %>%
+    as_tibble() %>%
+    mutate(type = "Rå passagertal"),
+  jernbanedata %>%
+    as_tibble() %>%
+    mutate(x1000_passagerer = log(x1000_passagerer),
+           type = "log(passagerer)")
+) %>%
+  ggplot(aes(x = kvartal, y = x1000_passagerer)) +
+  geom_line() +
+  facet_grid(type ~ key, scales = "free_y") +
+  labs(title = "Rå vs. log-transformeret inkl. corona",
+       y = NULL, x = NULL)
+
+# Rå vs. log-transformeret - uden corona 
+# Dette bør ikke være med (Guerrero viser det ikke skal kommenteres på)
+bind_rows(
+  jernbanedata_corona %>%
+    as_tibble() %>%
+    mutate(type = "Rå passagertal"),
+  jernbanedata_corona %>%
+    as_tibble() %>%
+    mutate(x1000_passagerer = log(x1000_passagerer),
+           type = "log(passagerer)")
+) %>%
+  ggplot(aes(x = kvartal, y = x1000_passagerer)) +
+  geom_line() +
+  facet_grid(type ~ key, scales = "free_y") +
+  labs(title = "Rå vs. log-transformeret uden corona",
+       y = NULL, x = NULL)
+
+
+# Stationaritet og differentiering ----------------------------------------
+
+# KPSS-test: H0 = stationær, p < 0.05 → differentiering nødvendig
+jernbanedata %>%
+  features(log(x1000_passagerer), unitroot_kpss) %>%
+  kbl(caption = "KPSS-test på log(passagerer) — H0: stationær",
+      digits = 4) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# nsdiffs: anbefalet antal sæsondifferentieringer (D) - lag=4 ved kvartalsdata
+jernbanedata %>%
+  features(log(x1000_passagerer), unitroot_nsdiffs) %>%
+  kbl(caption = "Anbefalet antal sæsondifferentieringer (D)",
+      digits = 0) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# ndiffs: anbefalet antal ordinære differentieringer (d)
+jernbanedata %>%
+  features(log(x1000_passagerer), unitroot_ndiffs) %>%
+  kbl(caption = "Anbefalet antal ordinære differentieringer (d)",
+      digits = 0) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# ndiffs efter sæsondifferentiering
+jernbanedata %>%
+  mutate(sdiff_log = difference(log(x1000_passagerer), lag = 4)) %>%
+  features(sdiff_log, unitroot_ndiffs) %>%
+  kbl(caption = "Anbefalet d efter sæsondifferentiering (D=1)",
+      digits = 0) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Figur 17: Alle differentieringstrin samlet - International
+jernbanedata %>%
+  filter(key == "International trafik i alt") %>%
+  as_tibble() %>%
+  transmute(
+    kvartal,
+    `log(passagerer)`     = log(x1000_passagerer),
+    `Δlog (d=1)`           = difference(log(x1000_passagerer), 1),
+    `Δ₄log (D=1, lag=4)`  = difference(log(x1000_passagerer), 4),
+    `ΔΔ₄log (d=1, D=1)`   = difference(difference(log(x1000_passagerer), 4), 1)
+  ) %>%
+  pivot_longer(-kvartal, names_to = "Type", values_to = "Værdi") %>%
+  mutate(Type = factor(Type, levels = c(
+    "log(passagerer)", "Δlog (d=1)", "Δ₄log (D=1, lag=4)", "ΔΔ₄log (d=1, D=1)"
+  ))) %>%
+  ggplot(aes(x = kvartal, y = Værdi)) +
+  geom_line() +
+  facet_grid(vars(Type), scales = "free_y") +
+  labs(title = "Figur 17: Differentieringstrin – International trafik i alt",
+       y = NULL, x = NULL)
+
+# ACF/PACF efter sæsondifferentiering - International
+jernbanedata %>%
+  filter(key == "International trafik i alt") %>%
+  gg_tsdisplay(difference(log(x1000_passagerer), lag = 4),
+               plot_type = "partial", lag_max = 24) +
+  labs(title = "ACF/PACF – sæsondiff (D=1, lag=4) – International")
+
+# ACF/PACF efter sæsondifferentiering - Over Storebælt
+jernbanedata %>%
+  filter(key == "Over Storebælt") %>%
+  gg_tsdisplay(difference(log(x1000_passagerer), lag = 4),
+               plot_type = "partial", lag_max = 24) +
+  labs(title = "ACF/PACF – sæsondiff (D=1, lag=4) – Over Storebælt")
+
+# Dobbelt differentiering udelades da unitroot_ndiffs returnerer d=0 efter D=1
+# Overdifferentiering forværrer modellen - derfor kun D=1
+
+
+
+# STL-dekomposition -------------------------------------------------------
+
+# STL inkl. corona
 model_jernbane <- jernbanedata %>%
   model(
     STL(log(x1000_passagerer), robust = TRUE) # Log eller cox box skal altid være her!
   ) %>%
   components()
 
-# Ændre navne på plot
-model_jernbane %>% 
-  autoplot()
-
-# STL med corona
+# STL inkl. corona
 model_jernbane_corona <- jernbanedata_corona %>%
-  tsibble::fill_gaps() %>%
-  group_by_key() %>%
-  mutate(x1000_passagerer = forecast::na.interp(x1000_passagerer)) %>%
-  ungroup() %>%
   model(
-    STL(log(x1000_passagerer) ~ trend(window = 7) + season(window = "periodic"), 
-        robust = TRUE)
+    STL(log(x1000_passagerer), robust = TRUE) # Log eller cox box skal altid være her!
   ) %>%
-  #augment() %>%
   components()
 
-# Ændre navne på plot
+model_jernbane %>% 
+  as_tsibble() %>% 
+  autoplot(`log(x1000_passagerer)`, color = 'gray') +
+  geom_line(aes(y = season_adjust), colour = '#0072B2')
+
 model_jernbane_corona %>% 
-  autoplot()
+  as_tsibble() %>% 
+  autoplot(`log(x1000_passagerer)`, color = 'gray') +
+  geom_line(aes(y = season_adjust), colour = '#0072B2')
 
-# Dette kan man gå ind og kommentere - tjek hurtig på google og kommenter med
-# 2 linjer (ovenover)
-
-#Augment med corona
-model_jernbane_aug <- jernbanedata %>%
+# Augment
+model_jernbane <- jernbanedata %>%
   model(
     STL(log(x1000_passagerer), robust = TRUE) # Log eller cox box skal altid være her!
   ) %>%
   augment()
 
-# Ændre navne på plot
-model_jernbane %>% 
-  autoplot()
-
-# Augment uden
-model_jernbane_corona_aug <- jernbanedata_corona %>%
-  tsibble::fill_gaps() %>%
-  group_by_key() %>%
-  mutate(x1000_passagerer = forecast::na.interp(x1000_passagerer)) %>%
-  ungroup() %>%
+# Dette kan man gå ind og kommentere - tjek hurtig på google og kommenter med
+# 2 linjer
+model_jernbane_corona <- jernbanedata_corona %>%
   model(
     STL(log(x1000_passagerer) ~ trend(window = 7) + season(window = "periodic"), 
         robust = TRUE)
   ) %>%
   augment()
+
 # Dette kan man gå ind og kommentere - tjek hurtig på google og kommenter med
 # 2 linjer
 
-# EDA opsummering / del konklussion
+# Ændre navne på plot
+model_jernbane%>% 
+  autoplot()
 
-
-# Transformation
-
-model_jernbane %>% 
-  as_tsibble() %>% 
-  autoplot(`log(x1000_passagerer)`, color = 'gray') +
-  geom_line(aes(y = season_adjust), colour = '#0072B2')
-
+# Ændre navne på plot
 model_jernbane_corona %>% 
-  as_tsibble() %>% 
-  autoplot(`log(x1000_passagerer)`, color = 'gray') +
-  geom_line(aes(y = season_adjust), colour = '#0072B2')
-
-Feauteres
+  autoplot()
 
 jernbanedata %>%
-  features(x1000_passagerer, feat_stl)
+  features(x1000_passagerer, feat_stl) %>%
+  kbl(caption = "features inkl. corona",
+      digits = 3) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+jernbanedata_corona %>%
+  features(x1000_passagerer, feat_stl) %>%
+  kbl(caption = "features uden corona",
+      digits = 3) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
 # Denne kan man bruge til fortæller om trend og sæson oh hvis den x er hø
 # kan man anvende til at sige at den er god at forecaste
 # Hvad betyder de forskellige værdier??
-
-# Andre feauteres???
-
-# Tjek evt .innov med graf(er)
 
 passagererstretch <- jernbanedata %>%
   stretch_tsibble(.init = 24, .step = 1)
 # Nu er det muligt at beregtne RMSE - Vær forsigtig at kører det hvis det
 # tager lang tid
 
-# Boxcox & Guerrero
+# EDA opsummering / del konklussion
 
-# Guerrero optimal lambda per. serie
-jernbanedata %>%
-  features(x1000_passagerer, features = guerrero) %>%
-  rename(Lambda_Guerrero = lambda_guerrero) %>%
-  kbl(caption = "Tabel 1: Guerrero-optimeret Box-Cox lambda",
-      digits = 3) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
 
-jernbanedata_corona %>%
-  features(x1000_passagerer, features = guerrero) %>%
-  rename(Lambda_Guerrero = lambda_guerrero) %>%
-  kbl(caption = "Tabel 1: Guerrero-optimeret Box-Cox lambda",
-      digits = 3) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
+# Andre feauteres???
 
-# Rå vs. log-transformeret (begge serier i facet)
-bind_rows(
-  jernbanedata %>%
-    as_tibble() %>%
-    mutate(type = "Rå passagertal"),
-  jernbanedata %>%
-    as_tibble() %>%
-    mutate(x1000_passagerer = log(x1000_passagerer),
-           type = "log(passagerer)")
-) %>%
-  ggplot(aes(x = kvartal, y = x1000_passagerer)) +
-  geom_line() +
-  facet_grid(type ~ key, scales = "free_y") +
-  labs(title = "Figur 1: Rå vs. log-transformeret passagertal",
-       y = NULL,
-       x = NULL)
+# Tjek evt .innov med graf(er)
 
-bind_rows(
-  jernbanedata_corona %>%
-    as_tibble() %>%
-    mutate(type = "Rå passagertal"),
-  jernbanedata_corona %>%
-    as_tibble() %>%
-    mutate(x1000_passagerer = log(x1000_passagerer),
-           type = "log(passagerer)")
-) %>%
-  ggplot(aes(x = kvartal, y = x1000_passagerer)) +
-  geom_line() +
-  facet_grid(type ~ key, scales = "free_y") +
-  labs(title = "Figur 1: Rå vs. log-transformeret passagertal",
-       y = NULL,
-       x = NULL)
-
-#Box-COX
-jernbanedata %>%
-  group_by(key) %>%
-  mutate(
-    lambda = (jernbanedata %>%
-                filter(key == first(key)) %>%
-                features(x1000_passagerer, guerrero))$lambda_guerrero,
-    x1000_passagerer_bc = box_cox(x1000_passagerer, lambda)
-  ) |>
-  autoplot(x1000_passagerer_bc) +
-  labs(title = "Figur 2: Box-Cox transformeret passagertal (Guerrero lambda)",
-       y = "box_cox(passagerer, lambda)",
-       x = NULL)
-
-jernbanedata_corona %>%
-  group_by(key) %>%
-  mutate(
-    lambda = (jernbanedata_corona %>%
-                filter(key == first(key)) %>%
-                features(x1000_passagerer, guerrero))$lambda_guerrero,
-    x1000_passagerer_bc = box_cox(x1000_passagerer, lambda)
-  ) |>
-  autoplot(x1000_passagerer_bc) +
-  labs(title = "Figur 2: Box-Cox transformeret passagertal (Guerrero lambda)",
-       y = "box_cox(passagerer, lambda)",
-       x = NULL)
+# Nu er det muligt at beregtne RMSE - Vær forsigtig at kører det hvis det
+# tager lang tid
 
 # Opsummering / Delkonklussion
 # Guerrero estimerer lambda ved at minimere variationskoefficenten på tværs af sæsoner
@@ -292,177 +393,10 @@ jernbanedata_corona %>%
 # Betyder ingen transformation er nødvendig.
 
 
-# Stationaritet og differentiering
 
-# Transformation er kun nødvendigt for datasættet der indeholder Corona perioden
-# da guerrero's estimeret lamda er tæt på / over 1.
+# Træningssplit -----------------------------------------------------------
 
-# Logtransformeret
-
-# Log-transformeret serie - er den stationær? 
-jernbanedata |>
-  mutate(log_passagerer = log(x1000_passagerer)) |>
-  autoplot(log_passagerer) +
-  labs(title = "Log-transformerede jernbanepassagerer",
-       subtitle = "Visuel inspektion for trend og ikke-stationaritet",
-       y = "log(1.000 passagerer)",
-       x = NULL)
-
-# Differentieret log-serie (d=1) - fjerner lineær trend
-jernbanedata |>
-  mutate(diff_log = difference(log(x1000_passagerer))) |>
-  autoplot(diff_log) +
-  labs(title = "Figur 2: Første differentiering af log(passagerer)",
-       subtitle = "difference(log(x), lag = 1) - fjerner trend",
-       y = "Δlog(1.000 passagerer)",
-       x = NULL)
-
-# Sæsondifferentieret log-serie (D=1, lag=4 for kvartalsdata)
-# difference(..., lag = 4) svarer til D=1 i ARIMA-notation
-jernbanedata |>
-  mutate(sdiff_log = difference(log(x1000_passagerer), lag = 4)) |>
-  autoplot(sdiff_log) +
-  labs(title = "Sæsondifferentiering af log(passagerer)",
-       subtitle = "difference(log(x), lag = 4) - fjerner sæsonmønster (D=1)",
-       y = "Δ₄log(1.000 passagerer)",
-       x = NULL)
-
-# Dobbelt differentiering (sæson + trend) - D=1, d=1
-jernbanedata |>
-  mutate(ddiff_log = difference(difference(log(x1000_passagerer), lag = 4), 1)) |>
-  autoplot(ddiff_log) +
-  labs(title = "Figur 4: Dobbelt differentiering af log(passagerer)",
-       subtitle = "Sæson (lag=4) + trend (lag=1) - D=1, d=1",
-       y = "ΔΔ₄log(1.000 passagerer)",
-       x = NULL)
-
-#Alle fire trin samlet i ét facet-plot (inspireret af fpp3 kap. 9)
-jernbanedata |>
-  filter(key == "International trafik i alt") |>
-  as_tibble() |>
-  transmute(
-    kvartal,
-    `log(passagerer)`                  = log(x1000_passagerer),
-    `Δlog (d=1)`                        = difference(log(x1000_passagerer), 1),
-    `Δ₄log (D=1, lag=4)`               = difference(log(x1000_passagerer), 4),
-    `ΔΔ₄log (d=1, D=1)`                = difference(difference(log(x1000_passagerer), 4), 1)
-  ) |>
-  pivot_longer(-kvartal, names_to = "Type", values_to = "Værdi") |>
-  mutate(Type = factor(Type, levels = c(
-    "log(passagerer)", "Δlog (d=1)", "Δ₄log (D=1, lag=4)", "ΔΔ₄log (d=1, D=1)"
-  ))) |>
-  ggplot(aes(x = kvartal, y = Værdi)) +
-  geom_line() +
-  facet_grid(vars(Type), scales = "free_y") +
-  labs(title = "Figur 5: Differentieringstrin - International trafik i alt",
-       y = NULL, x = NULL)
-
-# KPSS - test på log data
-# H0: Serien er stationær
-# p < 0.05 → afvis H0 → serien er IKKE stationær → differentiering nødvendig
-# p > 0.05 → behold H0 → serien er stationær → ingen differentiering nødvendig
-
-# KPSS-test på log(passagerer)
-jernbanedata |>
-  features(log(x1000_passagerer), unitroot_kpss) |>
-  kbl(caption = "Tabel 4: KPSS-test på log(x1000_passagerer) — H0: stationær",
-      digits = 4) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
-
-# KPSS på første differentiering - er d=1 nok?
-jernbanedata |>
-  mutate(diff_log = difference(log(x1000_passagerer))) |>
-  features(diff_log, unitroot_kpss) |>
-  kbl(caption = "Tabel 4b: KPSS-test på Δlog(passagerer) — er d=1 tilstrækkeligt?",
-      digits = 4) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
-
-# Tabel 5: Antal sæsondifferentieringer D
-jernbanedata |>
-  features(log(x1000_passagerer), unitroot_nsdiffs) |>
-  kbl(caption = "Tabel 5: Anbefalet antal sæsondifferentieringer (D) — kvartalsdata: lag=4",
-      digits = 0) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
-
-# NSDIFF
-# Tabel 5: Antal sæsondifferentieringer D
-jernbanedata |>
-  features(log(x1000_passagerer), unitroot_nsdiffs) |>
-  kbl(caption = "Tabel 5: Anbefalet antal sæsondifferentieringer (D) — kvartalsdata: lag=4",
-      digits = 0) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
-
-# ndiffs efter sæsondifferentiering - hvad er d, givet D=1?
-jernbanedata |>
-  mutate(sdiff_log = difference(log(x1000_passagerer), lag = 4)) |>
-  features(sdiff_log, unitroot_ndiffs) |>
-  kbl(caption = "Tabel 5b: Anbefalet d efter sæsondifferentiering (D=1)",
-      digits = 0) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
-
-#ndiffs
-# unitroot_ndiffs: anbefalet antal ordinære differentieringer (d)
-# Baseret på KPSS-test sekventielt
-jernbanedata |>
-  features(log(x1000_passagerer), unitroot_ndiffs) |>
-  kbl(caption = "Tabel 4c: Anbefalet antal ordinære differentieringer (d)",
-      digits = 0) |>
-  kable_styling(bootstrap_options = c("striped", "hover"))
-
-# ACF på log-data (ikke-differentieret) vs. differentieret
-# Inspireret af google_2015-eksemplet i fpp3 kapitel 9
-
-p1 <- jernbanedata |>
-  ACF(log(x1000_passagerer), lag_max = 12) |>
-  autoplot() +
-  labs(title = "ACF: log(passagerer)",
-       subtitle = "Ikke-differentieret")
-
-p2 <- jernbanedata |>
-  mutate(sdiff_log = difference(log(x1000_passagerer), lag = 4)) |>
-  ACF(sdiff_log, lag_max = 12) |>
-  autoplot() +
-  labs(title = "ACF: Δ₄log(passagerer)",
-       subtitle = "Sæsondifferentieret (D=1, lag=4)")
-
-grid.arrange(p1, p2, ncol = 2)
-
-
-jernbanedata %>%
-  filter(key == "International trafik i alt") %>%
-  gg_tsdisplay(difference(log(x1000_passagerer), lag = 4),
-               plot_type = "partial", lag_max = 24) +
-  labs(title = "Figur 14: ACF/PACF – sæsondiff (D=1, lag=4) – International trafik i alt",
-       subtitle = "Toppe ved lag 4, 8, 12 indikerer tilbageværende sæsonstruktur")
-
-jernbanedata %>%
-  filter(key == "Over Storebælt") %>%
-  gg_tsdisplay(difference(log(x1000_passagerer), lag = 4),
-               plot_type = "partial", lag_max = 24) +
-  labs(title = "Figur 14: ACF/PACF – sæsondiff (D=1, lag=4) – International trafik i alt",
-       subtitle = "Toppe ved lag 4, 8, 12 indikerer tilbageværende sæsonstruktur")
-
-# Dobbelt differentiering
-# Dobbelt differentiering bør kun vælges hvis unitroot_ndiff returnerer 1 efter 
-# Sæsondifferentiering - Ellers risiko for overdifferentiering, som forværrer modellen
-# Der retuneres 0 og derfor laves der ikke dobbelt differentiering.
-# Nedestående skal slettes!
-
-# jernbanedata |>
- #  filter(key == "International trafik i alt") %>%
- # gg_tsdisplay(difference(log(x1000_passagerer), lag = 4) |> difference(),
-  #             plot_type = "partial", lag_max = 24) +
- # labs(title = "Figur 16: ACF/PACF – dobbelt diff (D=1, d=1) – International trafik i alt",
- #      subtitle = "Sæson (lag=4) + trend (lag=1) – kun hvis ndiffs=1 efter sæsondiff")
-
-#jernbanedata |>
- # filter(key == "Over Storebælt") %>%
- # gg_tsdisplay(difference(log(x1000_passagerer), lag = 4) |> difference(),
-#               plot_type = "partial", lag_max = 24) +
-#  labs(title = "Figur 16: ACF/PACF – dobbelt diff (D=1, d=1) – International trafik i alt",
-#       subtitle = "Sæson (lag=4) + trend (lag=1) – kun hvis ndiffs=1 efter sæsondiff")
-
-# Træningsobjekter
+# Her deler man 
 # Træningsdata: 2006 Q1 til 2024 Q4
 jernbane_train <- jernbanedata %>%
   filter_index(. ~ "2024 Q4")
@@ -478,20 +412,24 @@ jernbane_corona_train <- jernbanedata_corona %>%
 jernbane_corona_test <- jernbanedata_corona %>%
   filter_index("2025 Q1" ~ .)
 
+
+
+
+# Benchmark ---------------------------------------------------------------
 # Benchmark model
-jernbanestretch <- jernbanedata %>%
+passagererstretch <- jernbanedata %>%
   stretch_tsibble(.init = 24, .step = 1)
-# Nu er det muligt at beregtne RMSE - Vær forsigtig at kører det hvis det
+
+passagererstretch <- jernbanedata_corona %>%
+  stretch_tsibble(.init = 24, .step = 1)
+# Nu er det muligt at beregtne RMSE - Vær forsigtig at køre det hvis det
 # tager lang tid
 
-# Benchmark model
 jernbanestretch %>%
   model(SNAIVE(log(x1000_passagerer))) %>%
   forecast(h = 4) %>%
   accuracy(jernbanedata)
 
-jernbanestretch_corona <- jernbanedata_corona %>%
-  stretch_tsibble(.init = 24, .step = 1)
 # Nu er det muligt at beregtne RMSE - Vær forsigtig at kører det hvis det
 # tager lang tid
 
@@ -501,7 +439,7 @@ jernbanestretch_corona %>%
   forecast(h = 4) %>%
   accuracy(jernbanedata_corona)
 
-# ETS 
+# ETS modeller
 fit_ets <- jernbane_train %>%
   model(ETS(log(x1000_passagerer)))
 
@@ -528,6 +466,7 @@ augment(fit_ets_corona) %>%
 # forslag til hvordan vi kan forbedre forcast ift - Corona (Hvad kan vi gøre
 # anderledes)
 
+# Arima modeller
 fit_arima <- jernbane_train %>%
   model(ARIMA(log(x1000_passagerer)))
 
@@ -549,8 +488,7 @@ report(fit_arima_corona)
 # Vigtigt at der sikres for autokorrelation inden
 # Altid kommenter at der er et problem og hvad det kan skyldes
 
-# Residualanalyse
-
+# Residualanalyse ARIMA
 fit_arima %>%
   gg_tsresiduals(lag_max = 36)
 
@@ -564,6 +502,8 @@ fit_arima_corona %>%
 augment(fit_arima_corona) %>%
   features(.innov, ljung_box, lag = 24, dof = 5) # Altid .innov for at tjekke
 
+# Modelsammenligning
+
 resultat <- bind_rows(
   fit_arima %>% accuracy(),
   fit_ets %>% accuracy(),
@@ -573,21 +513,63 @@ resultat <- bind_rows(
   fit_ets %>% forecast(h = 4) %>% accuracy(jernbane_test),
   fit_arima_corona %>% forecast(h = 4) %>% accuracy(jernbane_corona_test),
   fit_ets_corona %>% forecast(h = 4) %>% accuracy(jernbane_corona_test)
-)
-View(resultat)
+) 
+
+resultat %>%
+  kbl(caption = "Modelsammenligning – ARIMA vs. ETS", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
 # Time series cross validation
- jernbanedata %>%
+resultat_tscv <- jernbanestretch %>%
+  model(
+    ARIMA = ARIMA(log(x1000_passagerer)),
+    ETS   = ETS(log(x1000_passagerer)),
+    SNAIVE = SNAIVE(log(x1000_passagerer))
+  ) %>%
+  forecast(h = 4) %>%
+  accuracy(jernbanedata)
+
+bind_rows(resultat_split, resultat_tscv) %>%
+  select(.model, key, .type, RMSE, MAE, MAPE) %>%
+  kbl(caption = "Tabel 8: Modelsammenligning", digits = 2) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+# Forecasting -------------------------------------------------------------
+
+#ETS
+jernbanedata |>
+  model(ETS(x1000_passagerer)) %>%
+  forecast(h = "1 years") %>%
+  autoplot(jernbanedata) +
+  labs(title = "ETS Forcast inkl. corona",
+       y = "1000 passagerer")
+
+jernbanedata_corona |>
+  model(ETS(x1000_passagerer)) %>%
+  forecast(h = "1 years") %>%
+  autoplot(jernbanedata_corona) +
+  labs(title = "ETS forecast uden corona",
+       y = "1000 passagerer")
+# Time series cross validation
+#ARIMA forecast inkl. corona
+jernbanedata %>%
   model(ARIMA(log(x1000_passagerer))) %>%
   forecast(h = "1 years") %>%
-  autoplot(jernbanedata)
+  autoplot(jernbanedata) +
+  labs(title = "Arima forecast uden corona",
+       y = "1000 passagerer")
+
 # Husk at der også er en manuel vej til at ginde en "optimal" (S)ARIMA - model
 # Det er vigtigt at have nogle velvalgte kandidatmodeller, som vi selv laver
 # Husk i den forbindelse at bruge uniroot test:
-
+# ARIMA forecast uden Corona
  jernbanedata_corona %>%
    model(ARIMA(log(x1000_passagerer))) %>%
    forecast(h = "1 years") %>%
-   autoplot(jernbanedata_corona)
+   autoplot(jernbanedata_corona) +
+   labs(title = "Arima forecast uden corona",
+        y = "1000 passagerer")
+ 
+ 
  
 #Hvad betyder det her egentlig 
  jernbanedata %>%
