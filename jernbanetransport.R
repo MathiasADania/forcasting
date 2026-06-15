@@ -6,16 +6,16 @@ pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
 
 
 
-Flyvninger <- read_excel("data/Flyvninger.xlsx", 
-                         sheet = "Ark1", 
-                         col_types = c("date", "numeric")
+jernbanedata <- read_excel("data/jernbanetransport af passagerer.xlsx", 
+                         sheet = "BANE25"
 )
 
-flyvninger <- Flyvninger %>%
+# Upload virker
+jernbanedata <- jernbanedata %>%
   clean_names() %>%
   mutate(date = yearmonth(date)) %>%
-  as_tsibble(index = date) %>%# Husk index, key og flere tidsserier
-  filter_index(. ~ "2019 dec")
+  as_tsibble(index = date) %>% # Husk index, key og flere tidsserier
+  filter_index(. ~ "2006K1")
 
 # Husk at tilføje labels, titler og figurnummer
 
