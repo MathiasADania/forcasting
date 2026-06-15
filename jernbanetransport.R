@@ -6,24 +6,20 @@ pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
 
 
 
-Flyvninger <- read_excel("data/Flyvninger.xlsx", 
-                         sheet = "Ark1", 
-                         col_types = c("date", "numeric")
-)
+jernbanedata <- read_excel("data/jernbanetransport af passagerer.xlsx",
+                           sheet = "BANE25"
+                           )
 
-flyvninger <- Flyvninger %>%
+jernbanedata <- jernbanedata %>%
   clean_names() %>%
-<<<<<<< Updated upstream
-  mutate(date = yearmonth(date)) %>%
-  as_tsibble(index = date) %>%# Husk index, key og flere tidsserier
-  filter_index(. ~ "2019 dec")
-=======
-  filter(key %in% c("International trafik i alt", "Over Storebælt")) %>%
   mutate(kvartal = str_replace(kvartal, "K", "Q")) %>%
   mutate(kvartal = yearquarter(kvartal)) %>%
-  as_tsibble(index = kvartal, key = key) # Husk index, key og flere tidsserier
-  #filter_index(. ~ "2006Q1")
->>>>>>> Stashed changes
+  filter(key %in% c("International trafik i alt", "Over Storebælt")) %>%
+  as_tsibble(index = kvartal, key = key)
+
+# Husk index, key og flere tidsserier
+
+# filter_index(. ~ "2006Q1")
 
 # Husk at tilføje labels, titler og figurnummer
 
@@ -450,21 +446,21 @@ jernbanedata %>%
 # Dobbelt differentiering bør kun vælges hvis unitroot_ndiff returnerer 1 efter 
 # Sæsondifferentiering - Ellers risiko for overdifferentiering, som forværrer modellen
 # Der retuneres 0 og derfor laves der ikke dobbelt differentiering.
-Nedestående skal slettes!
+# Nedestående skal slettes!
 
-jernbanedata |>
-  filter(key == "International trafik i alt") %>%
-  gg_tsdisplay(difference(log(x1000_passagerer), lag = 4) |> difference(),
-               plot_type = "partial", lag_max = 24) +
-  labs(title = "Figur 16: ACF/PACF – dobbelt diff (D=1, d=1) – International trafik i alt",
-       subtitle = "Sæson (lag=4) + trend (lag=1) – kun hvis ndiffs=1 efter sæsondiff")
+# jernbanedata |>
+ #  filter(key == "International trafik i alt") %>%
+ # gg_tsdisplay(difference(log(x1000_passagerer), lag = 4) |> difference(),
+  #             plot_type = "partial", lag_max = 24) +
+ # labs(title = "Figur 16: ACF/PACF – dobbelt diff (D=1, d=1) – International trafik i alt",
+ #      subtitle = "Sæson (lag=4) + trend (lag=1) – kun hvis ndiffs=1 efter sæsondiff")
 
-jernbanedata |>
-  filter(key == "Over Storebælt") %>%
-  gg_tsdisplay(difference(log(x1000_passagerer), lag = 4) |> difference(),
-               plot_type = "partial", lag_max = 24) +
-  labs(title = "Figur 16: ACF/PACF – dobbelt diff (D=1, d=1) – International trafik i alt",
-       subtitle = "Sæson (lag=4) + trend (lag=1) – kun hvis ndiffs=1 efter sæsondiff")
+#jernbanedata |>
+ # filter(key == "Over Storebælt") %>%
+ # gg_tsdisplay(difference(log(x1000_passagerer), lag = 4) |> difference(),
+#               plot_type = "partial", lag_max = 24) +
+#  labs(title = "Figur 16: ACF/PACF – dobbelt diff (D=1, d=1) – International trafik i alt",
+#       subtitle = "Sæson (lag=4) + trend (lag=1) – kun hvis ndiffs=1 efter sæsondiff")
 
 # Træningsobjekter
 # Træningsdata: 2006 Q1 til 2024 Q4
