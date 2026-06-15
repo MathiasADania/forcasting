@@ -1,0 +1,161 @@
+---
+lang: da # Sprog (dansk)
+
+format:
+  pdf:
+    documentclass: article # LaTeX documentclass
+    toc: true # Indholdsfortegnelse (true/false)
+    toc-title: Indholdsfortegnelse # Titel på TOC (bruges kun hvis toc: true)
+    toc-depth: 3 # Hvor dybt TOC går (overskriftsniveau)
+    number-sections: true # Nummerer sektioner
+    number-depth: 3 # Nummerering ned til niveau 3
+    titlepage: true # Lav titel-side (Quarto genereret)
+    lof: false # List of figures
+    lot: false # List of tables
+
+#bibliography: Kilder.bib # BibTeX-fil til kilder
+
+header-includes:
+  - \usepackage[a4paper, top=30mm, bottom=30mm, left=20mm, right=20mm, heightrounded]{geometry} # Margener
+  - \usepackage{booktabs} # Pænere tabeller
+  - \usepackage{makecell} # Bedre celler i tabeller
+  - \usepackage{pdfpages} # Mulighed for at inkludere PDF-sider
+  - \AtBeginDocument{\includepdf[pages={1}]{Forside.pdf}} # Indsæt forside som første side
+
+crossref:
+  fig-prefix: ""  # Figur prefix 
+  sec-prefix: ""  # Sektion prefix
+  tbl-prefix: ""  # Tabel prefix
+  eq-prefix: ""   # Ligning prefix
+
+editor:
+  markdown:
+    wrap: 72 # Wrap linjer ved 72 tegn i editoren
+---
+
+
+```{r}
+#| label: Setup # Giver chunken et navn/id her: Setup. 
+#| echo: false  # Viser ikke selve koden i det færdige dokument ved false og omvendt ved true, men koden kører i "baggrunden". 
+#| eval: true   # Betyder chunken skal køres ved true og omvendt ved false. 
+
+# Options
+options(OutDec = ",")
+
+# Pakker
+pacman::p_load(
+  "knitr",   # Quarto bruger knitr som engine til at eksekvere R-chunks og integrere output (resultater, tabeller, figurer).
+  "tinytex", # Gør det muligt at kompilere dokumentet til PDF via LaTeX, som automatisk installerer nødvendige LaTeX-pakker.
+  "tidyverse"# Samling af pakker til datahåndtering, transformation og visualisering (dplyr, ggplot2, tidyr, readr, tibble m.fl.)
+  ) 
+```
+
+<!-- Forklaring: -->
+
+<!-- # bruges til kapitler. Hvert nyt kapitel starter med #. -->
+
+<!-- ## bruges til afsnit inden for et kapitel. Nummereringen følger kapitelnummeret, fx 1.1, 1.2, 2.1 osv. -->
+
+<!-- ### bruges til underafsnit. Nummereringen bliver f.eks. 1.2.1, 2.1.1 osv. -->
+
+<!-- #### bruges til endnu finere opdeling, fx 2.1.2.1, 2.1.2.2 osv. -->
+
+<!-- Denne struktur gør det let at overskue og navigere i dokumentet, og den kan automatisk danne grundlag for en indholdsfortegnelse i Quarto eller andre markdown-baserede systemer. -->
+
+<!-- Fjern ikke nedenstående kode. -->
+
+<!-- Den sørger for, at der kommer en liste over figurer og en liste over -->
+<!-- tabeller først og derefter nummererede sider. -->
+
+\pagenumbering{gobble} 
+\tableofcontents 
+\newpage 
+\listoffigures 
+\listoftables 
+\newpage 
+\pagenumbering{arabic} 
+\setcounter{page}{1}
+
+\newpage
+
+## Indledning
+
+
+\newpage
+
+### Problemstilling
+
+### Problembeskrivelse
+
+\newpage
+
+## Begrænsninger ift datajura og etik
+
+\newpage
+
+## Dataforberedelse
+
+```{r}
+
+```
+
+
+
+```{r}
+#| label: Pakker og snik snak
+#| include: false
+
+# Tilføj kun de pakker, du har brug for, hvilket jeg ikke har gjort, da jeg har taget nogle irrelevante med. 
+pacman::p_load(tidyverse, caret, janitor, glue, leaps, car, glmnet, boot, feasts, fable, tsibbledata, forecast, fpp2, fpp3, fabletools)
+
+```
+
+<!-- Her har jeg brugt ctrl+shift+c for at udkommentere -->
+
+<!-- Hvis echo = TRUE, vises koden. -->
+
+<!-- Hvis echo = FALSE, skjules koden, men output vises stadig. -->
+
+<!-- Hvis eval = TRUE, køres koden. -->
+
+<!-- Hvis eval = FALSE, køres koden ikke, og der kommer derfor intet output fra chunken. -->
+
+<!-- include bestemmer, om både kode og output fra chunken skal inkluderes i det færdige dokument. -->
+
+<!-- Hvis include = FALSE, køres koden stadig (medmindre eval=FALSE), men hverken kode eller output vises i dokumentet. -->
+
+<!-- Dette er nyttigt, hvis du vil udføre noget "bag kulisserne" (f.eks. indlæse data), uden at det vises for læseren. -->
+
+<!-- echo: Skal koden vises? -->
+
+<!-- eval: Skal koden køres? -->
+
+<!-- include: Skal kode og output inkluderes i dokumentet? -->
+
+
+
+<!-- default for de tre vigtigste chunk options i RMarkdown/Quarto er: -->
+<!-- echo: TRUE - Koden vises som standard i dokumentet. -->
+<!-- eval: TRUE - Koden køres som standard. -->
+<!-- include: TRUE - Både kode og output inkluderes som standard i det færdige dokument. -->
+
+<!-- Prøv at ændre på include, eval, echo mv... -->
+
+```{r}
+#| label: fig-bnp_pr_capita
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-cap: Australsk BNP pr capita
+#| fig-width: 4.5
+#| fig-height: 2
+
+global_economy |>
+  filter(Country == "Australia") |>
+  autoplot(GDP/Population) +
+  labs(title= "GDP pr capita", y = "$US")
+
+```
+<!-- "fig-bnp_pr_capita" er unikke navn til at lave reference med -->
+<!-- "Australsk BNP pr capita" er tekst til figuren -->
+
