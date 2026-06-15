@@ -505,7 +505,7 @@ augment(fit_arima_corona) %>%
 # Modelsammenligning
 
 resultat <- bind_rows(
-  fit_arima %>% accuracy(),
+  Arima_train = fit_arima %>% accuracy(),
   fit_ets %>% accuracy(),
   fit_arima_corona %>% accuracy(),
   fit_ets_corona %>% accuracy(),
@@ -529,7 +529,7 @@ resultat_tscv <- jernbanestretch %>%
   forecast(h = 4) %>%
   accuracy(jernbanedata)
 
-bind_rows(resultat_split, resultat_tscv) %>%
+bind_rows(resultat, resultat_tscv) %>%
   select(.model, key, .type, RMSE, MAE, MAPE) %>%
   kbl(caption = "Tabel 8: Modelsammenligning", digits = 2) %>%
   kable_styling(latex_options = c("striped", "hold_position"))
@@ -571,29 +571,3 @@ jernbanedata %>%
  
  
  
-#Hvad betyder det her egentlig 
- jernbanedata %>%
-  features(log(x1000_passagerer), unitroot_nsdiffs)
-
-jernbanedata_corona %>%
-  features(log(x1000_passagerer), unitroot_nsdiffs)
-
-jernbanedata %>%
-  features(difference(log(x1000_passagerer), 12), unitroot_nsdiffs)
-
-jernbanedata_corona %>%
-  features(difference(log(x1000_passagerer), 12), unitroot_nsdiffs)
-
-# Brug derefter ACF og PACH til at finde kandidatmodeller. - Grov skitse
-# Indenfor ikke sæson kan vi ikke anvende følgende
-# Dette kan findes i kapitel 9
-# Tjek om nedenstående er rigtigt
-jernbane_train %>%
-  gg_tsdisplay(log(x1000_passagerer), plot_type = "partial")
-
-# TIPS
-# Vær meget konsis
-# Kapitel 5 eller 7 ift. - hvad man kan gøre med perioder, som corona
-# evt. vælge at lave dummy variabler for følgende periode - hvis til den
-# mundtlige eksamen
-
