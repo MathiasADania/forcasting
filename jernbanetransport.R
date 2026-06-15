@@ -502,7 +502,19 @@ fit_arima_corona %>%
 augment(fit_arima_corona) %>%
   features(.innov, ljung_box, lag = 24, dof = 5) # Altid .innov for at tjekke
 
-# Modelsammenligning
+# Optimal ARIMA-søgning - bygger videre på fit_arima og fit_arima_corona
+# stepwise = FALSE: søger ALLE kombinationer (ikke kun stepwise-sti)
+# approximation = FALSE: bruger eksakt likelihood (præcise AIC/BIC)
+# order_constraint: begrænser søgerum så det ikke tager evigt
+fit_arima_optimal <- jernbane_train %>%
+  model(Auto = ARIMA(log(x1000_passagerer)),
+    Optimal = ARIMA(
+      log(x1000_passagerer),
+      stepwise         = FALSE,
+      approximation    = FALSE,
+      order_constraint = p + q + P + Q <= 9 & (constant + d + D <= 2)
+    ),
+    
 
 resultat <- bind_rows(
   Arima_train = fit_arima %>% accuracy(),
@@ -533,6 +545,13 @@ bind_rows(resultat, resultat_tscv) %>%
   select(.model, key, .type, RMSE, MAE, MAPE) %>%
   kbl(caption = "Tabel 8: Modelsammenligning", digits = 2) %>%
   kable_styling(latex_options = c("striped", "hold_position"))
+
+# prædiktionsintervaller
+
+google_2015 |>
+  model(NAIVE(Close)) |>
+  fabletools::forecast(h = 10) |>
+  hilo()
 # Forecasting -------------------------------------------------------------
 
 #ETS
