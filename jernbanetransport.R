@@ -611,7 +611,9 @@ fit_arima_corona %>%
   labs(title = "Residualer – Auto ARIMA – Over Storebælt (uden corona)")
 
 
-
+# Tester residualerne (ingen autokorrelation) H0: residualerne er ukorrelerede.
+# Lag=8 = 2xM ved kvartalsdata. 
+# Dof = antal estimerede arma parametre i auto mode
 
 # Ljung-Box – inkl. corona
 augment(fit_arima) %>%
@@ -631,15 +633,11 @@ augment(fit_arima_corona) %>%
   filter(.model == "Auto", key == "Over Storebælt") %>%
   features(.innov, ljung_box, lag = 8, dof = 2)
 
-# Vigtigt at der sikres for autokorrelation inden
-# Altid kommenter at der er et problem og hvad det kan skyldes
-
-
-
 # Optimal ARIMA-søgning - bygger videre på fit_arima og fit_arima_corona
-# stepwise = FALSE: søger ALLE kombinationer (ikke kun stepwise-sti)
-# approximation = FALSE: bruger eksakt likelihood (præcise AIC/BIC)
-# order_constraint: begrænser søgerum så det ikke tager evigt
+# stepwise = FALSE søger ALLE kombinationer (ikke kun stepwise-sti)
+# approximation = FALSE: bruger eksakt likelihood (mere præcise AIC/BIC)
+# order_constraint: begrænser søgerum så det ikke tager for lang tid.
+
 # Optimal ARIMA-søgning
 fit_arima_optimal <- jernbane_train %>%
   model(
@@ -663,6 +661,9 @@ fit_arima_optimal_corona <- jernbane_corona_train %>%
     )
   )
 
+# AICc sammenligner modeller på fit, justeret for modelkompleksitet. 
+# Lav AICc er bedre
+
 # AICc-sammenligning: Auto vs. Optimal – inkl. corona
 glance(fit_arima_optimal) %>%
   arrange(key, AICc) %>%
@@ -677,7 +678,10 @@ glance(fit_arima_optimal_corona) %>%
 
 
 
-# Modelsammenligning med kilde label
+# Modelsammenligning med kilde label - Træning & Test
+# Accuracy beregner fejlmål(metrikker, RMSE,MAE,MAPE,MASE) på både træning og test
+# Træning fejl viser in-sample fit, Test-fejl viser out-of-sample prædiktionsevne.
+
 resultat <- bind_rows(
   fit_arima        %>% accuracy() %>% mutate(data = "Inkl. corona", familie = "ARIMA"),
   fit_ets          %>% accuracy() %>% mutate(data = "Inkl. corona", familie = "ETS"),
@@ -690,6 +694,10 @@ resultat <- bind_rows(
 )
 
 cols <- c("familie", ".model", "key", ".type", "RMSE", "MAE", "MAPE", "MASE")
+
+# Tabellerne A-H viser fejlmål opdelt på modeltype, datasæt & split
+# MASE < 1 betyder at modellen slår SNAIVE benchmark modellen
+# Som er minimumskravet for en brugbar model
 
 # Tabel A: ARIMA inkl. corona – træning
 resultat %>%
@@ -756,6 +764,8 @@ resultat %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
 # opsummering af bedste modeller:
+# Slice_Min/max finder den model med lavest og højest RMSE pr. gruppe.
+# Giver et hurtigt overblik over hvilke modeller der konsekvent præsterer bedst
 
 opsummering <- resultat %>%
   group_by(data, familie, .type, key) %>%
@@ -775,6 +785,8 @@ opsummering %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
 # TIME SERIES CROSS VALIDATION
+# TSCV Udvider træningsvinduer skridt for skridt, og forecaster H=4 kvartaler frem
+# Giver et mere robust estimat af forecast fejl end et enkelt train/test split
 
 # Time series cross validation med corona
 resultat_tscv <- jernbanestretch %>%
@@ -798,20 +810,31 @@ resultat_tscv_corona <- jernbanestretch_corona %>%
   accuracy(jernbanedata_corona) %>%
   mutate(data = "Uden corona")
 
-# Samlet TSCV-tabel
+# Samlet TSCV-tabel - SNAIVE bruges som benchmark
+# en god model bør have lavere RMSE end SNAIVE
+
 bind_rows(resultat_tscv, resultat_tscv_corona) %>%
   select(data, .model, key, RMSE, MAE, MAPE, MASE) %>%
   arrange(data, key, RMSE) %>%
   kbl(caption = "Tabel: TSCV-modelsammenligning inkl. og uden corona", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
-# RMSE per horisont h=1–4 – Figur
-# Faktiske værdier med neutralt kolonnenavn
+# RMSE pr forecast horisont 
+# Viser om forecast fejlen stiger markant med horisonten
+# SNAIVE inkluderes som reference for at vurdere om modellerne tilføjer værdi over tid.
+
+# Med corona
 actuals <- jernbanedata %>%
   as_tibble() %>%
   select(kvartal, key, actual = x1000_passagerer)
 
-# Figur: RMSE per horisont
+# Uden corona
+actuals_corona <- jernbanedata_corona %>%
+  as_tibble() %>%
+  select(kvartal, key, actual = x1000_passagerer)
+
+
+# Figur: RMSE per horisont med corona
 jernbanestretch %>%
   model(
     ARIMA  = ARIMA(log(x1000_passagerer)),
@@ -836,9 +859,37 @@ jernbanestretch %>%
        x = "Horisont", y = "RMSE", colour = "Model") +
   theme_minimal()
 
-# Forecasting / Prædiktion -------------------------------------------------------------
+# Figur: RMSE per horisont uden corona
+jernbanestretch_corona %>%
+  model(
+    ARIMA  = ARIMA(log(x1000_passagerer)),
+    ETS    = ETS(log(x1000_passagerer)),
+    SNAIVE = SNAIVE(log(x1000_passagerer))
+  ) %>%
+  forecast(h = 4) %>%
+  as_tibble() %>%
+  group_by(.id, key, .model) %>%
+  mutate(h = row_number()) %>%
+  ungroup() %>%
+  left_join(actuals_corona, by = c("kvartal", "key")) %>%
+  group_by(.model, key, h) %>%
+  summarise(RMSE = sqrt(mean((.mean - actual)^2, na.rm = TRUE)), .groups = "drop") %>%
+  ggplot(aes(x = h, y = RMSE, colour = .model)) +
+  geom_line() + geom_point() +
+  facet_wrap(~ key, scales = "free_y") +
+  scale_x_continuous(breaks = 1:4, labels = c("Q+1", "Q+2", "Q+3", "Q+4")) +
+  labs(title = "Figur 23b: RMSE per forecast-horisont – uden corona",
+       x = "Horisont", y = "RMSE", colour = "Model") +
+  theme_minimal()
 
-# prædiktionsintervaller for jernbanedata 
+
+# Forecasting / Prædiktion --------------------------------------------------
+# Hilo() beregner prædiktionsintervaller på 80% og 95% 
+# bredere interval betyder større usikkerhed.
+# unpack_hilo() adskiller intervallerne i 
+# separate lower/upper kolonner for tabelvisning.
+
+# prædiktionsintervaller for jernbanedata med corona
 jernbanedata %>%
   model(
     ARIMA = ARIMA(log(x1000_passagerer)),
@@ -853,6 +904,8 @@ jernbanedata %>%
   kbl(caption = "Tabel 12a: Forecast og prædiktionsintervaller inkl. corona (80% og 95%)",
       digits = 1) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
+
+# prædiktionsintervaller for jernbanedata uden corona
 
 jernbanedata_corona %>%
   model(
@@ -869,9 +922,10 @@ jernbanedata_corona %>%
       digits = 1) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
-# prædiktionsintervaller visualisering afskærer den historiske del 
-# så plottet fokuserer på de seneste år og forecast-perioden
-# ellers drukner intervallerne i den lange historik.
+# filter_index afskærer historikken så prædiktionsintervallerne 
+# er visuelt tydelige.
+# Begge modeller vises i samme plot for direkte sammenligning 
+# af forecast og usikkerhed.
 
 jernbanedata %>%
   model(
@@ -888,6 +942,9 @@ jernbanedata %>%
 
 # Sammenfatning og konklusion
 
+# Kombinerer STL-styrker, COVID-behandling og bedste model i ét overblik per serie.
+# Gør det nemt at sammenligne på tværs af de to datasæt og to tidsserier.
+
 stl_features <- bind_rows(
   jernbanedata        %>% features(x1000_passagerer, feat_stl) %>% mutate(data = "Inkl. corona"),
   jernbanedata_corona %>% features(x1000_passagerer, feat_stl) %>% mutate(data = "Uden corona")
@@ -895,6 +952,7 @@ stl_features <- bind_rows(
   select(key, data, trend_strength, seasonal_strength_year)
 
 # bedste model og MASE fra test resultater:
+# slice_min finder den model med lavest test-RMSE per serie og datasæt
 
 bedste <- resultat %>%
   filter(.type == "Test") %>%
