@@ -1,3 +1,4 @@
+# Upload af pakker
 pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate, 
                ggplot2, feasts, fable, tsibbledata, forecast, fpp3,
                fabletools, knitr, ggpubr, gridExtra, GGally, slider,
@@ -12,7 +13,9 @@ jernbanedata <- read_excel("data/jernbanetransport af passagerer.xlsx",
 
 # Dataforberedelse --------------------------------------------------------
 
-# Her forberedes datasættet
+# Her forberedes datasættet - Der vælgea index, key og respons bliver
+# passagerer. Derudover udvælges relevant key-kategoerier
+
 jernbanedata <- jernbanedata %>%
   clean_names() %>%
   mutate(kvartal = str_replace(kvartal, "K", "Q")) %>%
@@ -20,8 +23,10 @@ jernbanedata <- jernbanedata %>%
   filter(key %in% c("International trafik i alt", "Over Storebælt")) %>%
   as_tsibble(index = kvartal, key = key)
 
-# Her laves der et eksternt datasæt, hvor coronaperioden fjernes da det er et
-# fænomen, som vil påvirke resultatet
+# Der laves også et datasat, som ikke er inkl. coronaperiode, da de ikke regnes
+# med at være et gentagende fænomen - her anvendes forcast::na.interp() til
+# at udfylde NA-felterne med punkter ud fra en lineær punkt mellem før perioden
+# og til efter.
 jernbanedata_corona <- jernbanedata %>%
   filter_index(. ~ "2019 Q4", "2022 Q2" ~ .) %>%
   tsibble::fill_gaps() %>%
@@ -32,11 +37,17 @@ jernbanedata_corona <- jernbanedata %>%
 
 # Tidsserieplot -----------------------------------------------------------
 
-# Rå passagertal inkl. corona
+# Her anvendes der autoplot() til at automatisk skabe et visuelt billede af 
+# tidsserien
+
+# Autoplot af passagertal inkl. corona
 jernbanedata %>%
   autoplot(x1000_passagerer) +
   labs(title = "Jernbanepassagerer inkl. corona",
        y = "1.000 passagerer", x = NULL)
+# Her ses det hvordan der er et sæsonbetonet mønster ved International trafik
+# i alt. og ved kategorien "Over Storebælt"
+
 
 # Rå passagertal uden corona
 jernbanedata_corona %>%
@@ -45,6 +56,8 @@ jernbanedata_corona %>%
        y = "1.000 passagerer", x = NULL)
 
 # Log-transformeret (stabiliserer varians)
+# Her anvendes der LOG() funktionen til at stabilisere variansen. Dette kan være
+# vanskligt i modeller der antager konstant varians(homoskedasticitet)
 jernbanedata %>%
   autoplot(log(x1000_passagerer)) +
   labs(title = "Log-transformerede jernbanepassagerer inkl. corona",
@@ -58,6 +71,9 @@ autoplot(log(x1000_passagerer)) +
 
 # Sæsonplot ---------------------------------------------------------------
 
+#gg_season() undersøges de underliggende sæson mønster og man kan se udviklingen
+# på årsbasis.
+
 # Sæsonplot inkl. corona
 jernbanedata %>%
   gg_season(x1000_passagerer) +
@@ -69,6 +85,8 @@ jernbanedata_corona %>%
   gg_season(x1000_passagerer) +
   labs(title = "Sæsonplot uden corona",
        y = "1.000 passagerer", x = NULL)
+
+# gg_subseries() anvendes til at se det gernerelle mønster der sker pr. kvartal
 
 # Subserie-plot inkl. corona
 jernbanedata %>%
@@ -82,28 +100,15 @@ jernbanedata_corona %>%
   labs(title = "Subserie-plot uden corona",
        y = "1.000 passagerer", x = NULL)
 
-
-
-
-# ACF ---------------------------------------------------------------------
-
-# ACF inkl. corona - lag_max = 12 (3 år ved kvartalsdata)
-jernbanedata %>%
-  ACF(x1000_passagerer, lag_max = 24) %>%
-  autoplot() +
-  labs(title = "ACF inkl. corona")
-
-# ACF uden corona
-jernbanedata_corona %>%
-  ACF(x1000_passagerer, lag_max = 24) %>%
-  autoplot() +
-  labs(title = "ACF uden corona")
-
-
-
 # ACF + PACF (gg_tdisplay) ------------------------------------------------
 # Er der grund til kun at anvende ACF når begge er inkluderet lige her?
 
+# ACF måler korrelationen mellem en tidsserie og lag-værdierne. Funktionen
+# fortæller om de tidligere observationer kan hjælpe med at forklare de
+# nuværende.
+
+# PACF viser, hvor mange tidligere værdier der direkte påvirker den nuværende
+# obseration - Når PACF ikke er signifikant finder man AR_orden p.
 
 # International trafik i alt - log-skala
 jernbanedata %>%
@@ -133,9 +138,12 @@ jernbanedata_corona %>%
   gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
   labs(title = "ACF + PACF – Over Storebælt (log, uden corona)")
 
+# gg_lag() viser et scatterplot, hvor man kan aflæse om der er lineær sammenhæng
+# mellem en obseration og de tidligere værdier. jo tydligere lineær sammenhæng
+# der er desto større auto korrelation er der.
 
-# Figur
-# Uden coronaperiode
+
+# coronaperiode
 jernbanedata %>%
   filter(key == "Over Storebælt") %>%
   gg_lag(x1000_passagerer, geom = "point") +
@@ -146,7 +154,7 @@ jernbanedata %>%
   gg_lag(x1000_passagerer, geom = "point") +
   labs(x = "lag(x1000_passagerer, k)")
 
-#med coronaperiode
+# med coronaperiode
 jernbanedata_corona %>%
   filter(key == "Over Storebælt") %>%
   gg_lag(x1000_passagerer, geom = "point") +
@@ -156,12 +164,11 @@ jernbanedata_corona %>%
   filter(key == "International trafik i alt") %>%
   gg_lag(x1000_passagerer, geom = "point") +
   labs(x = "lag(x1000_passagerer, k)")
-
-
-# Der Vil gå år før vi er under konfidenspunkt
-
 
 # Deskriptive statistikker ------------------------------------------------
+
+# Der anvendes følgende metrikker til at hurtigt skabe et overblik over
+# fordelingen af passagertal for hver serie
 
 # Med corona
 jernbanedata %>%
@@ -197,7 +204,12 @@ jernbanedata_corona %>%
   kbl(caption = "Deskriptive statistikker uden corona", digits = 1) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
+
 # STL features - trend og sæsonstyrke
+# Her beregnes trend-styrken og sæson-styrken
+# De hjælper med at argumentere for hvilke modelkomponenter der er nødvendige.
+# En høj sæsonstyrke betyder eksempelvis at en sæsonel model (SARIMA eller ETS 
+# med sæson) er påkrævet.
 jernbanedata %>%
   features(x1000_passagerer, feat_stl) %>%
   kbl(caption = "Trend- og sæsonstyrke inkl. corona", digits = 3) %>%
@@ -211,6 +223,12 @@ jernbanedata_corona %>%
 # Transformation ----------------------------------------------------------
 
 # Box-Cox / Guerrero
+
+# Guerrero finder automatisk den optimale lambda værdi
+
+# Box-Cox er en transformation der stabiliserer variansen i serien, og er styret
+# af lamda. Her vil udslagene være lige store gennem hele perioden.
+
 # Guerrero optimal lambda per serie
 jernbanedata %>%
   features(x1000_passagerer, features = guerrero) %>%
@@ -261,13 +279,17 @@ bind_rows(
 
 
 # Stationaritet og differentiering ----------------------------------------
-
+# KPSS er en statistisk test der afgør om en tidsserie er stationær eller ej.
 # KPSS-test: H0 = stationær, p < 0.05 → differentiering nødvendig
 jernbanedata %>%
   features(log(x1000_passagerer), unitroot_kpss) %>%
   kbl(caption = "KPSS-test på log(passagerer) — H0: stationær",
       digits = 4) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
+
+# nsdiffs fortæller hvor mange sæsondifferentieringerne(D) der er nødvendige for
+# at gøre serien stationær. Returnerer den 1, skal der differentieres for at
+# fjerne sæsonmønsteret.
 
 # nsdiffs: anbefalet antal sæsondifferentieringer (D) - lag=4 ved kvartalsdata
 jernbanedata %>%
