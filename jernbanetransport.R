@@ -350,9 +350,6 @@ model_jernbane_corona <- jernbanedata_corona %>%
   components()
 
 
-
-
-
 model_jernbane %>% 
   as_tsibble() %>% 
   autoplot(`log(x1000_passagerer)`, color = 'gray') +
@@ -671,18 +668,7 @@ fit_arima_optimal <- jernbane_train %>%
   )
   )   
 
-resultat <- bind_rows(
-  Arima_train = fit_arima %>% accuracy(),
-  fit_ets %>% accuracy(),
-  fit_arima_corona %>% accuracy(),
-  fit_ets_corona %>% accuracy(),
-  fit_arima %>% forecast(h = 4) %>% accuracy(jernbane_test),
-  fit_ets %>% forecast(h = 4) %>% accuracy(jernbane_test),
-  fit_arima_corona %>% forecast(h = 4) %>% accuracy(jernbane_corona_test),
-  fit_ets_corona %>% forecast(h = 4) %>% accuracy(jernbane_corona_test)
-) 
-
-# Modelsammenligning med kilde-label
+# Modelsammenligning med kilde label
 resultat <- bind_rows(
   fit_arima        %>% accuracy() %>% mutate(data = "Inkl. corona", familie = "ARIMA"),
   fit_ets          %>% accuracy() %>% mutate(data = "Inkl. corona", familie = "ETS"),
@@ -694,7 +680,7 @@ resultat <- bind_rows(
   fit_ets_corona   %>% forecast(h = 4) %>% accuracy(jernbane_corona_test) %>% mutate(data = "Uden corona",  familie = "ETS")
 )
 
-cols <- c("familie", ".model", "key", ".type", "RMSE", "MAE", "MAPE")
+cols <- c("familie", ".model", "key", ".type", "RMSE", "MAE", "MAPE", "MASE")
 
 # Tabel A: ARIMA inkl. corona – træning
 resultat %>%
@@ -794,7 +780,13 @@ bind_rows(resultat, resultat_tscv) %>%
   kbl(caption = "Tabel 8: Modelsammenligning", digits = 2) %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 
-# RMSE per horisont h=1–4 – Figur 23
+# RMSE per horisont h=1–4 – Figur
+# Faktiske værdier med neutralt kolonnenavn
+actuals <- jernbanedata %>%
+  as_tibble() %>%
+  select(kvartal, key, actual = x1000_passagerer)
+
+# Figur 23: RMSE per horisont
 jernbanestretch %>%
   model(
     ARIMA  = ARIMA(log(x1000_passagerer)),
@@ -802,15 +794,13 @@ jernbanestretch %>%
     SNAIVE = SNAIVE(log(x1000_passagerer))
   ) %>%
   forecast(h = 4) %>%
+  as_tibble() %>%
   group_by(.id, key, .model) %>%
   mutate(h = row_number()) %>%
   ungroup() %>%
-  left_join(
-    jernbanedata %>% as_tibble() %>% select(kvartal, key, x1000_passagerer),
-    by = c("kvartal", "key")
-  ) %>%
+  left_join(actuals, by = c("kvartal", "key")) %>%
   group_by(.model, key, h) %>%
-  summarise(RMSE = sqrt(mean((.mean - x1000_passagerer)^2, na.rm = TRUE)),
+  summarise(RMSE = sqrt(mean((.mean - actual)^2, na.rm = TRUE)),
             .groups = "drop") %>%
   ggplot(aes(x = h, y = RMSE, colour = .model)) +
   geom_line() +
@@ -824,35 +814,68 @@ jernbanestretch %>%
 
 
 
-
 # prædiktionsintervaller
 
-google_2015 |>
-  model(NAIVE(Close)) |>
-  fabletools::forecast(h = 10) |>
-  hilo()
+# prædiktionsintervaller for jernbanedata
+jernbanedata |>
+  model(
+    ARIMA = ARIMA(log(x1000_passagerer)),
+    ETS   = ETS(log(x1000_passagerer))
+  ) |>
+  forecast(h = 4) |>
+  hilo(level = c(80, 95)) |>
+  unpack_hilo(c("80%", "95%"))
+
+jernbanedata_corona |>
+  model(
+    ARIMA = ARIMA(log(x1000_passagerer)),
+    ETS   = ETS(log(x1000_passagerer))
+  ) |>
+  forecast(h = 4) |>
+  hilo(level = c(80, 95)) |>
+  unpack_hilo(c("80%", "95%"))
+
+# prædiktionsintervaller visualisering afskærer den historiske del 
+# så plottet fokuserer på de seneste år og 
+# forecast-perioden — ellers drukner intervallerne i den lange historik.
+
+jernbanedata |>
+  model(
+    ARIMA = ARIMA(log(x1000_passagerer)),
+    ETS   = ETS(log(x1000_passagerer))
+  ) |>
+  forecast(h = 4) |>
+  autoplot(jernbanedata |> filter_index("2020 Q1" ~ .),
+           level = c(80, 95)) +
+  facet_wrap(~ key, scales = "free_y") +
+  labs(title = "Forecast med prædiktionsintervaller (80% og 95%)",
+       y = "1.000 passagerer", x = NULL) +
+  theme_minimal()
+
 
 # Forecasting / Prædiktion -------------------------------------------------------------
 
 #ETS
-jernbanedata |>
-  model(ETS(x1000_passagerer)) %>%
-  forecast(h = "1 years") %>%
+
+jernbanedata %>%
+  model(ETS(log(x1000_passagerer))) %>%
+  forecast(h = 4) %>%
   autoplot(jernbanedata) +
   labs(title = "ETS Forcast inkl. corona",
        y = "1000 passagerer")
 
-jernbanedata_corona |>
-  model(ETS(x1000_passagerer)) %>%
-  forecast(h = "1 years") %>%
+jernbanedata_corona %>%
+  model(ETS(log(x1000_passagerer))) %>%
+  forecast(h = 4) %>%
   autoplot(jernbanedata_corona) +
   labs(title = "ETS forecast uden corona",
        y = "1000 passagerer")
+
 # Time series cross validation
 #ARIMA forecast inkl. corona
 jernbanedata %>%
   model(ARIMA(log(x1000_passagerer))) %>%
-  forecast(h = "1 years") %>%
+  forecast(h = 4) %>%
   autoplot(jernbanedata) +
   labs(title = "Arima forecast uden corona",
        y = "1000 passagerer")
@@ -863,10 +886,13 @@ jernbanedata %>%
 # ARIMA forecast uden Corona
  jernbanedata_corona %>%
    model(ARIMA(log(x1000_passagerer))) %>%
-   forecast(h = "1 years") %>%
+   forecast(h = 4) %>%
    autoplot(jernbanedata_corona) +
    labs(title = "Arima forecast uden corona",
         y = "1000 passagerer")
- 
- 
- 
+
+
+
+
+
+
