@@ -556,6 +556,22 @@ fit_arima <- jernbane_train %>%
 
 report(fit_arima)
 
+# Hent faktisk antal estimerede parametre fra Auto-modellen
+# Bruges som dof i Ljung-Box — korrekt justerer frihedsgrader for den valgte orden
+
+dof_int <- fit_arima %>%
+  filter(key == "International trafik i alt") %>%
+  select(Auto) %>%
+  coefficients() %>%
+  nrow()
+
+dof_osb <- fit_arima %>%
+  filter(key == "Over Storebælt") %>%
+  select(Auto) %>%
+  coefficients() %>%
+  nrow()
+
+
 # Kan gøres meget mere avanceret -> der er ikke søgt særlig grundigt efter "bedste" model:
 
 # Med corona
@@ -569,6 +585,28 @@ fit_arima_corona <- jernbane_corona_train %>%
   )
 
 report(fit_arima_corona)
+
+# Hent faktisk antal estimerede parametre fra Auto-modellen
+# Bruges som dof i Ljung-Box — korrekt justerer frihedsgrader for den valgte orden
+
+dof_corona_int <- fit_arima_corona %>%
+  filter(key == "International trafik i alt") %>%
+  select(Auto) %>%
+  coefficients() %>%
+  nrow()
+
+dof_corona_osb <- fit_arima_corona %>%
+  filter(key == "Over Storebælt") %>%
+  select(Auto) %>%
+  coefficients() %>%
+  nrow()
+
+# Verificer hvilken model Auto valgte og hvilken dof der anvendes
+cat("International inkl. corona: dof =", dof_int, "\n")
+cat("Over Storebælt inkl. corona: dof =", dof_osb, "\n")
+cat("International uden corona: dof =", dof_corona_int, "\n")
+cat("Over Storebælt uden corona: dof =", dof_corona_osb, "\n")
+
 
 #Arima Modelsammenligning med og uden corona
 
@@ -612,7 +650,6 @@ fit_arima_corona %>%
   gg_tsresiduals(lag_max = 16) +
   labs(title = "Residualer – Auto ARIMA – Over Storebælt (uden corona)")
 
-
 # Tester residualerne (ingen autokorrelation) H0: residualerne er ukorrelerede.
 # Lag=8 = 2xM ved kvartalsdata. 
 # Dof = antal estimerede arma parametre i auto mode
@@ -620,20 +657,20 @@ fit_arima_corona %>%
 # Ljung-Box – inkl. corona
 augment(fit_arima) %>%
   filter(.model == "Auto", key == "International trafik i alt") %>%
-  features(.innov, ljung_box, lag = 8, dof = 2)
+  features(.innov, ljung_box, lag = 8, dof = dof_int)
 
 augment(fit_arima) %>%
   filter(.model == "Auto", key == "Over Storebælt") %>%
-  features(.innov, ljung_box, lag = 8, dof = 2)
+  features(.innov, ljung_box, lag = 8, dof = dof_osb)
 
 # Ljung-Box – uden corona
 augment(fit_arima_corona) %>%
   filter(.model == "Auto", key == "International trafik i alt") %>%
-  features(.innov, ljung_box, lag = 8, dof = 2)
+  features(.innov, ljung_box, lag = 8, dof = dof_corona_int)
 
 augment(fit_arima_corona) %>%
   filter(.model == "Auto", key == "Over Storebælt") %>%
-  features(.innov, ljung_box, lag = 8, dof = 2)
+  features(.innov, ljung_box, lag = 8, dof = dof_corona_osb)
 
 # Optimal ARIMA-søgning - bygger videre på fit_arima og fit_arima_corona
 # stepwise = FALSE søger ALLE kombinationer (ikke kun stepwise-sti)
