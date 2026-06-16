@@ -981,7 +981,7 @@ sammenfatning <- stl_features %>%
   ) %>%
   arrange(Serie, Datasæt)
 
-# Endeligt overblik
+# Endeligt overblik over bedste og dårligste model pr. gruppe
 
 sammenfatning %>%
   kbl(caption = "Sammenfatningsoversigt: Nøgletal per serie og datasæt",
