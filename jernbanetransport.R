@@ -540,6 +540,7 @@ augment(fit_ets_corona) %>%
 # anderledes)
 
 # Arima modeller
+# Uden corona
 fit_arima <- jernbane_train %>%
   model(
     Auto = ARIMA(log(x1000_passagerer)),
@@ -557,6 +558,7 @@ report(fit_arima)
 
 # Kan gøres meget mere avanceret -> der er ikke søgt særlig grundigt efter "bedste" model:
 
+# Med corona
 fit_arima_corona <- jernbane_corona_train %>%
   model(
     Auto = ARIMA(log(x1000_passagerer)),
