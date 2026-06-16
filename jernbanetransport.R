@@ -532,20 +532,21 @@ fit_ets_corona %>%
 # Ljung-Box – inkl. corona
 augment(fit_ets) %>%
   filter(.model == "Auto", key == "International trafik i alt") %>%
-  features(.innov, ljung_box, lag = 24, dof = 5)
+  features(.innov, ljung_box, lag = 8, dof = 0)
 
 augment(fit_ets) %>%
   filter(.model == "Auto", key == "Over Storebælt") %>%
-  features(.innov, ljung_box, lag = 24, dof = 5)
+  features(.innov, ljung_box, lag = 8, dof = 0)
 
 # Ljung-Box – uden corona
 augment(fit_ets_corona) %>%
   filter(.model == "Auto", key == "International trafik i alt") %>%
-  features(.innov, ljung_box, lag = 24, dof = 5)
+  features(.innov, ljung_box, lag = 8, dof = 0)
 
 augment(fit_ets_corona) %>%
   filter(.model == "Auto", key == "Over Storebælt") %>%
-  features(.innov, ljung_box, lag = 24, dof = 5) # Altid .innov for at tjekke
+  features(.innov, ljung_box, lag = 8, dof = 0) # Altid .innov for at tjekke
+
 # forslag til hvordan vi kan forbedre forcast ift - Corona (Hvad kan vi gøre
 # anderledes)
 
@@ -623,20 +624,20 @@ fit_arima_corona %>%
 # Ljung-Box – inkl. corona
 augment(fit_arima) %>%
   filter(.model == "Auto", key == "International trafik i alt") %>%
-  features(.innov, ljung_box, lag = 24, dof = 2)
+  features(.innov, ljung_box, lag = 8, dof = 2)
 
 augment(fit_arima) %>%
   filter(.model == "Auto", key == "Over Storebælt") %>%
-  features(.innov, ljung_box, lag = 24, dof = 2)
+  features(.innov, ljung_box, lag = 8, dof = 2)
 
 # Ljung-Box – uden corona
 augment(fit_arima_corona) %>%
   filter(.model == "Auto", key == "International trafik i alt") %>%
-  features(.innov, ljung_box, lag = 24, dof = 2)
+  features(.innov, ljung_box, lag = 8, dof = 2)
 
 augment(fit_arima_corona) %>%
   filter(.model == "Auto", key == "Over Storebælt") %>%
-  features(.innov, ljung_box, lag = 24, dof = 2)
+  features(.innov, ljung_box, lag = 8, dof = 2)
 
 # Vigtigt at der sikres for autokorrelation inden
 # Altid kommenter at der er et problem og hvad det kan skyldes
