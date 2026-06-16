@@ -334,7 +334,7 @@ jernbanedata %>%
 # STL-dekomposition -------------------------------------------------------
 
 # STL inkl. corona
-model_jernbane <- jernbanedata %>%
+stl_comp <- jernbanedata %>%
   model(
     STL(log(x1000_passagerer) ~ trend(window = 7) + season(window = "periodic"),
         robust = TRUE)
@@ -342,7 +342,7 @@ model_jernbane <- jernbanedata %>%
   components()
 
 # STL uden corona
-model_jernbane_corona <- jernbanedata_corona %>%
+stl_comp_corona <- jernbanedata_corona %>%
   model(
     STL(log(x1000_passagerer) ~ trend(window = 7) + season(window = "periodic"),
         robust = TRUE)
@@ -351,12 +351,12 @@ model_jernbane_corona <- jernbanedata_corona %>%
 
 
 # STL Visualisering
-model_jernbane %>% 
+stl_comp %>% 
   as_tsibble() %>% 
   autoplot(`log(x1000_passagerer)`, color = 'gray') +
   geom_line(aes(y = season_adjust), colour = '#0072B2')
 
-model_jernbane_corona %>% 
+stl_comp_corona %>% 
   as_tsibble() %>% 
   autoplot(`log(x1000_passagerer)`, color = 'gray') +
   geom_line(aes(y = season_adjust), colour = '#0072B2')
