@@ -793,27 +793,36 @@ resultat_tscv <- jernbanestretch %>%
 
 bind_rows(resultat, resultat_tscv) %>%
   select(.model, key, .type, RMSE, MAE, MAPE) %>%
-  kbl(caption = "Tabel 8: Modelsammenligning", digits = 2) %>%
+  kbl(caption = "Modelsammenligning", digits = 2) %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 
 # prædiktionsintervaller
-
-google_2015 |>
-  model(NAIVE(Close)) |>
-  fabletools::forecast(h = 10) |>
+jernbanedata %>%
+  model(SNAIVE(x1000_passagerer)) %>%
+  fabletools::forecast(h = 4) %>%
   hilo()
 
+<<<<<<< HEAD
 # Forecasting / Prædiktion -------------------------------------------------------------
+=======
+jernbanedata_corona %>%
+  model(SNAIVE(x1000_passagerer)) %>%
+  fabletools::forecast(h = 4) %>%
+  hilo()
+
+
+# Forecasting -------------------------------------------------------------
+>>>>>>> 69c02ee4d5e45fe2c317667ec61257486ff1dd98
 
 #ETS
-jernbanedata |>
+jernbanedata %>%
   model(ETS(x1000_passagerer)) %>%
   forecast(h = "1 years") %>%
   autoplot(jernbanedata) +
   labs(title = "ETS Forcast inkl. corona",
        y = "1000 passagerer")
 
-jernbanedata_corona |>
+jernbanedata_corona %>%
   model(ETS(x1000_passagerer)) %>%
   forecast(h = "1 years") %>%
   autoplot(jernbanedata_corona) +
