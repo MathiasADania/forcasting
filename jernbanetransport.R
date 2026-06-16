@@ -410,7 +410,7 @@ jernbanedata_corona %>%
 # Hvad betyder de forskellige værdier??
 
 passagererstretch <- jernbanedata %>%
-  stretch_tsibble(.init = 24, .step = 1)
+  stretch_tsibble(.init = 32, .step = 1)
 
 # Nu er det muligt at beregtne RMSE - Vær forsigtig at kører det hvis det
 # tager lang tid
@@ -449,8 +449,6 @@ jernbane_corona_train <- jernbanedata_corona %>%
 # Testdata: 2025 Q1 til slutningen
 jernbane_corona_test <- jernbanedata_corona %>%
   filter_index("2025 Q1" ~ .)
-
-
 
 # Benchmark ---------------------------------------------------------------
 # Benchmark model
@@ -793,36 +791,58 @@ resultat_tscv <- jernbanestretch %>%
 
 bind_rows(resultat, resultat_tscv) %>%
   select(.model, key, .type, RMSE, MAE, MAPE) %>%
-  kbl(caption = "Modelsammenligning", digits = 2) %>%
+  kbl(caption = "Tabel 8: Modelsammenligning", digits = 2) %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 
+# RMSE per horisont h=1–4 – Figur 23
+jernbanestretch %>%
+  model(
+    ARIMA  = ARIMA(log(x1000_passagerer)),
+    ETS    = ETS(log(x1000_passagerer)),
+    SNAIVE = SNAIVE(log(x1000_passagerer))
+  ) %>%
+  forecast(h = 4) %>%
+  group_by(.id, key, .model) %>%
+  mutate(h = row_number()) %>%
+  ungroup() %>%
+  left_join(
+    jernbanedata %>% as_tibble() %>% select(kvartal, key, x1000_passagerer),
+    by = c("kvartal", "key")
+  ) %>%
+  group_by(.model, key, h) %>%
+  summarise(RMSE = sqrt(mean((.mean - x1000_passagerer)^2, na.rm = TRUE)),
+            .groups = "drop") %>%
+  ggplot(aes(x = h, y = RMSE, colour = .model)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ key, scales = "free_y") +
+  scale_x_continuous(breaks = 1:4, labels = c("Q+1", "Q+2", "Q+3", "Q+4")) +
+  labs(title = "Figur 23: RMSE per forecast-horisont (h=1–4)",
+       x = "Horisont", y = "RMSE", colour = "Model") +
+  theme_minimal()
+
+
+
+
+
 # prædiktionsintervaller
-jernbanedata %>%
-  model(SNAIVE(x1000_passagerer)) %>%
-  fabletools::forecast(h = 4) %>%
+
+google_2015 |>
+  model(NAIVE(Close)) |>
+  fabletools::forecast(h = 10) |>
   hilo()
 
-<<<<<<< HEAD
 # Forecasting / Prædiktion -------------------------------------------------------------
-=======
-jernbanedata_corona %>%
-  model(SNAIVE(x1000_passagerer)) %>%
-  fabletools::forecast(h = 4) %>%
-  hilo()
-
-
-# Forecasting -------------------------------------------------------------
->>>>>>> 69c02ee4d5e45fe2c317667ec61257486ff1dd98
 
 #ETS
-jernbanedata %>%
+jernbanedata |>
   model(ETS(x1000_passagerer)) %>%
   forecast(h = "1 years") %>%
   autoplot(jernbanedata) +
   labs(title = "ETS Forcast inkl. corona",
        y = "1000 passagerer")
 
-jernbanedata_corona %>%
+jernbanedata_corona |>
   model(ETS(x1000_passagerer)) %>%
   forecast(h = "1 years") %>%
   autoplot(jernbanedata_corona) +
