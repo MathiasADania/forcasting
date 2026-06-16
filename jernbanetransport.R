@@ -89,13 +89,13 @@ jernbanedata_corona %>%
 
 # ACF inkl. corona - lag_max = 12 (3 år ved kvartalsdata)
 jernbanedata %>%
-  ACF(x1000_passagerer, lag_max = 12) %>%
+  ACF(x1000_passagerer, lag_max = 24) %>%
   autoplot() +
   labs(title = "ACF inkl. corona")
 
 # ACF uden corona
 jernbanedata_corona %>%
-  ACF(x1000_passagerer, lag_max = 12) %>%
+  ACF(x1000_passagerer, lag_max = 24) %>%
   autoplot() +
   labs(title = "ACF uden corona")
 
@@ -109,34 +109,56 @@ jernbanedata_corona %>%
 jernbanedata %>%
   filter(key == "International trafik i alt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
-  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12) +
+  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
   labs(title = "ACF + PACF – International trafik i alt (log, inkl. corona)")
 
 # Over Storebælt - log-skala
 jernbanedata %>%
   filter(key == "Over Storebælt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
-  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12) +
+  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
   labs(title = "ACF + PACF – Over Storebælt (log, inkl. corona)")
 
 # International trafik i alt - uden corona
 jernbanedata_corona %>%
   filter(key == "International trafik i alt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
-  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12) +
+  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
   labs(title = "ACF + PACF – International trafik i alt (log, uden corona)")
 
 # Over Storebælt - uden corona
 jernbanedata_corona %>%
   filter(key == "Over Storebælt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
-  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 12) +
+  gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
   labs(title = "ACF + PACF – Over Storebælt (log, uden corona)")
 
 
+# Figur
+# Uden coronaperiode
+jernbanedata %>%
+  filter(key == "Over Storebælt") %>%
+  gg_lag(x1000_passagerer, geom = "point") +
+  labs(x = "lag(x1000_passagerer, k)")
 
-# Vil gå år før vi er under konfidenspunkt
+jernbanedata %>%
+  filter(key == "International trafik i alt") %>%
+  gg_lag(x1000_passagerer, geom = "point") +
+  labs(x = "lag(x1000_passagerer, k)")
 
+#med coronaperiode
+jernbanedata_corona %>%
+  filter(key == "Over Storebælt") %>%
+  gg_lag(x1000_passagerer, geom = "point") +
+  labs(x = "lag(x1000_passagerer, k)")
+
+jernbanedata_corona %>%
+  filter(key == "International trafik i alt") %>%
+  gg_lag(x1000_passagerer, geom = "point") +
+  labs(x = "lag(x1000_passagerer, k)")
+
+
+# Der Vil gå år før vi er under konfidenspunkt
 
 
 # Deskriptive statistikker ------------------------------------------------
@@ -146,9 +168,12 @@ jernbanedata %>%
   as_tibble() %>%
   group_by(key) %>%
   summarise(
+    N      = sum(!is.na(x1000_passagerer)),
     mean   = mean(x1000_passagerer, na.rm = TRUE),
     median = median(x1000_passagerer, na.rm = TRUE),
     sd     = sd(x1000_passagerer, na.rm = TRUE),
+    Q1     = quantile(x1000_passagerer, 0.25, na.rm = TRUE),
+    Q3     = quantile(x1000_passagerer, 0.75, na.rm = TRUE),                  
     min    = min(x1000_passagerer, na.rm = TRUE),
     max    = max(x1000_passagerer, na.rm = TRUE)
   ) %>%
@@ -160,9 +185,12 @@ jernbanedata_corona %>%
   as_tibble() %>%
   group_by(key) %>%
   summarise(
+    N      = sum(!is.na(x1000_passagerer)),
     mean   = mean(x1000_passagerer, na.rm = TRUE),
     median = median(x1000_passagerer, na.rm = TRUE),
     sd     = sd(x1000_passagerer, na.rm = TRUE),
+    Q1     = quantile(x1000_passagerer, 0.25, na.rm = TRUE),
+    Q3     = quantile(x1000_passagerer, 0.75, na.rm = TRUE),                  
     min    = min(x1000_passagerer, na.rm = TRUE),
     max    = max(x1000_passagerer, na.rm = TRUE)
   ) %>%
@@ -308,16 +336,22 @@ jernbanedata %>%
 # STL inkl. corona
 model_jernbane <- jernbanedata %>%
   model(
-    STL(log(x1000_passagerer), robust = TRUE) # Log eller cox box skal altid være her!
+    STL(log(x1000_passagerer) ~ trend(window = 7) + season(window = "periodic"),
+        robust = TRUE)
   ) %>%
   components()
 
-# STL inkl. corona
+# STL uden corona
 model_jernbane_corona <- jernbanedata_corona %>%
   model(
-    STL(log(x1000_passagerer), robust = TRUE) # Log eller cox box skal altid være her!
+    STL(log(x1000_passagerer) ~ trend(window = 7) + season(window = "periodic"),
+        robust = TRUE)
   ) %>%
   components()
+
+
+
+
 
 model_jernbane %>% 
   as_tsibble() %>% 
@@ -330,17 +364,18 @@ model_jernbane_corona %>%
   geom_line(aes(y = season_adjust), colour = '#0072B2')
 
 # Augment
+# Uden coronaperiode
 model_jernbane <- jernbanedata %>%
   model(
-    STL(log(x1000_passagerer), robust = TRUE) # Log eller cox box skal altid være her!
+    STL = STL(log(x1000_passagerer) ~ trend(window = 7) + season(window = "periodic"),
+        robust = TRUE)
   ) %>%
   augment()
 
-# Dette kan man gå ind og kommentere - tjek hurtig på google og kommenter med
-# 2 linjer
+# Med coronaperiode
 model_jernbane_corona <- jernbanedata_corona %>%
   model(
-    STL(log(x1000_passagerer) ~ trend(window = 7) + season(window = "periodic"), 
+    STL = STL(log(x1000_passagerer) ~ trend(window = 7) + season(window = "periodic"),
         robust = TRUE)
   ) %>%
   augment()
@@ -356,12 +391,14 @@ model_jernbane%>%
 model_jernbane_corona %>% 
   autoplot()
 
+# Features med corona
 jernbanedata %>%
   features(x1000_passagerer, feat_stl) %>%
   kbl(caption = "features inkl. corona",
       digits = 3) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
+# Features med corona
 jernbanedata_corona %>%
   features(x1000_passagerer, feat_stl) %>%
   kbl(caption = "features uden corona",
@@ -374,6 +411,7 @@ jernbanedata_corona %>%
 
 passagererstretch <- jernbanedata %>%
   stretch_tsibble(.init = 24, .step = 1)
+
 # Nu er det muligt at beregtne RMSE - Vær forsigtig at kører det hvis det
 # tager lang tid
 
@@ -414,18 +452,17 @@ jernbane_corona_test <- jernbanedata_corona %>%
 
 
 
-
 # Benchmark ---------------------------------------------------------------
 # Benchmark model
-passagererstretch <- jernbanedata %>%
+jernbanestretch <- jernbanedata %>%
   stretch_tsibble(.init = 24, .step = 1)
 
-passagererstretch <- jernbanedata_corona %>%
+jernbanestretch_corona <- jernbanedata_corona %>%
   stretch_tsibble(.init = 24, .step = 1)
 # Nu er det muligt at beregtne RMSE - Vær forsigtig at køre det hvis det
 # tager lang tid
 
-jernbanestretch %>%
+jernbanestretch %>% 
   model(SNAIVE(log(x1000_passagerer))) %>%
   forecast(h = 4) %>%
   accuracy(jernbanedata)
@@ -441,66 +478,186 @@ jernbanestretch_corona %>%
 
 # ETS modeller
 fit_ets <- jernbane_train %>%
-  model(ETS(log(x1000_passagerer)))
-
-report(fit_ets)
+  model(
+    Auto   = ETS(log(x1000_passagerer)),
+    AAA    = ETS(log(x1000_passagerer) ~ error("A") + trend("A")  + season("A")),
+    AAdA   = ETS(log(x1000_passagerer) ~ error("A") + trend("Ad") + season("A")),
+    MAM    = ETS(log(x1000_passagerer) ~ error("M") + trend("A")  + season("M"))
+  )
 
 fit_ets_corona <- jernbane_corona_train %>%
-  model(ETS(log(x1000_passagerer)))
+  model(
+    Auto   = ETS(log(x1000_passagerer)),
+    AAA    = ETS(log(x1000_passagerer) ~ error("A") + trend("A")  + season("A")),
+    AAdA   = ETS(log(x1000_passagerer) ~ error("A") + trend("Ad") + season("A")),
+    MAM    = ETS(log(x1000_passagerer) ~ error("M") + trend("A")  + season("M"))
+  )
 
+report(fit_ets)
 report(fit_ets_corona)
+
+# Tabel Modelvalg ETS – uden corona
+glance(fit_ets_corona) %>%
+  arrange(AICc) %>%
+  kbl(caption = "Tabel 7b: ETS-modelsammenligning uden corona (AICc)", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Tabel Modelvalg ETS – med corona
+glance(fit_ets) %>%
+  arrange(AICc) %>%
+  kbl(caption = "Tabel 7a: ETS-modelsammenligning inkl. corona (AICc)", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Delkonklusion - kommenter på performance
+
+
+
+
 # Her må vi gerne kommenter kort på nogle af tingene - Hvis det mer forklaring
 # gerne alpha, beta, gamma - evt. phi
 
+# Residualanalyse – inkl. corona
 fit_ets %>%
+  filter(key == "International trafik i alt") %>%
+  select(Auto) %>%
+  gg_tsresiduals(lag_max = 36)
+
+fit_ets %>%
+  filter(key == "Over Storebælt") %>%
+  select(Auto) %>%
+  gg_tsresiduals(lag_max = 36)
+
+# Residualanalyse – uden corona
+fit_ets_corona %>%
+  filter(key == "International trafik i alt") %>%
+  select(Auto) %>%
   gg_tsresiduals(lag_max = 36)
 
 fit_ets_corona %>%
+  filter(key == "Over Storebælt") %>%
+  select(Auto) %>%
   gg_tsresiduals(lag_max = 36)
 
+# Ljung-Box – inkl. corona
 augment(fit_ets) %>%
-  features(.innov, ljung_box, lag = 24, dof = 5) # Altid .innov for at tjekke
+  filter(.model == "Auto", key == "International trafik i alt") %>%
+  features(.innov, ljung_box, lag = 24, dof = 5)
+
+augment(fit_ets) %>%
+  filter(.model == "Auto", key == "Over Storebælt") %>%
+  features(.innov, ljung_box, lag = 24, dof = 5)
+
+# Ljung-Box – uden corona
+augment(fit_ets_corona) %>%
+  filter(.model == "Auto", key == "International trafik i alt") %>%
+  features(.innov, ljung_box, lag = 24, dof = 5)
 
 augment(fit_ets_corona) %>%
+  filter(.model == "Auto", key == "Over Storebælt") %>%
   features(.innov, ljung_box, lag = 24, dof = 5) # Altid .innov for at tjekke
 # forslag til hvordan vi kan forbedre forcast ift - Corona (Hvad kan vi gøre
 # anderledes)
 
+
+
+
+
 # Arima modeller
 fit_arima <- jernbane_train %>%
-  model(ARIMA(log(x1000_passagerer)))
+  model(
+    Auto = ARIMA(log(x1000_passagerer)),
+    # Klassisk "airline model" – MA(1) ordinær + sæsonel
+    M1   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(0,1,1) + PDQ(0,1,1)),
+    # AR(1) ordinær + sæsonel AR(1)
+    M2   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(1,1,0) + PDQ(1,1,0)),
+    # Blandet ARMA + sæsonel MA(1)
+    M3   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(1,1,1) + PDQ(0,1,1)),
+    # AR(2) + sæsonel MA(1)
+    M4   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(2,1,0) + PDQ(0,1,1))
+  )
+
 
 report(fit_arima)
 
 # Kan gøres meget mere avanceret -> der er ikke søgt særlig grundigt efter "bedste" model:
 
 fit_arima_corona <- jernbane_corona_train %>%
-  model(ARIMA(log(x1000_passagerer)))
+  model(
+    Auto = ARIMA(log(x1000_passagerer)),
+    M1   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(0,1,1) + PDQ(0,1,1)),
+    M2   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(1,1,0) + PDQ(1,1,0)),
+    M3   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(1,1,1) + PDQ(0,1,1)),
+    M4   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(2,1,0) + PDQ(0,1,1))
+  )
 
 report(fit_arima_corona)
 
-# Eksempel på hvad man kan lave
-# Stepwise = FALSE
-# Approximation = False
-# Order_constraint = p + q + P + Q <= 9 & (constant + d + D <= 2)
 
+#Arima Modelsammenligning med og uden corona
+
+#Uden Corona
+glance(fit_arima) %>%
+  select(key, .model, sigma2, log_lik, AIC, AICc, BIC) %>%
+  arrange(key, AICc) %>%
+  kbl(caption = "Tabel 8a: ARIMA-modelsammenligning inkl. corona (AICc)", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Med Corona
+glance(fit_arima_corona) %>%
+  select(key, .model, sigma2, log_lik, AIC, AICc, BIC) %>%
+  arrange(key, AICc) %>%
+  kbl(caption = "Tabel 8a: ARIMA-modelsammenligning inkl. corona (AICc)", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+
+
+# Residualanalyse – inkl. corona (Auto-model, én serie ad gangen)
+fit_arima %>%
+  filter(key == "International trafik i alt") %>%
+  select(Auto) %>%
+  gg_tsresiduals(lag_max = 36) +
+  labs(title = "Residualer – Auto ARIMA – International (inkl. corona)")
+
+fit_arima %>%
+  filter(key == "Over Storebælt") %>%
+  select(Auto) %>%
+  gg_tsresiduals(lag_max = 36) +
+  labs(title = "Residualer – Auto ARIMA – Over Storebælt (inkl. corona)")
+
+# Residualanalyse – uden corona
+fit_arima_corona %>%
+  filter(key == "International trafik i alt") %>%
+  select(Auto) %>%
+  gg_tsresiduals(lag_max = 36) +
+  labs(title = "Residualer – Auto ARIMA – International (uden corona)")
+
+fit_arima_corona %>%
+  filter(key == "Over Storebælt") %>%
+  select(Auto) %>%
+  gg_tsresiduals(lag_max = 36) +
+  labs(title = "Residualer – Auto ARIMA – Over Storebælt (uden corona)")
+
+# Ljung-Box – inkl. corona
+augment(fit_arima) %>%
+  filter(.model == "Auto", key == "International trafik i alt") %>%
+  features(.innov, ljung_box, lag = 24, dof = 2)
+
+augment(fit_arima) %>%
+  filter(.model == "Auto", key == "Over Storebælt") %>%
+  features(.innov, ljung_box, lag = 24, dof = 2)
+
+# Ljung-Box – uden corona
+augment(fit_arima_corona) %>%
+  filter(.model == "Auto", key == "International trafik i alt") %>%
+  features(.innov, ljung_box, lag = 24, dof = 2)
+
+augment(fit_arima_corona) %>%
+  filter(.model == "Auto", key == "Over Storebælt") %>%
+  features(.innov, ljung_box, lag = 24, dof = 2)
 
 # Vigtigt at der sikres for autokorrelation inden
 # Altid kommenter at der er et problem og hvad det kan skyldes
 
-# Residualanalyse ARIMA
-fit_arima %>%
-  gg_tsresiduals(lag_max = 36)
-
-augment(fit_arima) %>%
-  features(.innov, ljung_box, lag = 24, dof = 5) # Altid .innov for at tjekke
-
-# Altid kommenter at der er et problem og hvad det kan skyldes
-fit_arima_corona %>%
-  gg_tsresiduals(lag_max = 36)
-
-augment(fit_arima_corona) %>%
-  features(.innov, ljung_box, lag = 24, dof = 5) # Altid .innov for at tjekke
 
 # Optimal ARIMA-søgning - bygger videre på fit_arima og fit_arima_corona
 # stepwise = FALSE: søger ALLE kombinationer (ikke kun stepwise-sti)
@@ -508,13 +665,13 @@ augment(fit_arima_corona) %>%
 # order_constraint: begrænser søgerum så det ikke tager evigt
 fit_arima_optimal <- jernbane_train %>%
   model(Auto = ARIMA(log(x1000_passagerer)),
-    Optimal = ARIMA(
+  Optimal = ARIMA(
       log(x1000_passagerer),
       stepwise         = FALSE,
       approximation    = FALSE,
       order_constraint = p + q + P + Q <= 9 & (constant + d + D <= 2)
-    ),
-    
+  )
+  )   
 
 resultat <- bind_rows(
   Arima_train = fit_arima %>% accuracy(),
@@ -527,8 +684,101 @@ resultat <- bind_rows(
   fit_ets_corona %>% forecast(h = 4) %>% accuracy(jernbane_corona_test)
 ) 
 
+# Modelsammenligning med kilde-label
+resultat <- bind_rows(
+  fit_arima        %>% accuracy() %>% mutate(data = "Inkl. corona", familie = "ARIMA"),
+  fit_ets          %>% accuracy() %>% mutate(data = "Inkl. corona", familie = "ETS"),
+  fit_arima_corona %>% accuracy() %>% mutate(data = "Uden corona",  familie = "ARIMA"),
+  fit_ets_corona   %>% accuracy() %>% mutate(data = "Uden corona",  familie = "ETS"),
+  fit_arima        %>% forecast(h = 4) %>% accuracy(jernbane_test)       %>% mutate(data = "Inkl. corona", familie = "ARIMA"),
+  fit_ets          %>% forecast(h = 4) %>% accuracy(jernbane_test)       %>% mutate(data = "Inkl. corona", familie = "ETS"),
+  fit_arima_corona %>% forecast(h = 4) %>% accuracy(jernbane_corona_test) %>% mutate(data = "Uden corona",  familie = "ARIMA"),
+  fit_ets_corona   %>% forecast(h = 4) %>% accuracy(jernbane_corona_test) %>% mutate(data = "Uden corona",  familie = "ETS")
+)
+
+cols <- c("familie", ".model", "key", ".type", "RMSE", "MAE", "MAPE")
+
+# Tabel A: ARIMA inkl. corona – træning
 resultat %>%
-  kbl(caption = "Modelsammenligning – ARIMA vs. ETS", digits = 2) %>%
+  filter(data == "Inkl. corona", familie == "ARIMA", .type == "Training") %>%
+  select(all_of(cols)) %>%
+  arrange(key, RMSE) %>%
+  kbl(caption = "Tabel A: ARIMA inkl. corona – træning", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Tabel B: ARIMA inkl. corona – test
+resultat %>%
+  filter(data == "Inkl. corona", familie == "ARIMA", .type == "Test") %>%
+  select(all_of(cols)) %>%
+  arrange(key, RMSE) %>%
+  kbl(caption = "Tabel B: ARIMA inkl. corona – test", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Tabel C: ETS inkl. corona – træning
+resultat %>%
+  filter(data == "Inkl. corona", familie == "ETS", .type == "Training") %>%
+  select(all_of(cols)) %>%
+  arrange(key, RMSE) %>%
+  kbl(caption = "Tabel C: ETS inkl. corona – træning", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Tabel D: ETS inkl. corona – test
+resultat %>%
+  filter(data == "Inkl. corona", familie == "ETS", .type == "Test") %>%
+  select(all_of(cols)) %>%
+  arrange(key, RMSE) %>%
+  kbl(caption = "Tabel D: ETS inkl. corona – test", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Tabel E: ARIMA uden corona – træning
+resultat %>%
+  filter(data == "Uden corona", familie == "ARIMA", .type == "Training") %>%
+  select(all_of(cols)) %>%
+  arrange(key, RMSE) %>%
+  kbl(caption = "Tabel E: ARIMA uden corona – træning", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Tabel F: ARIMA uden corona – test
+resultat %>%
+  filter(data == "Uden corona", familie == "ARIMA", .type == "Test") %>%
+  select(all_of(cols)) %>%
+  arrange(key, RMSE) %>%
+  kbl(caption = "Tabel F: ARIMA uden corona – test", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Tabel G: ETS uden corona – træning
+resultat %>%
+  filter(data == "Uden corona", familie == "ETS", .type == "Training") %>%
+  select(all_of(cols)) %>%
+  arrange(key, RMSE) %>%
+  kbl(caption = "Tabel G: ETS uden corona – træning", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Tabel H: ETS uden corona – test
+resultat %>%
+  filter(data == "Uden corona", familie == "ETS", .type == "Test") %>%
+  select(all_of(cols)) %>%
+  arrange(key, RMSE) %>%
+  kbl(caption = "Tabel H: ETS uden corona – test", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# opsummering af bedste modeller:
+
+opsummering <- resultat %>%
+  group_by(data, familie, .type, key) %>%
+  summarise(
+    Bedst_model    = .model[which.min(RMSE)],
+    Bedst_RMSE     = min(RMSE),
+    Bedst_MAPE     = MAPE[which.min(RMSE)],
+    Dårligst_model = .model[which.max(RMSE)],
+    Dårligst_RMSE  = max(RMSE),
+    Dårligst_MAPE  = MAPE[which.max(RMSE)],
+    .groups = "drop"
+  ) %>%
+  arrange(data, familie, .type, key)
+
+opsummering %>%
+  kbl(caption = "Opsummering: Bedste og dårligste model per gruppe", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
 # Time series cross validation
@@ -552,7 +802,8 @@ google_2015 |>
   model(NAIVE(Close)) |>
   fabletools::forecast(h = 10) |>
   hilo()
-# Forecasting -------------------------------------------------------------
+
+# Forecasting / Prædiktion -------------------------------------------------------------
 
 #ETS
 jernbanedata |>
