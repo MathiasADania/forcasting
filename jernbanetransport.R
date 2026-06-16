@@ -389,28 +389,6 @@ model_jernbane%>%
 model_jernbane_corona %>% 
   autoplot()
 
-# Features med corona
-jernbanedata %>%
-  features(x1000_passagerer, feat_stl) %>%
-  kbl(caption = "features inkl. corona",
-      digits = 3) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
-
-# Features med corona
-jernbanedata_corona %>%
-  features(x1000_passagerer, feat_stl) %>%
-  kbl(caption = "features uden corona",
-      digits = 3) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
-
-# Denne kan man bruge til fortæller om trend og sæson og 
-# hvis den x er høj
-# kan man anvende til at sige at den er god at forecaste
-# Hvad betyder de forskellige værdier??
-
-passagererstretch <- jernbanedata %>%
-  stretch_tsibble(.init = 32, .step = 1)
-
 # Nu er det muligt at beregtne RMSE - Vær forsigtig at kører det hvis det
 # tager lang tid
 
@@ -490,16 +468,16 @@ fit_ets_corona <- jernbane_corona_train %>%
 report(fit_ets)
 report(fit_ets_corona)
 
-# Tabel Modelvalg ETS – uden corona
-glance(fit_ets_corona) %>%
-  arrange(AICc) %>%
-  kbl(caption = "Tabel 7b: ETS-modelsammenligning uden corona (AICc)", digits = 2) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
-
-# Tabel Modelvalg ETS – med corona
+# Tabel: ETS sammenligning inkl. corona
 glance(fit_ets) %>%
   arrange(AICc) %>%
   kbl(caption = "Tabel 7a: ETS-modelsammenligning inkl. corona (AICc)", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# Tabel: ETS sammenligning uden corona
+glance(fit_ets_corona) %>%
+  arrange(AICc) %>%
+  kbl(caption = "Tabel 7b: ETS-modelsammenligning uden corona (AICc)", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
 # Delkonklusion - kommenter på performance
@@ -585,14 +563,14 @@ report(fit_arima_corona)
 glance(fit_arima) %>%
   select(key, .model, sigma2, log_lik, AIC, AICc, BIC) %>%
   arrange(key, AICc) %>%
-  kbl(caption = "Tabel 8a: ARIMA-modelsammenligning inkl. corona (AICc)", digits = 2) %>%
+  kbl(caption = "Tabel: ARIMA-modelsammenligning inkl. corona (AICc)", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
 # Med Corona
 glance(fit_arima_corona) %>%
   select(key, .model, sigma2, log_lik, AIC, AICc, BIC) %>%
   arrange(key, AICc) %>%
-  kbl(caption = "Tabel 8a: ARIMA-modelsammenligning inkl. corona (AICc)", digits = 2) %>%
+  kbl(caption = "Tabel: ARIMA-modelsammenligning inkl. corona (AICc)", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
 # Residualanalyse – inkl. corona (Auto-model, én serie ad gangen)
@@ -621,6 +599,9 @@ fit_arima_corona %>%
   gg_tsresiduals(lag_max = 16) +
   labs(title = "Residualer – Auto ARIMA – Over Storebælt (uden corona)")
 
+
+
+
 # Ljung-Box – inkl. corona
 augment(fit_arima) %>%
   filter(.model == "Auto", key == "International trafik i alt") %>%
@@ -642,19 +623,48 @@ augment(fit_arima_corona) %>%
 # Vigtigt at der sikres for autokorrelation inden
 # Altid kommenter at der er et problem og hvad det kan skyldes
 
+
+
 # Optimal ARIMA-søgning - bygger videre på fit_arima og fit_arima_corona
 # stepwise = FALSE: søger ALLE kombinationer (ikke kun stepwise-sti)
 # approximation = FALSE: bruger eksakt likelihood (præcise AIC/BIC)
 # order_constraint: begrænser søgerum så det ikke tager evigt
+# Optimal ARIMA-søgning
 fit_arima_optimal <- jernbane_train %>%
-  model(Auto = ARIMA(log(x1000_passagerer)),
-  Optimal = ARIMA(
+  model(
+    Auto = ARIMA(log(x1000_passagerer)),
+    Optimal = ARIMA(
       log(x1000_passagerer),
       stepwise         = FALSE,
       approximation    = FALSE,
       order_constraint = p + q + P + Q <= 9 & (constant + d + D <= 2)
+    )
   )
-  )   
+
+fit_arima_optimal_corona <- jernbane_corona_train %>%
+  model(
+    Auto = ARIMA(log(x1000_passagerer)),
+    Optimal = ARIMA(
+      log(x1000_passagerer),
+      stepwise         = FALSE,
+      approximation    = FALSE,
+      order_constraint = p + q + P + Q <= 9 & (constant + d + D <= 2)
+    )
+  )
+
+# AICc-sammenligning: Auto vs. Optimal – inkl. corona
+glance(fit_arima_optimal) %>%
+  arrange(key, AICc) %>%
+  kbl(caption = "Tabel: Optimal ARIMA vs. Auto – inkl. corona (AICc)", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+# AICc-sammenligning: Auto vs. Optimal – uden corona
+glance(fit_arima_optimal_corona) %>%
+  arrange(key, AICc) %>%
+  kbl(caption = "Tabel: Optimal ARIMA vs. Auto – uden corona (AICc)", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+
 
 # Modelsammenligning med kilde label
 resultat <- bind_rows(
@@ -783,12 +793,6 @@ bind_rows(resultat_tscv, resultat_tscv_corona) %>%
   arrange(data, key, RMSE) %>%
   kbl(caption = "Tabel: TSCV-modelsammenligning inkl. og uden corona", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
-
-
-bind_rows(resultat, resultat_tscv) %>%
-  select(.model, key, .type, RMSE, MAE, MAPE) %>%
-  kbl(caption = "Tabel 8: Modelsammenligning", digits = 2) %>%
-  kable_styling(latex_options = c("striped", "hold_position"))
 
 # RMSE per horisont h=1–4 – Figur
 # Faktiske værdier med neutralt kolonnenavn
