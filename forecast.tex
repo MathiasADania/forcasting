@@ -1,0 +1,3039 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+]{article}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{3}
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage[a4paper, top=30mm, bottom=30mm, left=20mm, right=20mm, heightrounded]{geometry}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{pdfpages}
+\AtBeginDocument{\includepdf[pages={1}]{Forside.pdf}}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Indholdsfortegnelse}
+\else
+  \newcommand\contentsname{Indholdsfortegnelse}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{Figuroversigt}
+\else
+  \newcommand\listfigurename{Figuroversigt}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{Tabeloversigt}
+\else
+  \newcommand\listtablename{Tabeloversigt}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figur}
+\else
+  \newcommand\figurename{Figur}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Tabel}
+\else
+  \newcommand\tablename{Tabel}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Liste}
+\newcommand*\listoflistings{\listof{codelisting}{Listeoversigt}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+\babelprovide[main,import]{danish}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdflang={da},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\author{}
+\date{}
+
+\begin{document}
+
+\renewcommand*\contentsname{Indholdsfortegnelse}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+
+\pagenumbering{gobble} 
+\newpage 
+\listoffigures 
+\listoftables 
+\newpage 
+\pagenumbering{arabic} 
+\setcounter{page}{1}
+
+\newpage
+
+\subsection{Indledning}\label{indledning}
+
+Denne rapport analyserer kvartalsvise passagertal for jernbanetransport
+i Danmark. Der fokuseres på to serier: international trafik i alt samt
+trafik over Storebælt. Formålet er at beskrive serierne, vurdere deres
+sæson- og trendstruktur og dernæst opbygge og sammenligne
+prognosemodeller (ETS og ARIMA) med og uden coronaperioden.
+
+\subsection{Data og dataforberedelse}\label{data-og-dataforberedelse}
+
+Datasættet indlæses fra Danmarks Statistiks tabel BANE25. Indekset er
+kvartaler, nøglen (\texttt{key}) er trafiktype, og responsvariablen er
+antallet af passagerer i 1.000. Der udvælges to relevante kategorier:
+international trafik i alt samt trafik over Storebælt.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Indhentning af data}
+\NormalTok{jernbanedata }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"data/jernbanetransport af passagerer.xlsx"}\NormalTok{,}
+                           \AttributeTok{sheet =} \StringTok{"BANE25"}
+\NormalTok{                           )}
+
+\CommentTok{\# Dataforberedelse}
+\CommentTok{\# Her forberedes datasættet {-} Der vælges index, key og respons bliver}
+\CommentTok{\# passagerer. Derudover udvælges relevante key{-}kategorier}
+\NormalTok{jernbanedata }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{clean\_names}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{kvartal =} \FunctionTok{str\_replace}\NormalTok{(kvartal, }\StringTok{"K"}\NormalTok{, }\StringTok{"Q"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{kvartal =} \FunctionTok{yearquarter}\NormalTok{(kvartal)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"International trafik i alt"}\NormalTok{, }\StringTok{"Over Storebælt"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tsibble}\NormalTok{(}\AttributeTok{index =}\NormalTok{ kvartal, }\AttributeTok{key =}\NormalTok{ key)}
+\end{Highlighting}
+\end{Shaded}
+
+Der laves også et datasæt uden coronaperioden, da nedlukningerne ikke
+betragtes som et gentagende fænomen. Her anvendes
+\texttt{forecast::na.interp()} til at udfylde NA-felterne med en lineær
+interpolation mellem perioden før og efter corona.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter\_index}\NormalTok{(. }\SpecialCharTok{\textasciitilde{}} \StringTok{"2019 Q4"}\NormalTok{, }\StringTok{"2022 Q2"} \SpecialCharTok{\textasciitilde{}}\NormalTok{ .) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  tsibble}\SpecialCharTok{::}\FunctionTok{fill\_gaps}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by\_key}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{x1000\_passagerer =}\NormalTok{ forecast}\SpecialCharTok{::}\FunctionTok{na.interp}\NormalTok{(x1000\_passagerer)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Eksplorativ dataanalyse}\label{eksplorativ-dataanalyse}
+
+\subsubsection{Tidsserieplot}\label{tidsserieplot}
+
+Der anvendes \texttt{autoplot()} til automatisk at skabe et visuelt
+billede af tidsserien. Her ses et sæsonbetonet mønster for både
+international trafik i alt og kategorien over Storebælt.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Autoplot af passagertal inkl. corona}
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Jernbanepassagerer inkl. corona"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"1.000 passagerer"}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-autoplot-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-autoplot-inkl}Jernbanepassagerer inkl. corona}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Rå passagertal uden corona}
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Jernbanepassagerer uden corona"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"1.000 passagerer"}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-autoplot-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-autoplot-uden}Jernbanepassagerer uden corona}
+
+\end{figure}%
+
+Med \texttt{log()}-funktionen stabiliseres variansen i serien. Dette er
+hensigtsmæssigt i modeller, der antager konstant varians
+(homoskedasticitet).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Log{-}transformerede jernbanepassagerer inkl. corona"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"log(1.000 passagerer)"}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-log-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-log-inkl}Log-transformerede jernbanepassagerer inkl.
+corona}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Log{-}transformerede jernbanepassagerer uden corona"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"log(1.000 passagerer)"}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-log-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-log-uden}Log-transformerede jernbanepassagerer uden
+corona}
+
+\end{figure}%
+
+\subsubsection{Sæsonplot}\label{suxe6sonplot}
+
+Med \texttt{gg\_season()} undersøges de underliggende sæsonmønstre, og
+udviklingen kan ses på årsbasis.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_season}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Sæsonplot inkl. corona"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"1.000 passagerer"}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: `gg_season()` was deprecated in feasts 0.4.2.
+i Please use `ggtime::gg_season()` instead.
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-saeson-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-saeson-inkl}Sæsonplot inkl. corona}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_season}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Sæsonplot uden corona"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"1.000 passagerer"}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-saeson-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-saeson-uden}Sæsonplot uden corona}
+
+\end{figure}%
+
+Med \texttt{gg\_subseries()} ses det generelle mønster pr. kvartal.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_subseries}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Subserie{-}plot inkl. corona"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"1.000 passagerer"}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: `gg_subseries()` was deprecated in feasts 0.4.2.
+i Please use `ggtime::gg_subseries()` instead.
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-subserie-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-subserie-inkl}Subserie-plot inkl. corona}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_subseries}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Subserie{-}plot uden corona"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"1.000 passagerer"}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-subserie-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-subserie-uden}Subserie-plot uden corona}
+
+\end{figure}%
+
+\subsubsection{ACF og PACF}\label{acf-og-pacf}
+
+ACF måler korrelationen mellem en tidsserie og dens lag-værdier og
+fortæller, om tidligere observationer kan hjælpe med at forklare de
+nuværende. PACF viser, hvor mange tidligere værdier der direkte påvirker
+den nuværende observation; når PACF ikke længere er signifikant, findes
+AR-ordenen p.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{x1000\_passagerer =} \FunctionTok{log}\NormalTok{(x1000\_passagerer)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsdisplay}\NormalTok{(x1000\_passagerer, }\AttributeTok{plot\_type =} \StringTok{"partial"}\NormalTok{, }\AttributeTok{lag\_max =} \DecValTok{24}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ACF + PACF – International trafik i alt (log, inkl. corona)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: `gg_tsdisplay()` was deprecated in feasts 0.4.2.
+i Please use `ggtime::gg_tsdisplay()` instead.
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-acf-int-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-acf-int-inkl}ACF + PACF -- International trafik i
+alt (log, inkl. corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{x1000\_passagerer =} \FunctionTok{log}\NormalTok{(x1000\_passagerer)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsdisplay}\NormalTok{(x1000\_passagerer, }\AttributeTok{plot\_type =} \StringTok{"partial"}\NormalTok{, }\AttributeTok{lag\_max =} \DecValTok{24}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ACF + PACF – Over Storebælt (log, inkl. corona)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-acf-osb-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-acf-osb-inkl}ACF + PACF -- Over Storebælt (log,
+inkl. corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{x1000\_passagerer =} \FunctionTok{log}\NormalTok{(x1000\_passagerer)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsdisplay}\NormalTok{(x1000\_passagerer, }\AttributeTok{plot\_type =} \StringTok{"partial"}\NormalTok{, }\AttributeTok{lag\_max =} \DecValTok{24}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ACF + PACF – International trafik i alt (log, uden corona)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-acf-int-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-acf-int-uden}ACF + PACF -- International trafik i
+alt (log, uden corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{x1000\_passagerer =} \FunctionTok{log}\NormalTok{(x1000\_passagerer)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsdisplay}\NormalTok{(x1000\_passagerer, }\AttributeTok{plot\_type =} \StringTok{"partial"}\NormalTok{, }\AttributeTok{lag\_max =} \DecValTok{24}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ACF + PACF – Over Storebælt (log, uden corona)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-acf-osb-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-acf-osb-uden}ACF + PACF -- Over Storebælt (log, uden
+corona)}
+
+\end{figure}%
+
+Med \texttt{gg\_lag()} vises et scatterplot, hvor man kan aflæse, om der
+er en lineær sammenhæng mellem en observation og dens tidligere værdier.
+Jo tydeligere lineær sammenhæng, desto større autokorrelation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_lag}\NormalTok{(x1000\_passagerer, }\AttributeTok{geom =} \StringTok{"point"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"lag(x1000\_passagerer, k)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: `gg_lag()` was deprecated in feasts 0.4.2.
+i Please use `ggtime::gg_lag()` instead.
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-lag-osb-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-lag-osb-inkl}Lag-plot -- Over Storebælt (inkl.
+corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_lag}\NormalTok{(x1000\_passagerer, }\AttributeTok{geom =} \StringTok{"point"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"lag(x1000\_passagerer, k)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-lag-int-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-lag-int-inkl}Lag-plot -- International trafik i alt
+(inkl. corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_lag}\NormalTok{(x1000\_passagerer, }\AttributeTok{geom =} \StringTok{"point"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"lag(x1000\_passagerer, k)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-lag-osb-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-lag-osb-uden}Lag-plot -- Over Storebælt (uden
+corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_lag}\NormalTok{(x1000\_passagerer, }\AttributeTok{geom =} \StringTok{"point"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"lag(x1000\_passagerer, k)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-lag-int-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-lag-int-uden}Lag-plot -- International trafik i alt
+(uden corona)}
+
+\end{figure}%
+
+\subsubsection{Deskriptive statistikker}\label{deskriptive-statistikker}
+
+Følgende metrikker giver hurtigt et overblik over fordelingen af
+passagertal for hver serie.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(key) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{N      =} \FunctionTok{sum}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{mean   =} \FunctionTok{mean}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{median =} \FunctionTok{median}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{sd     =} \FunctionTok{sd}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Q1     =} \FunctionTok{quantile}\NormalTok{(x1000\_passagerer, }\FloatTok{0.25}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Q3     =} \FunctionTok{quantile}\NormalTok{(x1000\_passagerer, }\FloatTok{0.75}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{min    =} \FunctionTok{min}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{max    =} \FunctionTok{max}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Deskriptive statistikker inkl. corona"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{1}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-desk-inkl}Deskriptive statistikker inkl. corona}
+
+\centering{
+
+\caption{Deskriptive statistikker inkl. corona}
+\centering
+\begin{tabular}[t]{lrrrrrrrr}
+\toprule
+key & N & mean & median & sd & Q1 & Q3 & min & max\\
+\midrule
+International trafik i alt & 81 & 3075,8 & 3049 & 892,9 & 2654 & 3528 & 619 & 5315\\
+Over Storebælt & 81 & 2019,4 & 2061 & 300,7 & 1945 & 2177 & 738 & 2568\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(key) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{N      =} \FunctionTok{sum}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{mean   =} \FunctionTok{mean}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{median =} \FunctionTok{median}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{sd     =} \FunctionTok{sd}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Q1     =} \FunctionTok{quantile}\NormalTok{(x1000\_passagerer, }\FloatTok{0.25}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{Q3     =} \FunctionTok{quantile}\NormalTok{(x1000\_passagerer, }\FloatTok{0.75}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{min    =} \FunctionTok{min}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{max    =} \FunctionTok{max}\NormalTok{(x1000\_passagerer, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Deskriptive statistikker uden corona"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{1}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-desk-uden}Deskriptive statistikker uden corona}
+
+\centering{
+
+\caption{Deskriptive statistikker uden corona}
+\centering
+\begin{tabular}[t]{lrrrrrrrr}
+\toprule
+key & N & mean & median & sd & Q1 & Q3 & min & max\\
+\midrule
+International trafik i alt & 81 & 3287,9 & 3237 & 677,9 & 2879 & 3584,2 & 1696 & 5315\\
+Over Storebælt & 81 & 2104,4 & 2108 & 147,7 & 2023 & 2177,0 & 1820 & 2568\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\subsubsection{STL-features: trend- og
+sæsonstyrke}\label{stl-features-trend--og-suxe6sonstyrke}
+
+Her beregnes trend- og sæsonstyrke. De hjælper med at argumentere for,
+hvilke modelkomponenter der er nødvendige. En høj sæsonstyrke betyder
+eksempelvis, at en sæsonel model (SARIMA eller ETS med sæson) er
+påkrævet.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(x1000\_passagerer, feat\_stl) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Trend{-} og sæsonstyrke inkl. corona"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{3}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-stl-inkl}Trend- og sæsonstyrke inkl. corona}
+
+\centering{
+
+\caption{Trend- og sæsonstyrke inkl. corona}
+\centering
+\begin{tabular}[t]{lrrrrrrrrr}
+\toprule
+key & trend\_strength & seasonal\_strength\_year & seasonal\_peak\_year & seasonal\_trough\_year & spikiness & linearity & curvature & stl\_e\_acf1 & stl\_e\_acf10\\
+\midrule
+International trafik i alt & 0,965 & 0,813 & 3 & 1 & 1194141,9 & 3388,544 & 1482,058 & -0,105 & 0,336\\
+Over Storebælt & 0,866 & 0,513 & 0 & 1 & 185986,7 & -162,875 & 590,142 & -0,354 & 0,834\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(x1000\_passagerer, feat\_stl) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Trend{-} og sæsonstyrke uden corona"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{3}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-stl-uden}Trend- og sæsonstyrke uden corona}
+
+\centering{
+
+\caption{Trend- og sæsonstyrke uden corona}
+\centering
+\begin{tabular}[t]{lrrrrrrrrr}
+\toprule
+key & trend\_strength & seasonal\_strength\_year & seasonal\_peak\_year & seasonal\_trough\_year & spikiness & linearity & curvature & stl\_e\_acf1 & stl\_e\_acf10\\
+\midrule
+International trafik i alt & 0,962 & 0,856 & 3 & 1 & 135133,389 & 4994,283 & 886,047 & -0,100 & 0,996\\
+Over Storebælt & 0,908 & 0,800 & 0 & 1 & 609,992 & 468,081 & 330,763 & -0,336 & 0,381\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\subsection{Transformation}\label{transformation}
+
+\subsubsection{Box-Cox og Guerrero}\label{box-cox-og-guerrero}
+
+Guerrero-metoden finder automatisk den optimale lambda-værdi. Box-Cox er
+en transformation, der stabiliserer variansen i serien og styres af
+lambda; herved bliver udslagene lige store gennem hele perioden.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(x1000\_passagerer, }\AttributeTok{features =}\NormalTok{ guerrero) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{rename}\NormalTok{(}\AttributeTok{Lambda\_Guerrero =}\NormalTok{ lambda\_guerrero) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Guerrero{-}optimeret Box{-}Cox lambda inkl. corona"}\NormalTok{,}
+      \AttributeTok{digits =} \DecValTok{3}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-guerrero-inkl}Guerrero-optimeret Box-Cox lambda
+inkl. corona}
+
+\centering{
+
+\caption{Guerrero-optimeret Box-Cox lambda inkl. corona}
+\centering
+\begin{tabular}[t]{lr}
+\toprule
+key & Lambda\_Guerrero\\
+\midrule
+International trafik i alt & 0,855\\
+Over Storebælt & 2,000\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(x1000\_passagerer, }\AttributeTok{features =}\NormalTok{ guerrero) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{rename}\NormalTok{(}\AttributeTok{Lambda\_Guerrero =}\NormalTok{ lambda\_guerrero) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Guerrero{-}optimeret Box{-}Cox lambda uden corona"}\NormalTok{,}
+      \AttributeTok{digits =} \DecValTok{3}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-guerrero-uden}Guerrero-optimeret Box-Cox lambda uden
+corona}
+
+\centering{
+
+\caption{Guerrero-optimeret Box-Cox lambda uden corona}
+\centering
+\begin{tabular}[t]{lr}
+\toprule
+key & Lambda\_Guerrero\\
+\midrule
+International trafik i alt & -0,606\\
+Over Storebælt & -0,051\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{bind\_rows}\NormalTok{(}
+\NormalTok{  jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{type =} \StringTok{"Rå passagertal"}\NormalTok{),}
+\NormalTok{  jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{x1000\_passagerer =} \FunctionTok{log}\NormalTok{(x1000\_passagerer),}
+           \AttributeTok{type =} \StringTok{"log(passagerer)"}\NormalTok{)}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ kvartal, }\AttributeTok{y =}\NormalTok{ x1000\_passagerer)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{facet\_grid}\NormalTok{(type }\SpecialCharTok{\textasciitilde{}}\NormalTok{ key, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Rå vs. log{-}transformeret inkl. corona"}\NormalTok{,}
+       \AttributeTok{y =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-raa-vs-log-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-raa-vs-log-inkl}Rå vs.~log-transformeret inkl.
+corona}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{bind\_rows}\NormalTok{(}
+\NormalTok{  jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{type =} \StringTok{"Rå passagertal"}\NormalTok{),}
+\NormalTok{  jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{x1000\_passagerer =} \FunctionTok{log}\NormalTok{(x1000\_passagerer),}
+           \AttributeTok{type =} \StringTok{"log(passagerer)"}\NormalTok{)}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ kvartal, }\AttributeTok{y =}\NormalTok{ x1000\_passagerer)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{facet\_grid}\NormalTok{(type }\SpecialCharTok{\textasciitilde{}}\NormalTok{ key, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Rå vs. log{-}transformeret uden corona"}\NormalTok{,}
+       \AttributeTok{y =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-raa-vs-log-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-raa-vs-log-uden}Rå vs.~log-transformeret uden
+corona}
+
+\end{figure}%
+
+\subsection{Stationaritet og
+differentiering}\label{stationaritet-og-differentiering}
+
+KPSS-testen afgør, om en tidsserie er stationær. Nulhypotesen er, at
+serien er stationær; en p-værdi under 0,05 indikerer, at differentiering
+er nødvendig.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer), unitroot\_kpss) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"KPSS{-}test på log(passagerer) — H0: stationær"}\NormalTok{,}
+      \AttributeTok{digits =} \DecValTok{4}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-kpss}KPSS-test på log(passagerer) --- H0: stationær}
+
+\centering{
+
+\caption{KPSS-test på log(passagerer) — H0: stationær}
+\centering
+\begin{tabular}[t]{lrr}
+\toprule
+key & kpss\_stat & kpss\_pvalue\\
+\midrule
+International trafik i alt & 0,1865 & 0,1\\
+Over Storebælt & 0,2156 & 0,1\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\texttt{nsdiffs} angiver, hvor mange sæsondifferentieringer (D) der er
+nødvendige for at gøre serien stationær. Returneres 1, skal der
+sæsondifferentieres for at fjerne sæsonmønsteret.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer), unitroot\_nsdiffs) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Anbefalet antal sæsondifferentieringer (D)"}\NormalTok{,}
+      \AttributeTok{digits =} \DecValTok{0}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-nsdiffs}Anbefalet antal sæsondifferentieringer (D)}
+
+\centering{
+
+\caption{Anbefalet antal sæsondifferentieringer (D)}
+\centering
+\begin{tabular}[t]{lr}
+\toprule
+key & nsdiffs\\
+\midrule
+International trafik i alt & 0\\
+Over Storebælt & 0\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer), unitroot\_ndiffs) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Anbefalet antal ordinære differentieringer (d)"}\NormalTok{,}
+      \AttributeTok{digits =} \DecValTok{0}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-ndiffs}Anbefalet antal ordinære differentieringer
+(d)}
+
+\centering{
+
+\caption{Anbefalet antal ordinære differentieringer (d)}
+\centering
+\begin{tabular}[t]{lr}
+\toprule
+key & ndiffs\\
+\midrule
+International trafik i alt & 0\\
+Over Storebælt & 0\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{sdiff\_log =} \FunctionTok{difference}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer), }\AttributeTok{lag =} \DecValTok{4}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(sdiff\_log, unitroot\_ndiffs) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Anbefalet d efter sæsondifferentiering (D=1)"}\NormalTok{,}
+      \AttributeTok{digits =} \DecValTok{0}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-ndiffs-efter-sdiff}Anbefalet d efter
+sæsondifferentiering (D=1)}
+
+\centering{
+
+\caption{Anbefalet d efter sæsondifferentiering (D=1)}
+\centering
+\begin{tabular}[t]{lr}
+\toprule
+key & ndiffs\\
+\midrule
+International trafik i alt & 0\\
+Over Storebælt & 0\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{transmute}\NormalTok{(}
+\NormalTok{    kvartal,}
+    \StringTok{\textasciigrave{}}\AttributeTok{log(passagerer)}\StringTok{\textasciigrave{}}     \OtherTok{=} \FunctionTok{log}\NormalTok{(x1000\_passagerer),}
+    \StringTok{\textasciigrave{}}\AttributeTok{Δlog (d=1)}\StringTok{\textasciigrave{}}           \OtherTok{=} \FunctionTok{difference}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer), }\DecValTok{1}\NormalTok{),}
+    \StringTok{\textasciigrave{}}\AttributeTok{Δ₄log (D=1, lag=4)}\StringTok{\textasciigrave{}}  \OtherTok{=} \FunctionTok{difference}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer), }\DecValTok{4}\NormalTok{),}
+    \StringTok{\textasciigrave{}}\AttributeTok{ΔΔ₄log (d=1, D=1)}\StringTok{\textasciigrave{}}   \OtherTok{=} \FunctionTok{difference}\NormalTok{(}\FunctionTok{difference}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer), }\DecValTok{4}\NormalTok{), }\DecValTok{1}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{kvartal, }\AttributeTok{names\_to =} \StringTok{"Type"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"Værdi"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Type =} \FunctionTok{factor}\NormalTok{(Type, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}
+    \StringTok{"log(passagerer)"}\NormalTok{, }\StringTok{"Δlog (d=1)"}\NormalTok{, }\StringTok{"Δ₄log (D=1, lag=4)"}\NormalTok{, }\StringTok{"ΔΔ₄log (d=1, D=1)"}
+\NormalTok{  ))) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ kvartal, }\AttributeTok{y =}\NormalTok{ Værdi)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{facet\_grid}\NormalTok{(}\FunctionTok{vars}\NormalTok{(Type), }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Differentieringstrin – International trafik i alt"}\NormalTok{,}
+       \AttributeTok{y =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-diff-trin-int-1.pdf}}
+
+}
+
+\caption{\label{fig-diff-trin-int}Differentieringstrin -- International
+trafik i alt}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsdisplay}\NormalTok{(}\FunctionTok{difference}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer), }\AttributeTok{lag =} \DecValTok{4}\NormalTok{),}
+               \AttributeTok{plot\_type =} \StringTok{"partial"}\NormalTok{, }\AttributeTok{lag\_max =} \DecValTok{24}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ACF/PACF – sæsondiff (D=1, lag=4) – International"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_line()`).
+\end{verbatim}
+
+\begin{verbatim}
+Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_point()`).
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-acf-sdiff-int-1.pdf}}
+
+}
+
+\caption{\label{fig-acf-sdiff-int}ACF/PACF -- sæsondiff (D=1, lag=4) --
+International}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsdisplay}\NormalTok{(}\FunctionTok{difference}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer), }\AttributeTok{lag =} \DecValTok{4}\NormalTok{),}
+               \AttributeTok{plot\_type =} \StringTok{"partial"}\NormalTok{, }\AttributeTok{lag\_max =} \DecValTok{24}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ACF/PACF – sæsondiff (D=1, lag=4) – Over Storebælt"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_line()`).
+\end{verbatim}
+
+\begin{verbatim}
+Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_point()`).
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-acf-sdiff-osb-1.pdf}}
+
+}
+
+\caption{\label{fig-acf-sdiff-osb}ACF/PACF -- sæsondiff (D=1, lag=4) --
+Over Storebælt}
+
+\end{figure}%
+
+Dobbelt differentiering udelades, da \texttt{unitroot\_ndiffs}
+returnerer d=0 efter D=1. Overdifferentiering forværrer modellen, og
+derfor anvendes kun D=1.
+
+\subsection{STL-dekomposition}\label{stl-dekomposition}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# STL inkl. corona}
+\NormalTok{stl\_comp }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \FunctionTok{STL}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{trend}\NormalTok{(}\AttributeTok{window =} \DecValTok{7}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\AttributeTok{window =} \StringTok{"periodic"}\NormalTok{),}
+        \AttributeTok{robust =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{components}\NormalTok{()}
+
+\CommentTok{\# STL uden corona}
+\NormalTok{stl\_comp\_corona }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \FunctionTok{STL}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{trend}\NormalTok{(}\AttributeTok{window =} \DecValTok{7}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\AttributeTok{window =} \StringTok{"periodic"}\NormalTok{),}
+        \AttributeTok{robust =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{components}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stl\_comp }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tsibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{log(x1000\_passagerer)}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}gray\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ season\_adjust), }\AttributeTok{colour =} \StringTok{\textquotesingle{}\#0072B2\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-stl-adj-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-stl-adj-inkl}Sæsonjusteret serie -- inkl. corona}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stl\_comp\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tsibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{log(x1000\_passagerer)}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}gray\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ season\_adjust), }\AttributeTok{colour =} \StringTok{\textquotesingle{}\#0072B2\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-stl-adj-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-stl-adj-uden}Sæsonjusteret serie -- uden corona}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stl\_comp }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_discrete}\NormalTok{(}\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"International trafik i alt"}\NormalTok{, }\StringTok{"Over Storebælt"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"STL{-}dekomposition – inkl. corona (log{-}skala)"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"Serie"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-stl-panel-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-stl-panel-inkl}STL-dekomposition -- inkl. corona
+(log-skala)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stl\_comp\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_discrete}\NormalTok{(}\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"International trafik i alt"}\NormalTok{, }\StringTok{"Over Storebælt"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"STL{-}dekomposition – uden corona (log{-}skala)"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"Serie"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-stl-panel-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-stl-panel-uden}STL-dekomposition -- uden corona
+(log-skala)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Augment {-} inkl. corona}
+\NormalTok{model\_jernbane }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{STL =} \FunctionTok{STL}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{trend}\NormalTok{(}\AttributeTok{window =} \DecValTok{7}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\AttributeTok{window =} \StringTok{"periodic"}\NormalTok{),}
+        \AttributeTok{robust =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{augment}\NormalTok{()}
+
+\CommentTok{\# Augment {-} uden corona}
+\NormalTok{model\_jernbane\_corona }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{STL =} \FunctionTok{STL}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{trend}\NormalTok{(}\AttributeTok{window =} \DecValTok{7}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\AttributeTok{window =} \StringTok{"periodic"}\NormalTok{),}
+        \AttributeTok{robust =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{augment}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model\_jernbane }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Plot variable not specified, automatically selected `.vars = x1000_passagerer`
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-augment-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-augment-inkl}Fittede værdier og residualer (STL) --
+inkl. corona}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model\_jernbane\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Plot variable not specified, automatically selected `.vars = x1000_passagerer`
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-augment-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-augment-uden}Fittede værdier og residualer (STL) --
+uden corona}
+
+\end{figure}%
+
+Guerrero estimerer lambda ved at minimere variationskoefficienten på
+tværs af sæsoner. Et lambda tæt på 0 bekræfter, at log er det rette
+valg, mens et lambda tæt på 1 betyder, at ingen transformation er
+nødvendig.
+
+\subsection{Modellering}\label{modellering}
+
+\subsubsection{Træningssplit}\label{truxe6ningssplit}
+
+Data deles i en træningsperiode (til og med 2024 Q4) og en testperiode
+(fra 2025 Q1 og frem) for både datasættet inkl. og uden corona.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Træningsdata: 2006 Q1 til 2024 Q4}
+\NormalTok{jernbane\_train }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter\_index}\NormalTok{(. }\SpecialCharTok{\textasciitilde{}} \StringTok{"2024 Q4"}\NormalTok{)}
+
+\CommentTok{\# Testdata: 2025 Q1 til slutningen}
+\NormalTok{jernbane\_test }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter\_index}\NormalTok{(}\StringTok{"2025 Q1"} \SpecialCharTok{\textasciitilde{}}\NormalTok{ .)}
+
+\NormalTok{jernbane\_corona\_train }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter\_index}\NormalTok{(. }\SpecialCharTok{\textasciitilde{}} \StringTok{"2024 Q4"}\NormalTok{)}
+
+\NormalTok{jernbane\_corona\_test }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter\_index}\NormalTok{(}\StringTok{"2025 Q1"} \SpecialCharTok{\textasciitilde{}}\NormalTok{ .)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Benchmark (SNAIVE)}\label{benchmark-snaive}
+
+Der opbygges en benchmark med \texttt{stretch\_tsibble()}, som udvider
+træningsvinduet skridt for skridt. SNAIVE anvendes som referencemodel.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanestretch }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{stretch\_tsibble}\NormalTok{(}\AttributeTok{.init =} \DecValTok{32}\NormalTok{, }\AttributeTok{.step =} \DecValTok{1}\NormalTok{)}
+
+\NormalTok{jernbanestretch\_corona }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{stretch\_tsibble}\NormalTok{(}\AttributeTok{.init =} \DecValTok{32}\NormalTok{, }\AttributeTok{.step =} \DecValTok{1}\NormalTok{)}
+
+\NormalTok{jernbanestretch }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}\FunctionTok{SNAIVE}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer))) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{accuracy}\NormalTok{(jernbanedata)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+4 observations are missing between 2026 Q2 and 2027 Q1
+\end{verbatim}
+
+\begin{verbatim}
+# A tibble: 2 x 11
+  .model            key   .type    ME  RMSE   MAE    MPE  MAPE  MASE RMSSE  ACF1
+  <chr>             <chr> <chr> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
+1 SNAIVE(log(x1000~ Inte~ Test   5.73  934.  538. -16.9   35.0  1.28  1.21 0.761
+2 SNAIVE(log(x1000~ Over~ Test   1.35  362.  239.  -4.03  16.6  1.39  1.24 0.543
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanestretch\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}\FunctionTok{SNAIVE}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer))) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{accuracy}\NormalTok{(jernbanedata\_corona)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+4 observations are missing between 2026 Q2 and 2027 Q1
+\end{verbatim}
+
+\begin{verbatim}
+# A tibble: 2 x 11
+  .model             key   .type    ME  RMSE   MAE   MPE  MAPE  MASE RMSSE  ACF1
+  <chr>              <chr> <chr> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+1 SNAIVE(log(x1000_~ Inte~ Test  119.   261.  193. 2.85   5.12  1.01  1.03 0.236
+2 SNAIVE(log(x1000_~ Over~ Test   19.1  129.  101. 0.632  4.77  1.22  1.19 0.596
+\end{verbatim}
+
+\subsubsection{ETS-modeller}\label{ets-modeller}
+
+Der estimeres flere ETS-specifikationer: en automatisk valgt model samt
+udvalgte additive og multiplikative varianter.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_ets }\OtherTok{\textless{}{-}}\NormalTok{ jernbane\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{Auto   =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{AAA    =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{error}\NormalTok{(}\StringTok{"A"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{trend}\NormalTok{(}\StringTok{"A"}\NormalTok{)  }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\StringTok{"A"}\NormalTok{)),}
+    \AttributeTok{AAdA   =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{error}\NormalTok{(}\StringTok{"A"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{trend}\NormalTok{(}\StringTok{"Ad"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\StringTok{"A"}\NormalTok{)),}
+    \AttributeTok{MAM    =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{error}\NormalTok{(}\StringTok{"M"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{trend}\NormalTok{(}\StringTok{"A"}\NormalTok{)  }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\StringTok{"M"}\NormalTok{))}
+\NormalTok{  )}
+
+\NormalTok{fit\_ets\_corona }\OtherTok{\textless{}{-}}\NormalTok{ jernbane\_corona\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{Auto   =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{AAA    =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{error}\NormalTok{(}\StringTok{"A"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{trend}\NormalTok{(}\StringTok{"A"}\NormalTok{)  }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\StringTok{"A"}\NormalTok{)),}
+    \AttributeTok{AAdA   =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{error}\NormalTok{(}\StringTok{"A"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{trend}\NormalTok{(}\StringTok{"Ad"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\StringTok{"A"}\NormalTok{)),}
+    \AttributeTok{MAM    =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{error}\NormalTok{(}\StringTok{"M"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{trend}\NormalTok{(}\StringTok{"A"}\NormalTok{)  }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\StringTok{"M"}\NormalTok{))}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{glance}\NormalTok{(fit\_ets) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(AICc) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"ETS{-}modelsammenligning inkl. corona (AICc)"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-ets-inkl}ETS-modelsammenligning inkl. corona (AICc)}
+
+\centering{
+
+\caption{ETS-modelsammenligning inkl. corona (AICc)}
+\centering
+\begin{tabular}[t]{llrrrrrrrr}
+\toprule
+key & .model & sigma2 & log\_lik & AIC & AICc & BIC & MSE & AMSE & MAE\\
+\midrule
+Over Storebælt & Auto & 0,02 & -20,24 & 54,48 & 56,13 & 70,80 & 0,02 & 0,03 & 0,08\\
+Over Storebælt & AAA & 0,03 & -20,50 & 58,99 & 61,72 & 79,97 & 0,02 & 0,03 & 0,08\\
+Over Storebælt & AAdA & 0,03 & -20,30 & 60,59 & 63,98 & 83,90 & 0,02 & 0,03 & 0,08\\
+Over Storebælt & MAM & 0,00 & -23,05 & 64,10 & 66,83 & 85,08 & 0,02 & 0,03 & 0,01\\
+International trafik i alt & Auto & 0,05 & -48,03 & 110,06 & 111,71 & 126,38 & 0,05 & 0,08 & 0,10\\
+\addlinespace
+International trafik i alt & AAA & 0,05 & -47,93 & 113,86 & 116,58 & 134,83 & 0,05 & 0,08 & 0,10\\
+International trafik i alt & AAdA & 0,05 & -47,95 & 115,91 & 119,29 & 139,22 & 0,05 & 0,08 & 0,10\\
+International trafik i alt & MAM & 0,00 & -52,87 & 123,73 & 126,46 & 144,71 & 0,05 & 0,09 & 0,01\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{glance}\NormalTok{(fit\_ets\_corona) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(AICc) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"ETS{-}modelsammenligning uden corona (AICc)"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-ets-uden}ETS-modelsammenligning uden corona (AICc)}
+
+\centering{
+
+\caption{ETS-modelsammenligning uden corona (AICc)}
+\centering
+\begin{tabular}[t]{llrrrrrrrr}
+\toprule
+key & .model & sigma2 & log\_lik & AIC & AICc & BIC & MSE & AMSE & MAE\\
+\midrule
+Over Storebælt & Auto & 0 & 85,96 & -157,93 & -156,28 & -141,61 & 0 & 0 & 0,03\\
+Over Storebælt & AAA & 0 & 86,08 & -154,15 & -151,42 & -133,18 & 0 & 0 & 0,03\\
+Over Storebælt & MAM & 0 & 85,81 & -153,61 & -150,89 & -132,64 & 0 & 0 & 0,00\\
+Over Storebælt & AAdA & 0 & 85,95 & -151,90 & -148,52 & -128,60 & 0 & 0 & 0,03\\
+International trafik i alt & Auto & 0 & 64,34 & -108,69 & -105,30 & -85,38 & 0 & 0 & 0,00\\
+\addlinespace
+International trafik i alt & AAdA & 0 & 63,08 & -106,16 & -102,78 & -82,85 & 0 & 0 & 0,04\\
+International trafik i alt & MAM & 0 & 58,43 & -98,86 & -96,13 & -77,89 & 0 & 0 & 0,00\\
+International trafik i alt & AAA & 0 & 57,79 & -97,57 & -94,85 & -76,60 & 0 & 0 & 0,04\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\paragraph{Residualanalyse -- ETS}\label{residualanalyse-ets}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_ets }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsresiduals}\NormalTok{(}\AttributeTok{lag\_max =} \DecValTok{16}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: `gg_tsresiduals()` was deprecated in feasts 0.4.2.
+i Please use `ggtime::gg_tsresiduals()` instead.
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-ets-res-int-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-ets-res-int-inkl}Residualer -- Auto ETS --
+International (inkl. corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_ets }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsresiduals}\NormalTok{(}\AttributeTok{lag\_max =} \DecValTok{16}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-ets-res-osb-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-ets-res-osb-inkl}Residualer -- Auto ETS -- Over
+Storebælt (inkl. corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_ets\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsresiduals}\NormalTok{(}\AttributeTok{lag\_max =} \DecValTok{16}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-ets-res-int-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-ets-res-int-uden}Residualer -- Auto ETS --
+International (uden corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_ets\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsresiduals}\NormalTok{(}\AttributeTok{lag\_max =} \DecValTok{16}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-ets-res-osb-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-ets-res-osb-uden}Residualer -- Auto ETS -- Over
+Storebælt (uden corona)}
+
+\end{figure}%
+
+Ljung-Box-testen anvendes til at teste, om residualerne er ukorrelerede.
+Lag sættes til 8 (svarende til 2×M ved kvartalsdata).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Ljung{-}Box – inkl. corona}
+\FunctionTok{augment}\NormalTok{(fit\_ets) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(.model }\SpecialCharTok{==} \StringTok{"Auto"}\NormalTok{, key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(.innov, ljung\_box, }\AttributeTok{lag =} \DecValTok{8}\NormalTok{, }\AttributeTok{dof =} \DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 4
+  key                        .model lb_stat lb_pvalue
+  <chr>                      <chr>    <dbl>     <dbl>
+1 International trafik i alt Auto      17.2    0.0284
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{augment}\NormalTok{(fit\_ets) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(.model }\SpecialCharTok{==} \StringTok{"Auto"}\NormalTok{, key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(.innov, ljung\_box, }\AttributeTok{lag =} \DecValTok{8}\NormalTok{, }\AttributeTok{dof =} \DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 4
+  key            .model lb_stat lb_pvalue
+  <chr>          <chr>    <dbl>     <dbl>
+1 Over Storebælt Auto      23.8   0.00244
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Ljung{-}Box – uden corona}
+\FunctionTok{augment}\NormalTok{(fit\_ets\_corona) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(.model }\SpecialCharTok{==} \StringTok{"Auto"}\NormalTok{, key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(.innov, ljung\_box, }\AttributeTok{lag =} \DecValTok{8}\NormalTok{, }\AttributeTok{dof =} \DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 4
+  key                        .model lb_stat lb_pvalue
+  <chr>                      <chr>    <dbl>     <dbl>
+1 International trafik i alt Auto      23.0   0.00338
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{augment}\NormalTok{(fit\_ets\_corona) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(.model }\SpecialCharTok{==} \StringTok{"Auto"}\NormalTok{, key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(.innov, ljung\_box, }\AttributeTok{lag =} \DecValTok{8}\NormalTok{, }\AttributeTok{dof =} \DecValTok{0}\NormalTok{) }\CommentTok{\# Altid .innov for at tjekke}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 4
+  key            .model lb_stat lb_pvalue
+  <chr>          <chr>    <dbl>     <dbl>
+1 Over Storebælt Auto      9.34     0.315
+\end{verbatim}
+
+\subsubsection{ARIMA-modeller}\label{arima-modeller}
+
+Der estimeres en automatisk valgt ARIMA samt fire manuelt specificerede
+SARIMA-modeller, herunder den klassiske airline-model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_arima }\OtherTok{\textless{}{-}}\NormalTok{ jernbane\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{Auto =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \CommentTok{\# Klassisk "airline model" – MA(1) ordinær + sæsonel}
+    \AttributeTok{M1   =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{pdq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{PDQ}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{)),}
+    \CommentTok{\# AR(1) ordinær + sæsonel AR(1)}
+    \AttributeTok{M2   =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{pdq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{PDQ}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)),}
+    \CommentTok{\# Blandet ARMA + sæsonel MA(1)}
+    \AttributeTok{M3   =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{pdq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{PDQ}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{)),}
+    \CommentTok{\# AR(2) + sæsonel MA(1)}
+    \AttributeTok{M4   =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{pdq}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{PDQ}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\NormalTok{  )}
+
+\NormalTok{fit\_arima\_corona }\OtherTok{\textless{}{-}}\NormalTok{ jernbane\_corona\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{Auto =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{M1   =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{pdq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{PDQ}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{)),}
+    \AttributeTok{M2   =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{pdq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{PDQ}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)),}
+    \AttributeTok{M3   =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{pdq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{PDQ}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{)),}
+    \AttributeTok{M4   =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+} \FunctionTok{pdq}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{PDQ}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+Det faktiske antal estimerede parametre fra Auto-modellen hentes og
+anvendes som frihedsgrader (dof) i Ljung-Box-testen.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dof\_int }\OtherTok{\textless{}{-}}\NormalTok{ fit\_arima }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{coefficients}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{nrow}\NormalTok{()}
+
+\NormalTok{dof\_osb }\OtherTok{\textless{}{-}}\NormalTok{ fit\_arima }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{coefficients}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{nrow}\NormalTok{()}
+
+\NormalTok{dof\_corona\_int }\OtherTok{\textless{}{-}}\NormalTok{ fit\_arima\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{coefficients}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{nrow}\NormalTok{()}
+
+\NormalTok{dof\_corona\_osb }\OtherTok{\textless{}{-}}\NormalTok{ fit\_arima\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{coefficients}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{nrow}\NormalTok{()}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"International inkl. corona: dof ="}\NormalTok{, dof\_int, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+International inkl. corona: dof = 3 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Over Storebælt inkl. corona: dof ="}\NormalTok{, dof\_osb, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Over Storebælt inkl. corona: dof = 3 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"International uden corona: dof ="}\NormalTok{, dof\_corona\_int, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+International uden corona: dof = 2 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Over Storebælt uden corona: dof ="}\NormalTok{, dof\_corona\_osb, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Over Storebælt uden corona: dof = 3 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{glance}\NormalTok{(fit\_arima) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(key, .model, sigma2, log\_lik, AIC, AICc, BIC) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, AICc) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"ARIMA{-}modelsammenligning inkl. corona (AICc)"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-arima-inkl}ARIMA-modelsammenligning inkl. corona
+(AICc)}
+
+\centering{
+
+\caption{ARIMA-modelsammenligning inkl. corona (AICc)}
+\centering
+\begin{tabular}[t]{llrrrrr}
+\toprule
+key & .model & sigma2 & log\_lik & AIC & AICc & BIC\\
+\midrule
+International trafik i alt & Auto & 0,06 & 1,58 & 4,85 & 5,41 & 14,17\\
+International trafik i alt & M1 & 0,05 & 0,01 & 5,97 & 6,33 & 12,76\\
+International trafik i alt & M4 & 0,05 & 0,13 & 7,75 & 8,36 & 16,80\\
+International trafik i alt & M3 & 0,05 & 0,02 & 7,96 & 8,57 & 17,01\\
+International trafik i alt & M2 & 0,09 & -12,89 & 31,78 & 32,13 & 38,56\\
+\addlinespace
+Over Storebælt & Auto & 0,02 & 34,16 & -60,33 & -59,77 & -51,01\\
+Over Storebælt & M4 & 0,02 & 28,90 & -49,79 & -49,19 & -40,74\\
+Over Storebælt & M1 & 0,02 & 25,68 & -45,35 & -45,00 & -38,57\\
+Over Storebælt & M3 & 0,03 & 25,68 & -43,37 & -42,76 & -34,32\\
+Over Storebælt & M2 & 0,04 & 13,47 & -20,94 & -20,58 & -14,15\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{glance}\NormalTok{(fit\_arima\_corona) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(key, .model, sigma2, log\_lik, AIC, AICc, BIC) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, AICc) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"ARIMA{-}modelsammenligning uden corona (AICc)"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-arima-uden}ARIMA-modelsammenligning uden corona
+(AICc)}
+
+\centering{
+
+\caption{ARIMA-modelsammenligning uden corona (AICc)}
+\centering
+\begin{tabular}[t]{llrrrrr}
+\toprule
+key & .model & sigma2 & log\_lik & AIC & AICc & BIC\\
+\midrule
+International trafik i alt & M4 & 0 & 109,59 & -211,17 & -210,57 & -202,12\\
+International trafik i alt & Auto & 0 & 106,93 & -207,87 & -207,51 & -201,04\\
+International trafik i alt & M3 & 0 & 103,94 & -199,87 & -199,27 & -190,82\\
+International trafik i alt & M1 & 0 & 102,17 & -198,33 & -197,97 & -191,54\\
+International trafik i alt & M2 & 0 & 99,12 & -192,24 & -191,88 & -185,45\\
+\addlinespace
+Over Storebælt & Auto & 0 & 135,66 & -263,32 & -262,73 & -254,22\\
+Over Storebælt & M3 & 0 & 130,23 & -252,46 & -251,85 & -243,41\\
+Over Storebælt & M1 & 0 & 128,83 & -251,66 & -251,30 & -244,87\\
+Over Storebælt & M4 & 0 & 128,74 & -249,48 & -248,87 & -240,43\\
+Over Storebælt & M2 & 0 & 124,99 & -243,99 & -243,63 & -237,20\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\paragraph{Residualanalyse -- ARIMA}\label{residualanalyse-arima}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_arima }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsresiduals}\NormalTok{(}\AttributeTok{lag\_max =} \DecValTok{16}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Residualer – Auto ARIMA – International (inkl. corona)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-arima-res-int-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-arima-res-int-inkl}Residualer -- Auto ARIMA --
+International (inkl. corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_arima }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsresiduals}\NormalTok{(}\AttributeTok{lag\_max =} \DecValTok{16}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Residualer – Auto ARIMA – Over Storebælt (inkl. corona)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-arima-res-osb-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-arima-res-osb-inkl}Residualer -- Auto ARIMA -- Over
+Storebælt (inkl. corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_arima\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsresiduals}\NormalTok{(}\AttributeTok{lag\_max =} \DecValTok{16}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Residualer – Auto ARIMA – International (uden corona)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-arima-res-int-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-arima-res-int-uden}Residualer -- Auto ARIMA --
+International (uden corona)}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_arima\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Auto) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{gg\_tsresiduals}\NormalTok{(}\AttributeTok{lag\_max =} \DecValTok{16}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Residualer – Auto ARIMA – Over Storebælt (uden corona)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-arima-res-osb-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-arima-res-osb-uden}Residualer -- Auto ARIMA -- Over
+Storebælt (uden corona)}
+
+\end{figure}%
+
+Residualerne testes for autokorrelation. Nulhypotesen er, at
+residualerne er ukorrelerede. Lag sættes til 8 (2×M ved kvartalsdata),
+og dof svarer til antallet af estimerede ARMA-parametre i Auto-modellen.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Ljung{-}Box – inkl. corona}
+\FunctionTok{augment}\NormalTok{(fit\_arima) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(.model }\SpecialCharTok{==} \StringTok{"Auto"}\NormalTok{, key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(.innov, ljung\_box, }\AttributeTok{lag =} \DecValTok{8}\NormalTok{, }\AttributeTok{dof =}\NormalTok{ dof\_int)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 4
+  key                        .model lb_stat lb_pvalue
+  <chr>                      <chr>    <dbl>     <dbl>
+1 International trafik i alt Auto      12.6    0.0273
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{augment}\NormalTok{(fit\_arima) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(.model }\SpecialCharTok{==} \StringTok{"Auto"}\NormalTok{, key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(.innov, ljung\_box, }\AttributeTok{lag =} \DecValTok{8}\NormalTok{, }\AttributeTok{dof =}\NormalTok{ dof\_osb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 4
+  key            .model lb_stat lb_pvalue
+  <chr>          <chr>    <dbl>     <dbl>
+1 Over Storebælt Auto      11.0    0.0521
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Ljung{-}Box – uden corona}
+\FunctionTok{augment}\NormalTok{(fit\_arima\_corona) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(.model }\SpecialCharTok{==} \StringTok{"Auto"}\NormalTok{, key }\SpecialCharTok{==} \StringTok{"International trafik i alt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(.innov, ljung\_box, }\AttributeTok{lag =} \DecValTok{8}\NormalTok{, }\AttributeTok{dof =}\NormalTok{ dof\_corona\_int)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 4
+  key                        .model lb_stat lb_pvalue
+  <chr>                      <chr>    <dbl>     <dbl>
+1 International trafik i alt Auto      17.0   0.00931
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{augment}\NormalTok{(fit\_arima\_corona) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(.model }\SpecialCharTok{==} \StringTok{"Auto"}\NormalTok{, key }\SpecialCharTok{==} \StringTok{"Over Storebælt"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(.innov, ljung\_box, }\AttributeTok{lag =} \DecValTok{8}\NormalTok{, }\AttributeTok{dof =}\NormalTok{ dof\_corona\_osb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 4
+  key            .model lb_stat lb_pvalue
+  <chr>          <chr>    <dbl>     <dbl>
+1 Over Storebælt Auto      5.12     0.401
+\end{verbatim}
+
+\paragraph{Optimal ARIMA-søgning}\label{optimal-arima-suxf8gning}
+
+Ved at sætte \texttt{stepwise\ =\ FALSE} søges alle kombinationer (ikke
+kun stepwise-stien), og \texttt{approximation\ =\ FALSE} giver eksakt
+likelihood og dermed mere præcise AIC/BIC. \texttt{order\_constraint}
+begrænser søgerummet, så beregningen ikke tager for lang tid. AICc
+sammenligner modeller på fit justeret for kompleksitet --- lavere AICc
+er bedre.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_arima\_optimal }\OtherTok{\textless{}{-}}\NormalTok{ jernbane\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{Auto =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{Optimal =} \FunctionTok{ARIMA}\NormalTok{(}
+      \FunctionTok{log}\NormalTok{(x1000\_passagerer),}
+      \AttributeTok{stepwise         =} \ConstantTok{FALSE}\NormalTok{,}
+      \AttributeTok{approximation    =} \ConstantTok{FALSE}\NormalTok{,}
+      \AttributeTok{order\_constraint =}\NormalTok{ p }\SpecialCharTok{+}\NormalTok{ q }\SpecialCharTok{+}\NormalTok{ P }\SpecialCharTok{+}\NormalTok{ Q }\SpecialCharTok{\textless{}=} \DecValTok{9} \SpecialCharTok{\&}\NormalTok{ (constant }\SpecialCharTok{+}\NormalTok{ d }\SpecialCharTok{+}\NormalTok{ D }\SpecialCharTok{\textless{}=} \DecValTok{2}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  )}
+
+\NormalTok{fit\_arima\_optimal\_corona }\OtherTok{\textless{}{-}}\NormalTok{ jernbane\_corona\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{Auto =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{Optimal =} \FunctionTok{ARIMA}\NormalTok{(}
+      \FunctionTok{log}\NormalTok{(x1000\_passagerer),}
+      \AttributeTok{stepwise         =} \ConstantTok{FALSE}\NormalTok{,}
+      \AttributeTok{approximation    =} \ConstantTok{FALSE}\NormalTok{,}
+      \AttributeTok{order\_constraint =}\NormalTok{ p }\SpecialCharTok{+}\NormalTok{ q }\SpecialCharTok{+}\NormalTok{ P }\SpecialCharTok{+}\NormalTok{ Q }\SpecialCharTok{\textless{}=} \DecValTok{9} \SpecialCharTok{\&}\NormalTok{ (constant }\SpecialCharTok{+}\NormalTok{ d }\SpecialCharTok{+}\NormalTok{ D }\SpecialCharTok{\textless{}=} \DecValTok{2}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{glance}\NormalTok{(fit\_arima\_optimal) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, AICc) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Optimal ARIMA vs. Auto – inkl. corona (AICc)"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-arima-optimal-inkl}Optimal ARIMA vs.~Auto -- inkl.
+corona (AICc)}
+
+\centering{
+
+\caption{Optimal ARIMA vs. Auto – inkl. corona (AICc)}
+\centering
+\begin{tabular}[t]{llrrrrrll}
+\toprule
+key & .model & sigma2 & log\_lik & AIC & AICc & BIC & ar\_roots & ma\_roots\\
+\midrule
+International trafik i alt & Optimal & 0,05 & 11,45 & -6,90 & -4,75 & 11,74 & 0,002189361+1,1942610i, 0,002189361-1,1942610i, 1,189833541-0,4607469i, 1,189833541+0,4607469i & 0,4943531+1,020845i, 0,4943531-1,020845i\\
+International trafik i alt & Auto & 0,06 & 1,58 & 4,85 & 5,41 & 14,17 & -1,731849e-17+1,352203e+00i, -1,352203e+00-1,667004e-17i, 4,556914e-15-1,352203e+00i, 1,352203e+00+8,189377e-13i, 1,362658e+00-8,080634e-13i & \\
+Over Storebælt & Optimal & 0,02 & 45,38 & -76,77 & -75,12 & -60,45 & -7,819512e-17+1,293178e+00i, -1,293178e+00-4,660336e-17i, -2,113515e-17-1,293178e+00i, 1,293178e+00+0,000000e+00i & 0,415672+0,9820036i, 0,415672-0,9820036i, -1,739606-0,4186447i, -1,739606+0,4186447i\\
+Over Storebælt & Auto & 0,02 & 34,16 & -60,33 & -59,77 & -51,01 & 1,92951+0i & 0,9504891+0,9504891i, -0,9504891+0,9504891i, -0,9504891-0,9504891i, 0,9504891-0,9504891i\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{glance}\NormalTok{(fit\_arima\_optimal\_corona) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, AICc) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Optimal ARIMA vs. Auto – uden corona (AICc)"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-arima-optimal-uden}Optimal ARIMA vs.~Auto -- uden
+corona (AICc)}
+
+\centering{
+
+\caption{Optimal ARIMA vs. Auto – uden corona (AICc)}
+\centering
+\begin{tabular}[t]{llrrrrrll}
+\toprule
+key & .model & sigma2 & log\_lik & AIC & AICc & BIC & ar\_roots & ma\_roots\\
+\midrule
+International trafik i alt & Optimal & 0 & 118,70 & -219,41 & -216,50 & -198,92 & 0,3021412+1,0081091i, -1,0081091+0,3021412i, -0,3021412-1,0081091i, 1,0081091-0,3021412i, 0,9262397+0,7115622i, -0,8433972+0,6399502i, 0,3021412-1,0081091i, 1,0081091+0,3021412i, -0,3021412+1,0081091i, -1,0081091-0,3021412i, -0,8433972-0,6399502i, 0,9262397-0,7115622i & -1,138858+0i\\
+International trafik i alt & Auto & 0 & 106,93 & -207,87 & -207,51 & -201,04 &  & -1,158175+0i\\
+Over Storebælt & Optimal & 0 & 138,16 & -264,31 & -263,02 & -250,65 & 0,4728045+1,018657e+00i, -1,0186570+4,728045e-01i, -0,4728045-1,018657e+00i, 1,1984788-6,778252e-01i, 1,0186570+4,728045e-01i, -0,4728045+1,018657e+00i, 0,4728045-1,018657e+00i, 1,0186570-4,728045e-01i, 1,1984788+6,778252e-01i, -1,0186570-4,728045e-01i, -1,8156983+1,631677e-15i & \\
+Over Storebælt & Auto & 0 & 135,66 & -263,32 & -262,73 & -254,22 & 1,459954+0i & 8,997337e-01+8,997337e-01i, -1,090090e+00-1,575252e-16i, 1,819047e-16-1,090090e+00i, 1,090090e+00+2,398136e-16i, -3,045272e-16+1,090090e+00i, -8,997337e-01+8,997337e-01i, -8,997337e-01-8,997337e-01i, 8,997337e-01-8,997337e-01i\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\subsection{Modelsammenligning}\label{modelsammenligning}
+
+\texttt{accuracy()} beregner fejlmål (RMSE, MAE, MAPE, MASE) på både
+trænings- og testdata. Træningsfejlen viser in-sample fit, mens
+testfejlen viser out-of-sample prædiktionsevne.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resultat }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(}
+\NormalTok{  fit\_arima        }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{accuracy}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Inkl. corona"}\NormalTok{, }\AttributeTok{familie =} \StringTok{"ARIMA"}\NormalTok{),}
+\NormalTok{  fit\_ets          }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{accuracy}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Inkl. corona"}\NormalTok{, }\AttributeTok{familie =} \StringTok{"ETS"}\NormalTok{),}
+\NormalTok{  fit\_arima\_corona }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{accuracy}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Uden corona"}\NormalTok{,  }\AttributeTok{familie =} \StringTok{"ARIMA"}\NormalTok{),}
+\NormalTok{  fit\_ets\_corona   }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{accuracy}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Uden corona"}\NormalTok{,  }\AttributeTok{familie =} \StringTok{"ETS"}\NormalTok{),}
+\NormalTok{  fit\_arima        }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{accuracy}\NormalTok{(jernbane\_test)       }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Inkl. corona"}\NormalTok{, }\AttributeTok{familie =} \StringTok{"ARIMA"}\NormalTok{),}
+\NormalTok{  fit\_ets          }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{accuracy}\NormalTok{(jernbane\_test)       }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Inkl. corona"}\NormalTok{, }\AttributeTok{familie =} \StringTok{"ETS"}\NormalTok{),}
+\NormalTok{  fit\_arima\_corona }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{accuracy}\NormalTok{(jernbane\_corona\_test) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Uden corona"}\NormalTok{,  }\AttributeTok{familie =} \StringTok{"ARIMA"}\NormalTok{),}
+\NormalTok{  fit\_ets\_corona   }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{accuracy}\NormalTok{(jernbane\_corona\_test) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Uden corona"}\NormalTok{,  }\AttributeTok{familie =} \StringTok{"ETS"}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{cols }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"familie"}\NormalTok{, }\StringTok{".model"}\NormalTok{, }\StringTok{"key"}\NormalTok{, }\StringTok{".type"}\NormalTok{, }\StringTok{"RMSE"}\NormalTok{, }\StringTok{"MAE"}\NormalTok{, }\StringTok{"MAPE"}\NormalTok{, }\StringTok{"MASE"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Tabellerne A-H viser fejlmål opdelt på modeltype, datasæt og split. En
+MASE under 1 betyder, at modellen slår SNAIVE-benchmarken, hvilket er
+minimumskravet for en brugbar model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(data }\SpecialCharTok{==} \StringTok{"Inkl. corona"}\NormalTok{, familie }\SpecialCharTok{==} \StringTok{"ARIMA"}\NormalTok{, .type }\SpecialCharTok{==} \StringTok{"Training"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{all\_of}\NormalTok{(cols)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, RMSE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Tabel A: ARIMA inkl. corona – træning"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-A}Tabel A: ARIMA inkl. corona -- træning}
+
+\centering{
+
+\caption{Tabel A: ARIMA inkl. corona – træning}
+\centering
+\begin{tabular}[t]{llllrrrr}
+\toprule
+familie & .model & key & .type & RMSE & MAE & MAPE & MASE\\
+\midrule
+ARIMA & M1 & International trafik i alt & Training & 351,82 & 176,49 & 10,43 & 0,41\\
+ARIMA & M3 & International trafik i alt & Training & 351,93 & 176,46 & 10,42 & 0,41\\
+ARIMA & M4 & International trafik i alt & Training & 353,52 & 177,16 & 10,47 & 0,41\\
+ARIMA & Auto & International trafik i alt & Training & 438,68 & 329,08 & 16,04 & 0,76\\
+ARIMA & M2 & International trafik i alt & Training & 612,19 & 287,71 & 13,80 & 0,66\\
+\addlinespace
+ARIMA & M4 & Over Storebælt & Training & 199,33 & 111,28 & 7,29 & 0,64\\
+ARIMA & M3 & Over Storebælt & Training & 203,27 & 114,75 & 7,64 & 0,66\\
+ARIMA & M1 & Over Storebælt & Training & 203,34 & 114,62 & 7,63 & 0,66\\
+ARIMA & Auto & Over Storebælt & Training & 207,72 & 137,92 & 9,11 & 0,79\\
+ARIMA & M2 & Over Storebælt & Training & 276,47 & 147,66 & 9,33 & 0,85\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(data }\SpecialCharTok{==} \StringTok{"Inkl. corona"}\NormalTok{, familie }\SpecialCharTok{==} \StringTok{"ARIMA"}\NormalTok{, .type }\SpecialCharTok{==} \StringTok{"Test"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{all\_of}\NormalTok{(cols)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, RMSE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Tabel B: ARIMA inkl. corona – test"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-B}Tabel B: ARIMA inkl. corona -- test}
+
+\centering{
+
+\caption{Tabel B: ARIMA inkl. corona – test}
+\centering
+\begin{tabular}[t]{llllrrrr}
+\toprule
+familie & .model & key & .type & RMSE & MAE & MAPE & MASE\\
+\midrule
+ARIMA & M4 & International trafik i alt & Test & 259,28 & 232,06 & 5,16 & NaN\\
+ARIMA & M1 & International trafik i alt & Test & 263,14 & 232,27 & 5,15 & NaN\\
+ARIMA & M3 & International trafik i alt & Test & 265,04 & 234,60 & 5,21 & NaN\\
+ARIMA & M2 & International trafik i alt & Test & 570,28 & 515,36 & 11,03 & NaN\\
+ARIMA & Auto & International trafik i alt & Test & 883,00 & 775,59 & 16,10 & NaN\\
+\addlinespace
+ARIMA & M2 & Over Storebælt & Test & 69,55 & 61,24 & 2,49 & NaN\\
+ARIMA & M4 & Over Storebælt & Test & 166,17 & 144,28 & 5,89 & NaN\\
+ARIMA & M3 & Over Storebælt & Test & 176,34 & 159,72 & 6,56 & NaN\\
+ARIMA & M1 & Over Storebælt & Test & 176,85 & 160,27 & 6,58 & NaN\\
+ARIMA & Auto & Over Storebælt & Test & 304,46 & 266,47 & 10,69 & NaN\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(data }\SpecialCharTok{==} \StringTok{"Inkl. corona"}\NormalTok{, familie }\SpecialCharTok{==} \StringTok{"ETS"}\NormalTok{, .type }\SpecialCharTok{==} \StringTok{"Training"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{all\_of}\NormalTok{(cols)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, RMSE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Tabel C: ETS inkl. corona – træning"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-C}Tabel C: ETS inkl. corona -- træning}
+
+\centering{
+
+\caption{Tabel C: ETS inkl. corona – træning}
+\centering
+\begin{tabular}[t]{llllrrrr}
+\toprule
+familie & .model & key & .type & RMSE & MAE & MAPE & MASE\\
+\midrule
+ETS & Auto & International trafik i alt & Training & 363,49 & 214,41 & 11,63 & 0,49\\
+ETS & AAA & International trafik i alt & Training & 371,91 & 221,52 & 11,86 & 0,51\\
+ETS & AAdA & International trafik i alt & Training & 374,80 & 220,18 & 11,74 & 0,51\\
+ETS & MAM & International trafik i alt & Training & 402,41 & 243,99 & 12,74 & 0,56\\
+ETS & Auto & Over Storebælt & Training & 208,10 & 129,83 & 8,35 & 0,75\\
+\addlinespace
+ETS & AAdA & Over Storebælt & Training & 209,21 & 131,15 & 8,43 & 0,76\\
+ETS & MAM & Over Storebælt & Training & 210,31 & 130,11 & 8,45 & 0,75\\
+ETS & AAA & Over Storebælt & Training & 211,27 & 136,53 & 8,68 & 0,79\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(data }\SpecialCharTok{==} \StringTok{"Inkl. corona"}\NormalTok{, familie }\SpecialCharTok{==} \StringTok{"ETS"}\NormalTok{, .type }\SpecialCharTok{==} \StringTok{"Test"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{all\_of}\NormalTok{(cols)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, RMSE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Tabel D: ETS inkl. corona – test"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-D}Tabel D: ETS inkl. corona -- test}
+
+\centering{
+
+\caption{Tabel D: ETS inkl. corona – test}
+\centering
+\begin{tabular}[t]{llllrrrr}
+\toprule
+familie & .model & key & .type & RMSE & MAE & MAPE & MASE\\
+\midrule
+ETS & Auto & International trafik i alt & Test & 215,82 & 168,88 & 3,71 & NaN\\
+ETS & AAdA & International trafik i alt & Test & 245,17 & 214,03 & 4,78 & NaN\\
+ETS & AAA & International trafik i alt & Test & 264,72 & 237,28 & 5,25 & NaN\\
+ETS & MAM & International trafik i alt & Test & 619,63 & 483,12 & 10,42 & NaN\\
+ETS & MAM & Over Storebælt & Test & 144,39 & 120,47 & 4,96 & NaN\\
+\addlinespace
+ETS & AAA & Over Storebælt & Test & 175,91 & 149,09 & 6,11 & NaN\\
+ETS & AAdA & Over Storebælt & Test & 181,48 & 164,22 & 6,73 & NaN\\
+ETS & Auto & Over Storebælt & Test & 190,24 & 175,26 & 7,19 & NaN\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(data }\SpecialCharTok{==} \StringTok{"Uden corona"}\NormalTok{, familie }\SpecialCharTok{==} \StringTok{"ARIMA"}\NormalTok{, .type }\SpecialCharTok{==} \StringTok{"Training"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{all\_of}\NormalTok{(cols)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, RMSE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Tabel E: ARIMA uden corona – træning"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-E}Tabel E: ARIMA uden corona -- træning}
+
+\centering{
+
+\caption{Tabel E: ARIMA uden corona – træning}
+\centering
+\begin{tabular}[t]{llllrrrr}
+\toprule
+familie & .model & key & .type & RMSE & MAE & MAPE & MASE\\
+\midrule
+ARIMA & M4 & International trafik i alt & Training & 175,12 & 121,63 & 3,60 & 0,65\\
+ARIMA & Auto & International trafik i alt & Training & 179,98 & 121,58 & 3,74 & 0,65\\
+ARIMA & M3 & International trafik i alt & Training & 193,75 & 130,34 & 3,82 & 0,70\\
+ARIMA & M1 & International trafik i alt & Training & 202,11 & 136,12 & 3,97 & 0,73\\
+ARIMA & M2 & International trafik i alt & Training & 209,69 & 134,57 & 3,92 & 0,72\\
+\addlinespace
+ARIMA & Auto & Over Storebælt & Training & 73,23 & 55,04 & 2,65 & 0,71\\
+ARIMA & M3 & Over Storebælt & Training & 74,92 & 51,68 & 2,50 & 0,66\\
+ARIMA & M1 & Over Storebælt & Training & 78,09 & 55,07 & 2,65 & 0,71\\
+ARIMA & M4 & Over Storebælt & Training & 78,31 & 56,16 & 2,71 & 0,72\\
+ARIMA & M2 & Over Storebælt & Training & 82,83 & 58,07 & 2,80 & 0,74\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(data }\SpecialCharTok{==} \StringTok{"Uden corona"}\NormalTok{, familie }\SpecialCharTok{==} \StringTok{"ARIMA"}\NormalTok{, .type }\SpecialCharTok{==} \StringTok{"Test"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{all\_of}\NormalTok{(cols)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, RMSE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Tabel F: ARIMA uden corona – test"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-F}Tabel F: ARIMA uden corona -- test}
+
+\centering{
+
+\caption{Tabel F: ARIMA uden corona – test}
+\centering
+\begin{tabular}[t]{llllrrrr}
+\toprule
+familie & .model & key & .type & RMSE & MAE & MAPE & MASE\\
+\midrule
+ARIMA & M3 & International trafik i alt & Test & 94,73 & 80,57 & 1,75 & NaN\\
+ARIMA & Auto & International trafik i alt & Test & 96,02 & 83,37 & 1,84 & NaN\\
+ARIMA & M1 & International trafik i alt & Test & 98,12 & 84,07 & 1,84 & NaN\\
+ARIMA & M4 & International trafik i alt & Test & 98,63 & 84,50 & 1,98 & NaN\\
+ARIMA & M2 & International trafik i alt & Test & 116,48 & 81,36 & 1,76 & NaN\\
+\addlinespace
+ARIMA & M2 & Over Storebælt & Test & 121,27 & 104,85 & 4,25 & NaN\\
+ARIMA & M4 & Over Storebælt & Test & 123,52 & 105,78 & 4,26 & NaN\\
+ARIMA & M1 & Over Storebælt & Test & 125,92 & 108,45 & 4,36 & NaN\\
+ARIMA & Auto & Over Storebælt & Test & 166,42 & 146,77 & 5,89 & NaN\\
+ARIMA & M3 & Over Storebælt & Test & 184,00 & 167,30 & 6,76 & NaN\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(data }\SpecialCharTok{==} \StringTok{"Uden corona"}\NormalTok{, familie }\SpecialCharTok{==} \StringTok{"ETS"}\NormalTok{, .type }\SpecialCharTok{==} \StringTok{"Training"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{all\_of}\NormalTok{(cols)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, RMSE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Tabel G: ETS uden corona – træning"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-G}Tabel G: ETS uden corona -- træning}
+
+\centering{
+
+\caption{Tabel G: ETS uden corona – træning}
+\centering
+\begin{tabular}[t]{llllrrrr}
+\toprule
+familie & .model & key & .type & RMSE & MAE & MAPE & MASE\\
+\midrule
+ETS & Auto & International trafik i alt & Training & 178,14 & 119,24 & 3,51 & 0,64\\
+ETS & AAdA & International trafik i alt & Training & 180,05 & 119,59 & 3,50 & 0,64\\
+ETS & MAM & International trafik i alt & Training & 188,33 & 136,07 & 4,04 & 0,73\\
+ETS & AAA & International trafik i alt & Training & 188,81 & 136,30 & 4,06 & 0,73\\
+ETS & AAA & Over Storebælt & Training & 76,60 & 57,61 & 2,78 & 0,74\\
+\addlinespace
+ETS & Auto & Over Storebælt & Training & 76,61 & 57,64 & 2,77 & 0,74\\
+ETS & AAdA & Over Storebælt & Training & 76,77 & 58,79 & 2,83 & 0,75\\
+ETS & MAM & Over Storebælt & Training & 76,78 & 57,87 & 2,79 & 0,74\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(data }\SpecialCharTok{==} \StringTok{"Uden corona"}\NormalTok{, familie }\SpecialCharTok{==} \StringTok{"ETS"}\NormalTok{, .type }\SpecialCharTok{==} \StringTok{"Test"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{all\_of}\NormalTok{(cols)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(key, RMSE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Tabel H: ETS uden corona – test"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-H}Tabel H: ETS uden corona -- test}
+
+\centering{
+
+\caption{Tabel H: ETS uden corona – test}
+\centering
+\begin{tabular}[t]{llllrrrr}
+\toprule
+familie & .model & key & .type & RMSE & MAE & MAPE & MASE\\
+\midrule
+ETS & MAM & International trafik i alt & Test & 188,23 & 157,46 & 3,81 & NaN\\
+ETS & Auto & International trafik i alt & Test & 204,11 & 180,41 & 4,20 & NaN\\
+ETS & AAA & International trafik i alt & Test & 204,55 & 173,91 & 4,18 & NaN\\
+ETS & AAdA & International trafik i alt & Test & 206,42 & 179,10 & 4,02 & NaN\\
+ETS & AAA & Over Storebælt & Test & 160,92 & 142,03 & 5,72 & NaN\\
+\addlinespace
+ETS & MAM & Over Storebælt & Test & 161,33 & 142,79 & 5,75 & NaN\\
+ETS & Auto & Over Storebælt & Test & 174,49 & 156,03 & 6,29 & NaN\\
+ETS & AAdA & Over Storebælt & Test & 177,16 & 158,08 & 6,37 & NaN\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\texttt{slice\_min}/\texttt{slice\_max} finder den model med lavest og
+højest RMSE pr. gruppe og giver et hurtigt overblik over, hvilke
+modeller der konsekvent præsterer bedst.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{opsummering }\OtherTok{\textless{}{-}}\NormalTok{ resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(data, familie, .type, key) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Bedst\_model    =}\NormalTok{ .model[}\FunctionTok{which.min}\NormalTok{(RMSE)],}
+    \AttributeTok{Bedst\_RMSE     =} \FunctionTok{min}\NormalTok{(RMSE),}
+    \AttributeTok{Bedst\_MAPE     =}\NormalTok{ MAPE[}\FunctionTok{which.min}\NormalTok{(RMSE)],}
+\NormalTok{    Dårligst}\AttributeTok{\_model =}\NormalTok{ .model[}\FunctionTok{which.max}\NormalTok{(RMSE)],}
+\NormalTok{    Dårligst}\AttributeTok{\_RMSE  =} \FunctionTok{max}\NormalTok{(RMSE),}
+\NormalTok{    Dårligst}\AttributeTok{\_MAPE  =}\NormalTok{ MAPE[}\FunctionTok{which.max}\NormalTok{(RMSE)],}
+    \AttributeTok{.groups =} \StringTok{"drop"}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(data, familie, .type, key)}
+
+\NormalTok{opsummering }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Opsummering: Bedste og dårligste model per gruppe"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-opsummering}Opsummering: Bedste og dårligste model
+per gruppe}
+
+\centering{
+
+\caption{Opsummering: Bedste og dårligste model per gruppe}
+\centering
+\begin{tabular}[t]{lllllrrlrr}
+\toprule
+data & familie & .type & key & Bedst\_model & Bedst\_RMSE & Bedst\_MAPE & Dårligst\_model & Dårligst\_RMSE & Dårligst\_MAPE\\
+\midrule
+Inkl. corona & ARIMA & Test & International trafik i alt & M4 & 259,28 & 5,16 & Auto & 883,00 & 16,10\\
+Inkl. corona & ARIMA & Test & Over Storebælt & M2 & 69,55 & 2,49 & Auto & 304,46 & 10,69\\
+Inkl. corona & ARIMA & Training & International trafik i alt & M1 & 351,82 & 10,43 & M2 & 612,19 & 13,80\\
+Inkl. corona & ARIMA & Training & Over Storebælt & M4 & 199,33 & 7,29 & M2 & 276,47 & 9,33\\
+Inkl. corona & ETS & Test & International trafik i alt & Auto & 215,82 & 3,71 & MAM & 619,63 & 10,42\\
+\addlinespace
+Inkl. corona & ETS & Test & Over Storebælt & MAM & 144,39 & 4,96 & Auto & 190,24 & 7,19\\
+Inkl. corona & ETS & Training & International trafik i alt & Auto & 363,49 & 11,63 & MAM & 402,41 & 12,74\\
+Inkl. corona & ETS & Training & Over Storebælt & Auto & 208,10 & 8,35 & AAA & 211,27 & 8,68\\
+Uden corona & ARIMA & Test & International trafik i alt & M3 & 94,73 & 1,75 & M2 & 116,48 & 1,76\\
+Uden corona & ARIMA & Test & Over Storebælt & M2 & 121,27 & 4,25 & M3 & 184,00 & 6,76\\
+\addlinespace
+Uden corona & ARIMA & Training & International trafik i alt & M4 & 175,12 & 3,60 & M2 & 209,69 & 3,92\\
+Uden corona & ARIMA & Training & Over Storebælt & Auto & 73,23 & 2,65 & M2 & 82,83 & 2,80\\
+Uden corona & ETS & Test & International trafik i alt & MAM & 188,23 & 3,81 & AAdA & 206,42 & 4,02\\
+Uden corona & ETS & Test & Over Storebælt & AAA & 160,92 & 5,72 & AAdA & 177,16 & 6,37\\
+Uden corona & ETS & Training & International trafik i alt & Auto & 178,14 & 3,51 & AAA & 188,81 & 4,06\\
+\addlinespace
+Uden corona & ETS & Training & Over Storebælt & AAA & 76,60 & 2,78 & MAM & 76,78 & 2,79\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\subsubsection{Time series cross
+validation}\label{time-series-cross-validation}
+
+TSCV udvider træningsvinduerne skridt for skridt og forecaster fire
+kvartaler frem (H=4). Dette giver et mere robust estimat af
+prognosefejlen end et enkelt train/test-split. SNAIVE bruges som
+benchmark; en god model bør have lavere RMSE end SNAIVE.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Time series cross validation med corona}
+\NormalTok{resultat\_tscv }\OtherTok{\textless{}{-}}\NormalTok{ jernbanestretch }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ARIMA  =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{ETS    =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{SNAIVE =} \FunctionTok{SNAIVE}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer))}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{accuracy}\NormalTok{(jernbanedata) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Inkl. corona"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+4 observations are missing between 2026 Q2 and 2027 Q1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Time series cross validation uden corona}
+\NormalTok{resultat\_tscv\_corona }\OtherTok{\textless{}{-}}\NormalTok{ jernbanestretch\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ARIMA  =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{ETS    =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{SNAIVE =} \FunctionTok{SNAIVE}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer))}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{accuracy}\NormalTok{(jernbanedata\_corona) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Uden corona"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+4 observations are missing between 2026 Q2 and 2027 Q1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{bind\_rows}\NormalTok{(resultat\_tscv, resultat\_tscv\_corona) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(data, .model, key, RMSE, MAE, MAPE, MASE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(data, key, RMSE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"TSCV{-}modelsammenligning inkl. og uden corona"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+      \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-tscv}TSCV-modelsammenligning inkl. og uden corona}
+
+\centering{
+
+\caption{TSCV-modelsammenligning inkl. og uden corona}
+\centering
+\begin{tabular}[t]{lllrrrr}
+\toprule
+data & .model & key & RMSE & MAE & MAPE & MASE\\
+\midrule
+Inkl. corona & ETS & International trafik i alt & 762,13 & 437,99 & 26,86 & 1,04\\
+Inkl. corona & ARIMA & International trafik i alt & 845,17 & 546,56 & 29,78 & 1,30\\
+Inkl. corona & SNAIVE & International trafik i alt & 933,53 & 538,10 & 34,99 & 1,28\\
+Inkl. corona & SNAIVE & Over Storebælt & 362,19 & 238,85 & 16,61 & 1,39\\
+Inkl. corona & ETS & Over Storebælt & 408,14 & 243,75 & 16,67 & 1,41\\
+\addlinespace
+Inkl. corona & ARIMA & Over Storebælt & 408,76 & 267,94 & 17,57 & 1,55\\
+Uden corona & SNAIVE & International trafik i alt & 261,18 & 193,00 & 5,12 & 1,01\\
+Uden corona & ARIMA & International trafik i alt & 263,78 & 191,95 & 5,16 & 1,01\\
+Uden corona & ETS & International trafik i alt & 276,16 & 197,95 & 5,22 & 1,04\\
+Uden corona & ETS & Over Storebælt & 120,26 & 94,27 & 4,44 & 1,14\\
+\addlinespace
+Uden corona & SNAIVE & Over Storebælt & 129,40 & 101,38 & 4,77 & 1,22\\
+Uden corona & ARIMA & Over Storebælt & 130,90 & 105,15 & 4,93 & 1,27\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+RMSE pr. forecast-horisont viser, om prognosefejlen stiger markant med
+horisonten. SNAIVE inkluderes som reference for at vurdere, om
+modellerne tilfører værdi over tid.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Med corona}
+\NormalTok{actuals }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(kvartal, key, }\AttributeTok{actual =}\NormalTok{ x1000\_passagerer)}
+
+\CommentTok{\# Uden corona}
+\NormalTok{actuals\_corona }\OtherTok{\textless{}{-}}\NormalTok{ jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(kvartal, key, }\AttributeTok{actual =}\NormalTok{ x1000\_passagerer)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanestretch }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ARIMA  =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{ETS    =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{SNAIVE =} \FunctionTok{SNAIVE}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer))}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(.id, key, .model) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{h =} \FunctionTok{row\_number}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(actuals, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"kvartal"}\NormalTok{, }\StringTok{"key"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(.model, key, h) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{RMSE =} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((.mean }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)),}
+            \AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ h, }\AttributeTok{y =}\NormalTok{ RMSE, }\AttributeTok{colour =}\NormalTok{ .model)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ key, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{, }\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Q+1"}\NormalTok{, }\StringTok{"Q+2"}\NormalTok{, }\StringTok{"Q+3"}\NormalTok{, }\StringTok{"Q+4"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RMSE per forecast{-}horisont (h=1–4)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Horisont"}\NormalTok{, }\AttributeTok{y =} \StringTok{"RMSE"}\NormalTok{, }\AttributeTok{colour =} \StringTok{"Model"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-rmse-horisont-inkl-1.pdf}}
+
+}
+
+\caption{\label{fig-rmse-horisont-inkl}RMSE per forecast-horisont
+(h=1--4) -- inkl. corona}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanestretch\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ARIMA  =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{ETS    =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{SNAIVE =} \FunctionTok{SNAIVE}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer))}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tibble}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(.id, key, .model) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{h =} \FunctionTok{row\_number}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(actuals\_corona, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"kvartal"}\NormalTok{, }\StringTok{"key"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(.model, key, h) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{RMSE =} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((.mean }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)), }\AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ h, }\AttributeTok{y =}\NormalTok{ RMSE, }\AttributeTok{colour =}\NormalTok{ .model)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ key, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{, }\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Q+1"}\NormalTok{, }\StringTok{"Q+2"}\NormalTok{, }\StringTok{"Q+3"}\NormalTok{, }\StringTok{"Q+4"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"RMSE per forecast{-}horisont – uden corona"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Horisont"}\NormalTok{, }\AttributeTok{y =} \StringTok{"RMSE"}\NormalTok{, }\AttributeTok{colour =} \StringTok{"Model"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-rmse-horisont-uden-1.pdf}}
+
+}
+
+\caption{\label{fig-rmse-horisont-uden}RMSE per forecast-horisont
+(h=1--4) -- uden corona}
+
+\end{figure}%
+
+\subsection{Forecasting og
+prædiktion}\label{forecasting-og-pruxe6diktion}
+
+\texttt{hilo()} beregner prædiktionsintervaller på 80 \% og 95 \%; et
+bredere interval betyder større usikkerhed. \texttt{unpack\_hilo()}
+adskiller intervallerne i separate lower/upper-kolonner til
+tabelvisning.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ARIMA =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{ETS   =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer))}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{hilo}\NormalTok{(}\AttributeTok{level =} \FunctionTok{c}\NormalTok{(}\DecValTok{80}\NormalTok{, }\DecValTok{95}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{unpack\_hilo}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"80\%"}\NormalTok{, }\StringTok{"95\%"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(key, .model, kvartal, .mean,}
+         \StringTok{\textasciigrave{}}\AttributeTok{80\%\_lower}\StringTok{\textasciigrave{}}\NormalTok{, }\StringTok{\textasciigrave{}}\AttributeTok{80\%\_upper}\StringTok{\textasciigrave{}}\NormalTok{,}
+         \StringTok{\textasciigrave{}}\AttributeTok{95\%\_lower}\StringTok{\textasciigrave{}}\NormalTok{, }\StringTok{\textasciigrave{}}\AttributeTok{95\%\_upper}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Forecast og prædiktionsintervaller inkl. corona (80\% og 95\%)"}\NormalTok{,}
+      \AttributeTok{digits =} \DecValTok{1}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-pred-inkl}Forecast og prædiktionsintervaller inkl.
+corona (80\% og 95\%)}
+
+\centering{
+
+\textbackslash begin\{table\}
+
+\textbackslash caption\{\label{tab:tbl-pred-inkl}Forecast og
+prædiktionsintervaller inkl. corona (80\% og 95\%)\} \centering
+
+\begin{tabular}[t]{lllrrrrr}
+\toprule
+key & .model & kvartal & .mean & 80\%\_lower & 80\%\_upper & 95\%\_lower & 95\%\_upper\\
+\midrule
+International trafik i alt & ARIMA & 2026 Q2 & 4273,9 & 3081,8 & 5615,3 & 2629,3 & 6581,8\\
+International trafik i alt & ARIMA & 2026 Q3 & 4266,5 & 2815,4 & 5948,1 & 2309,7 & 7250,3\\
+International trafik i alt & ARIMA & 2026 Q4 & 3900,1 & 2464,5 & 5587,5 & 1984,5 & 6939,1\\
+International trafik i alt & ARIMA & 2027 Q1 & 3720,5 & 2298,3 & 5404,6 & 1832,7 & 6777,4\\
+International trafik i alt & ETS & 2026 Q2 & 4755,7 & 3510,6 & 6145,7 & 3027,0 & 7127,5\\
+\addlinespace
+International trafik i alt & ETS & 2026 Q3 & 5664,3 & 3742,3 & 7890,8 & 3071,7 & 9613,4\\
+International trafik i alt & ETS & 2026 Q4 & 4979,0 & 3001,4 & 7339,3 & 2368,9 & 9299,0\\
+International trafik i alt & ETS & 2027 Q1 & 4412,8 & 2453,8 & 6812,0 & 1872,7 & 8925,7\\
+Over Storebælt & ARIMA & 2026 Q2 & 2284,0 & 1858,8 & 2743,0 & 1676,9 & 3040,5\\
+Over Storebælt & ARIMA & 2026 Q3 & 2232,8 & 1780,8 & 2724,1 & 1591,3 & 3048,5\\
+\addlinespace
+Over Storebælt & ARIMA & 2026 Q4 & 2239,1 & 1766,6 & 2754,5 & 1570,7 & 3098,2\\
+Over Storebælt & ARIMA & 2027 Q1 & 2134,1 & 1673,8 & 2637,2 & 1484,0 & 2974,5\\
+Over Storebælt & ETS & 2026 Q2 & 2390,8 & 1946,0 & 2870,8 & 1755,7 & 3182,0\\
+Over Storebælt & ETS & 2026 Q3 & 2490,3 & 1959,9 & 3069,4 & 1740,5 & 3456,4\\
+Over Storebælt & ETS & 2026 Q4 & 2579,3 & 1969,8 & 3251,8 & 1725,0 & 3713,2\\
+\addlinespace
+Over Storebælt & ETS & 2027 Q1 & 2273,0 & 1688,7 & 2923,9 & 1460,3 & 3381,2\\
+\bottomrule
+\end{tabular}
+
+\textbackslash end\{table\}
+
+}
+
+\end{table}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ARIMA =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{ETS   =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer))}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{hilo}\NormalTok{(}\AttributeTok{level =} \FunctionTok{c}\NormalTok{(}\DecValTok{80}\NormalTok{, }\DecValTok{95}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{unpack\_hilo}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"80\%"}\NormalTok{, }\StringTok{"95\%"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(key, .model, kvartal, .mean,}
+         \StringTok{\textasciigrave{}}\AttributeTok{80\%\_lower}\StringTok{\textasciigrave{}}\NormalTok{, }\StringTok{\textasciigrave{}}\AttributeTok{80\%\_upper}\StringTok{\textasciigrave{}}\NormalTok{,}
+         \StringTok{\textasciigrave{}}\AttributeTok{95\%\_lower}\StringTok{\textasciigrave{}}\NormalTok{, }\StringTok{\textasciigrave{}}\AttributeTok{95\%\_upper}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Forecast og prædiktionsintervaller uden corona (80\% og 95\%)"}\NormalTok{,}
+      \AttributeTok{digits =} \DecValTok{1}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-pred-uden}Forecast og prædiktionsintervaller uden
+corona (80\% og 95\%)}
+
+\centering{
+
+\textbackslash begin\{table\}
+
+\textbackslash caption\{\label{tab:tbl-pred-uden}Forecast og
+prædiktionsintervaller uden corona (80\% og 95\%)\} \centering
+
+\begin{tabular}[t]{lllrrrrr}
+\toprule
+key & .model & kvartal & .mean & 80\%\_lower & 80\%\_upper & 95\%\_lower & 95\%\_upper\\
+\midrule
+International trafik i alt & ARIMA & 2026 Q2 & 5034,0 & 4688,0 & 5389,6 & 4518,1 & 5592,3\\
+International trafik i alt & ARIMA & 2026 Q3 & 5561,9 & 5062,1 & 6080,1 & 4822,4 & 6382,2\\
+International trafik i alt & ARIMA & 2026 Q4 & 4626,4 & 4210,6 & 5057,4 & 4011,2 & 5308,7\\
+International trafik i alt & ARIMA & 2027 Q1 & 4310,4 & 3923,0 & 4711,9 & 3737,2 & 4946,1\\
+International trafik i alt & ETS & 2026 Q2 & 4750,0 & 4421,5 & 5087,6 & 4260,3 & 5280,1\\
+\addlinespace
+International trafik i alt & ETS & 2026 Q3 & 5221,7 & 4838,0 & 5616,7 & 4650,7 & 5843,0\\
+International trafik i alt & ETS & 2026 Q4 & 4556,6 & 4205,2 & 4919,0 & 4034,3 & 5127,4\\
+International trafik i alt & ETS & 2027 Q1 & 4193,2 & 3849,6 & 4548,2 & 3683,4 & 4753,4\\
+Over Storebælt & ARIMA & 2026 Q2 & 2356,1 & 2243,8 & 2470,6 & 2187,3 & 2534,4\\
+Over Storebælt & ARIMA & 2026 Q3 & 2291,8 & 2158,6 & 2428,0 & 2092,5 & 2504,8\\
+\addlinespace
+Over Storebælt & ARIMA & 2026 Q4 & 2453,7 & 2300,2 & 2611,1 & 2224,3 & 2700,2\\
+Over Storebælt & ARIMA & 2027 Q1 & 2170,6 & 2030,2 & 2314,6 & 1961,0 & 2396,3\\
+Over Storebælt & ETS & 2026 Q2 & 2397,3 & 2275,8 & 2521,2 & 2215,0 & 2590,4\\
+Over Storebælt & ETS & 2026 Q3 & 2297,0 & 2161,4 & 2435,8 & 2094,1 & 2514,1\\
+Over Storebælt & ETS & 2026 Q4 & 2445,2 & 2283,1 & 2611,7 & 2203,2 & 2706,3\\
+\addlinespace
+Over Storebælt & ETS & 2027 Q1 & 2226,4 & 2046,1 & 2412,7 & 1958,7 & 2520,2\\
+\bottomrule
+\end{tabular}
+
+\textbackslash end\{table\}
+
+}
+
+\end{table}%
+
+\texttt{filter\_index} afskærer historikken, så prædiktionsintervallerne
+er visuelt tydelige. Begge modeller vises i samme plot til direkte
+sammenligning af forecast og usikkerhed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{jernbanedata }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ARIMA =} \FunctionTok{ARIMA}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer)),}
+    \AttributeTok{ETS   =} \FunctionTok{ETS}\NormalTok{(}\FunctionTok{log}\NormalTok{(x1000\_passagerer))}
+\NormalTok{  ) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(jernbanedata }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter\_index}\NormalTok{(}\StringTok{"2020 Q1"} \SpecialCharTok{\textasciitilde{}}\NormalTok{ .),}
+           \AttributeTok{level =} \FunctionTok{c}\NormalTok{(}\DecValTok{80}\NormalTok{, }\DecValTok{95}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ key, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Forecast med prædiktionsintervaller (80\% og 95\%)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"1.000 passagerer"}\NormalTok{, }\AttributeTok{x =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{forecast_files/figure-pdf/fig-forecast-1.pdf}}
+
+}
+
+\caption{\label{fig-forecast}Forecast med prædiktionsintervaller (80\%
+og 95\%)}
+
+\end{figure}%
+
+\subsection{Sammenfatning og
+konklusion}\label{sammenfatning-og-konklusion}
+
+Nedenfor kombineres STL-styrker, COVID-behandling og bedste model i ét
+overblik pr. serie. Det gør det nemt at sammenligne på tværs af de to
+datasæt og de to tidsserier.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stl\_features }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(}
+\NormalTok{  jernbanedata        }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{features}\NormalTok{(x1000\_passagerer, feat\_stl) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Inkl. corona"}\NormalTok{),}
+\NormalTok{  jernbanedata\_corona }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{features}\NormalTok{(x1000\_passagerer, feat\_stl) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{data =} \StringTok{"Uden corona"}\NormalTok{)}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(key, data, trend\_strength, seasonal\_strength\_year)}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{slice\_min} finder den model med lavest test-RMSE pr. serie og
+datasæt.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bedste }\OtherTok{\textless{}{-}}\NormalTok{ resultat }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(.type }\SpecialCharTok{==} \StringTok{"Test"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(data, key) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{slice\_min}\NormalTok{(RMSE, }\AttributeTok{n =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(key, data, }\AttributeTok{Bedste\_model =}\NormalTok{ .model, MASE, RMSE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sammenfatning }\OtherTok{\textless{}{-}}\NormalTok{ stl\_features }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(bedste, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"key"}\NormalTok{, }\StringTok{"data"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{COVID\_impact =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      data }\SpecialCharTok{==} \StringTok{"Inkl. corona"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Ja – ubehandlet"}\NormalTok{,}
+\NormalTok{      data }\SpecialCharTok{==} \StringTok{"Uden corona"}  \SpecialCharTok{\textasciitilde{}} \StringTok{"Interpoleret"}
+\NormalTok{    )}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}
+    \AttributeTok{Serie        =}\NormalTok{ key,}
+\NormalTok{    Datasæt      }\OtherTok{=}\NormalTok{ data,}
+    \AttributeTok{Trend        =}\NormalTok{ trend\_strength,}
+\NormalTok{    Sæson        }\OtherTok{=}\NormalTok{ seasonal\_strength\_year,}
+    \AttributeTok{COVID        =}\NormalTok{ COVID\_impact,}
+\NormalTok{    Bedste\_model,}
+\NormalTok{    RMSE}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(Serie, Datasæt)}
+
+\NormalTok{sammenfatning }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Sammenfatningsoversigt: Nøgletal per serie og datasæt"}\NormalTok{,}
+      \AttributeTok{digits =} \DecValTok{3}\NormalTok{, }\AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\label{tbl-sammenfatning}Sammenfatningsoversigt: Nøgletal per
+serie og datasæt}
+
+\centering{
+
+\caption{Sammenfatningsoversigt: Nøgletal per serie og datasæt}
+\centering
+\begin{tabular}[t]{llrrllr}
+\toprule
+Serie & Datasæt & Trend & Sæson & COVID & Bedste\_model & RMSE\\
+\midrule
+International trafik i alt & Inkl. corona & 0,965 & 0,813 & Ja – ubehandlet & Auto & 215,823\\
+International trafik i alt & Uden corona & 0,962 & 0,856 & Interpoleret & M3 & 94,731\\
+Over Storebælt & Inkl. corona & 0,866 & 0,513 & Ja – ubehandlet & M2 & 69,555\\
+Over Storebælt & Uden corona & 0,908 & 0,800 & Interpoleret & M2 & 121,271\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+
+
+
+\end{document}

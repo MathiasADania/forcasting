@@ -5,7 +5,6 @@ pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
                forecast, car, shiny, glue, broom, kableExtra, gt, seasonal, 
                latex2exp, ggfortify, janitor, readxl)
 
-
 # Indhentning af data
 jernbanedata <- read_excel("data/jernbanetransport af passagerer.xlsx",
                            sheet = "BANE25"
