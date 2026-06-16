@@ -1,4 +1,7 @@
 ---
+title: "forcast eksamenen"
+author: "Mathias Andersen"
+date: today
 lang: da # Sprog (dansk)
 
 format:
@@ -20,7 +23,7 @@ header-includes:
   - \usepackage{booktabs} # Pænere tabeller
   - \usepackage{makecell} # Bedre celler i tabeller
   - \usepackage{pdfpages} # Mulighed for at inkludere PDF-sider
-  - \AtBeginDocument{\includepdf[pages={1}]{Forside.pdf}} # Indsæt forside som første side
+  #- \AtBeginDocument{\includepdf[pages={1}]{Forside.pdf}} # Indsæt forside som første side
 
 crossref:
   fig-prefix: ""  # Figur prefix 
@@ -109,8 +112,6 @@ international trafik i alt samt trafik over Storebælt.
 
 ```{r}
 #| label: indlaes-data
-#| echo: true
-#| eval: true
 #| message: false
 #| warning: false
 # Indhentning af data
@@ -136,8 +137,6 @@ før og efter corona.
 
 ```{r}
 #| label: data-uden-corona
-#| echo: true
-#| eval: true
 #| message: false
 #| warning: false
 jernbanedata_corona <- jernbanedata %>%
@@ -158,8 +157,6 @@ i alt og kategorien over Storebælt.
 
 ```{r}
 #| label: fig-autoplot-inkl
-#| echo: true
-#| eval: true
 #| fig-cap: "Jernbanepassagerer inkl. corona"
 # Autoplot af passagertal inkl. corona
 jernbanedata %>%
