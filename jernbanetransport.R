@@ -329,8 +329,6 @@ jernbanedata %>%
 # Dobbelt differentiering udelades da unitroot_ndiffs returnerer d=0 efter D=1
 # Overdifferentiering forværrer modellen - derfor kun D=1
 
-
-
 # STL-dekomposition -------------------------------------------------------
 
 # STL inkl. corona
@@ -349,7 +347,6 @@ stl_comp_corona <- jernbanedata_corona %>%
   ) %>%
   components()
 
-
 # STL Visualisering
 stl_comp %>% 
   as_tsibble() %>% 
@@ -364,14 +361,16 @@ stl_comp_corona %>%
 # STL 4-panel dekompositionsplot – inkl. corona
 stl_comp %>%
   autoplot() +
-  labs(title = "STL-dekomposition – inkl. corona (log-skala)")
+  scale_color_discrete(labels = c("International trafik i alt", "Over Storebælt")) +
+  labs(title = "STL-dekomposition – inkl. corona (log-skala)",
+       color = "Serie")
 
 # STL 4-panel dekompositionsplot – uden corona
 stl_comp_corona %>%
   autoplot() +
-  labs(title = "STL-dekomposition – uden corona (log-skala)")
-
-
+  scale_color_discrete(labels = c("International trafik i alt", "Over Storebælt")) +
+  labs(title = "STL-dekomposition – uden corona (log-skala)",
+       color = "Serie")
 
 # Augment
 # Uden coronaperiode
@@ -839,24 +838,36 @@ jernbanestretch %>%
 
 # Forecasting / Prædiktion -------------------------------------------------------------
 
-# prædiktionsintervaller for jernbanedata
+# prædiktionsintervaller for jernbanedata 
 jernbanedata %>%
   model(
     ARIMA = ARIMA(log(x1000_passagerer)),
     ETS   = ETS(log(x1000_passagerer))
-  ) |>
+  ) %>%
   forecast(h = 4) %>%
   hilo(level = c(80, 95)) %>%
-  unpack_hilo(c("80%", "95%"))
+  unpack_hilo(c("80%", "95%")) %>%
+  select(key, .model, kvartal, .mean,
+         `80%_lower`, `80%_upper`,
+         `95%_lower`, `95%_upper`) %>%
+  kbl(caption = "Tabel 12a: Forecast og prædiktionsintervaller inkl. corona (80% og 95%)",
+      digits = 1) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 
 jernbanedata_corona %>%
   model(
     ARIMA = ARIMA(log(x1000_passagerer)),
     ETS   = ETS(log(x1000_passagerer))
-  ) |>
+  ) %>%
   forecast(h = 4) %>%
   hilo(level = c(80, 95)) %>%
-  unpack_hilo(c("80%", "95%"))
+  unpack_hilo(c("80%", "95%")) %>%
+  select(key, .model, kvartal, .mean,
+         `80%_lower`, `80%_upper`,
+         `95%_lower`, `95%_upper`) %>%
+  kbl(caption = "Tabel 12b: Forecast og prædiktionsintervaller uden corona (80% og 95%)",
+      digits = 1) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 
 # prædiktionsintervaller visualisering afskærer den historiske del 
 # så plottet fokuserer på de seneste år og forecast-perioden
