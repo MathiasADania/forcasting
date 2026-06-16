@@ -350,6 +350,7 @@ model_jernbane_corona <- jernbanedata_corona %>%
   components()
 
 
+# STL Visualisering
 model_jernbane %>% 
   as_tsibble() %>% 
   autoplot(`log(x1000_passagerer)`, color = 'gray') +
@@ -402,7 +403,8 @@ jernbanedata_corona %>%
       digits = 3) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
-# Denne kan man bruge til fortæller om trend og sæson oh hvis den x er hø
+# Denne kan man bruge til fortæller om trend og sæson og 
+# hvis den x er høj
 # kan man anvende til at sige at den er god at forecaste
 # Hvad betyder de forskellige værdier??
 
@@ -413,7 +415,6 @@ passagererstretch <- jernbanedata %>%
 # tager lang tid
 
 # EDA opsummering / del konklussion
-
 
 # Andre feauteres???
 
@@ -426,8 +427,6 @@ passagererstretch <- jernbanedata %>%
 # Guerrero estimerer lambda ved at minimere variationskoefficenten på tværs af sæsoner
 # et lambda tæt på 0 bekræfter at log er det rettevalg mens lambda tæt på 1
 # Betyder ingen transformation er nødvendig.
-
-
 
 # Træningssplit -----------------------------------------------------------
 
@@ -505,9 +504,6 @@ glance(fit_ets) %>%
 
 # Delkonklusion - kommenter på performance
 
-
-
-
 # Her må vi gerne kommenter kort på nogle af tingene - Hvis det mer forklaring
 # gerne alpha, beta, gamma - evt. phi
 
@@ -553,10 +549,6 @@ augment(fit_ets_corona) %>%
 # forslag til hvordan vi kan forbedre forcast ift - Corona (Hvad kan vi gøre
 # anderledes)
 
-
-
-
-
 # Arima modeller
 fit_arima <- jernbane_train %>%
   model(
@@ -570,7 +562,6 @@ fit_arima <- jernbane_train %>%
     # AR(2) + sæsonel MA(1)
     M4   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(2,1,0) + PDQ(0,1,1))
   )
-
 
 report(fit_arima)
 
@@ -587,7 +578,6 @@ fit_arima_corona <- jernbane_corona_train %>%
 
 report(fit_arima_corona)
 
-
 #Arima Modelsammenligning med og uden corona
 
 #Uden Corona
@@ -603,8 +593,6 @@ glance(fit_arima_corona) %>%
   arrange(key, AICc) %>%
   kbl(caption = "Tabel 8a: ARIMA-modelsammenligning inkl. corona (AICc)", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
-
-
 
 # Residualanalyse – inkl. corona (Auto-model, én serie ad gangen)
 fit_arima %>%
@@ -652,7 +640,6 @@ augment(fit_arima_corona) %>%
 
 # Vigtigt at der sikres for autokorrelation inden
 # Altid kommenter at der er et problem og hvad det kan skyldes
-
 
 # Optimal ARIMA-søgning - bygger videre på fit_arima og fit_arima_corona
 # stepwise = FALSE: søger ALLE kombinationer (ikke kun stepwise-sti)
@@ -765,6 +752,8 @@ opsummering %>%
   kbl(caption = "Opsummering: Bedste og dårligste model per gruppe", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
+# TIME SERIES CROSS VALIDATION
+
 # Time series cross validation med corona
 resultat_tscv <- jernbanestretch %>%
   model(
@@ -786,7 +775,6 @@ resultat_tscv_corona <- jernbanestretch_corona %>%
   forecast(h = 4) %>%
   accuracy(jernbanedata_corona) %>%
   mutate(data = "Uden corona")
-
 
 # Samlet TSCV-tabel
 bind_rows(resultat_tscv, resultat_tscv_corona) %>%
@@ -832,9 +820,7 @@ jernbanestretch %>%
        x = "Horisont", y = "RMSE", colour = "Model") +
   theme_minimal()
 
-
-
-# prædiktionsintervaller
+# Forecasting / Prædiktion -------------------------------------------------------------
 
 # prædiktionsintervaller for jernbanedata
 jernbanedata %>%
@@ -856,8 +842,8 @@ jernbanedata_corona %>%
   unpack_hilo(c("80%", "95%"))
 
 # prædiktionsintervaller visualisering afskærer den historiske del 
-# så plottet fokuserer på de seneste år og 
-# forecast-perioden — ellers drukner intervallerne i den lange historik.
+# så plottet fokuserer på de seneste år og forecast-perioden
+# ellers drukner intervallerne i den lange historik.
 
 jernbanedata %>%
   model(
@@ -872,47 +858,49 @@ jernbanedata %>%
        y = "1.000 passagerer", x = NULL) +
   theme_minimal()
 
+# Sammenfatning og konklusion
 
-# Forecasting / Prædiktion -------------------------------------------------------------
+stl_features <- bind_rows(
+  jernbanedata        %>% features(x1000_passagerer, feat_stl) %>% mutate(data = "Inkl. corona"),
+  jernbanedata_corona %>% features(x1000_passagerer, feat_stl) %>% mutate(data = "Uden corona")
+) %>%
+  select(key, data, trend_strength, seasonal_strength_year)
 
-#ETS
+# bedste model og MASE fra test resultater:
 
-jernbanedata %>%
-  model(ETS(log(x1000_passagerer))) %>%
-  forecast(h = 4) %>%
-  autoplot(jernbanedata) +
-  labs(title = "ETS Forcast inkl. corona",
-       y = "1000 passagerer")
+bedste <- resultat %>%
+  filter(.type == "Test") %>%
+  group_by(data, key) %>%
+  slice_min(RMSE, n = 1) %>%
+  select(key, data, Bedste_model = .model, MASE, RMSE)
 
-jernbanedata_corona %>%
-  model(ETS(log(x1000_passagerer))) %>%
-  forecast(h = 4) %>%
-  autoplot(jernbanedata_corona) +
-  labs(title = "ETS forecast uden corona",
-       y = "1000 passagerer")
+# sammensæt
 
-# Time series cross validation
-#ARIMA forecast inkl. corona
-jernbanedata %>%
-  model(ARIMA(log(x1000_passagerer))) %>%
-  forecast(h = 4) %>%
-  autoplot(jernbanedata) +
-  labs(title = "Arima forecast uden corona",
-       y = "1000 passagerer")
+sammenfatning <- stl_features %>%
+  left_join(bedste, by = c("key", "data")) %>%
+  mutate(
+    COVID_impact = case_when(
+      data == "Inkl. corona" ~ "Ja – ubehandlet",
+      data == "Uden corona"  ~ "Interpoleret"
+    )
+  ) %>%
+  select(
+    Serie        = key,
+    Datasæt      = data,
+    Trend        = trend_strength,
+    Sæson        = seasonal_strength_year,
+    COVID        = COVID_impact,
+    Bedste_model,
+    RMSE
+  ) %>%
+  arrange(Serie, Datasæt)
 
-# Husk at der også er en manuel vej til at ginde en "optimal" (S)ARIMA - model
-# Det er vigtigt at have nogle velvalgte kandidatmodeller, som vi selv laver
-# Husk i den forbindelse at bruge uniroot test:
-# ARIMA forecast uden Corona
- jernbanedata_corona %>%
-   model(ARIMA(log(x1000_passagerer))) %>%
-   forecast(h = 4) %>%
-   autoplot(jernbanedata_corona) +
-   labs(title = "Arima forecast uden corona",
-        y = "1000 passagerer")
+# Endeligt overblik
 
-
-
+sammenfatning %>%
+  kbl(caption = "Sammenfatningsoversigt: Nøgletal per serie og datasæt",
+      digits = 3) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 
 
 
