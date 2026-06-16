@@ -450,10 +450,10 @@ jernbane_corona_test <- jernbanedata_corona %>%
 # Benchmark ---------------------------------------------------------------
 # Benchmark model
 jernbanestretch <- jernbanedata %>%
-  stretch_tsibble(.init = 24, .step = 1)
+  stretch_tsibble(.init = 32, .step = 1)
 
 jernbanestretch_corona <- jernbanedata_corona %>%
-  stretch_tsibble(.init = 24, .step = 1)
+  stretch_tsibble(.init = 32, .step = 1)
 # Nu er det muligt at beregtne RMSE - Vær forsigtig at køre det hvis det
 # tager lang tid
 
@@ -515,23 +515,23 @@ glance(fit_ets) %>%
 fit_ets %>%
   filter(key == "International trafik i alt") %>%
   select(Auto) %>%
-  gg_tsresiduals(lag_max = 36)
+  gg_tsresiduals(lag_max = 16)
 
 fit_ets %>%
   filter(key == "Over Storebælt") %>%
   select(Auto) %>%
-  gg_tsresiduals(lag_max = 36)
+  gg_tsresiduals(lag_max = 16)
 
 # Residualanalyse – uden corona
 fit_ets_corona %>%
   filter(key == "International trafik i alt") %>%
   select(Auto) %>%
-  gg_tsresiduals(lag_max = 36)
+  gg_tsresiduals(lag_max = 16)
 
 fit_ets_corona %>%
   filter(key == "Over Storebælt") %>%
   select(Auto) %>%
-  gg_tsresiduals(lag_max = 36)
+  gg_tsresiduals(lag_max = 16)
 
 # Ljung-Box – inkl. corona
 augment(fit_ets) %>%
@@ -610,26 +610,26 @@ glance(fit_arima_corona) %>%
 fit_arima %>%
   filter(key == "International trafik i alt") %>%
   select(Auto) %>%
-  gg_tsresiduals(lag_max = 36) +
+  gg_tsresiduals(lag_max = 16) +
   labs(title = "Residualer – Auto ARIMA – International (inkl. corona)")
 
 fit_arima %>%
   filter(key == "Over Storebælt") %>%
   select(Auto) %>%
-  gg_tsresiduals(lag_max = 36) +
+  gg_tsresiduals(lag_max = 16) +
   labs(title = "Residualer – Auto ARIMA – Over Storebælt (inkl. corona)")
 
 # Residualanalyse – uden corona
 fit_arima_corona %>%
   filter(key == "International trafik i alt") %>%
   select(Auto) %>%
-  gg_tsresiduals(lag_max = 36) +
+  gg_tsresiduals(lag_max = 16) +
   labs(title = "Residualer – Auto ARIMA – International (uden corona)")
 
 fit_arima_corona %>%
   filter(key == "Over Storebælt") %>%
   select(Auto) %>%
-  gg_tsresiduals(lag_max = 36) +
+  gg_tsresiduals(lag_max = 16) +
   labs(title = "Residualer – Auto ARIMA – Over Storebælt (uden corona)")
 
 # Ljung-Box – inkl. corona
@@ -765,15 +765,36 @@ opsummering %>%
   kbl(caption = "Opsummering: Bedste og dårligste model per gruppe", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 
-# Time series cross validation
+# Time series cross validation med corona
 resultat_tscv <- jernbanestretch %>%
   model(
-    ARIMA = ARIMA(log(x1000_passagerer)),
-    ETS   = ETS(log(x1000_passagerer)),
+    ARIMA  = ARIMA(log(x1000_passagerer)),
+    ETS    = ETS(log(x1000_passagerer)),
     SNAIVE = SNAIVE(log(x1000_passagerer))
   ) %>%
   forecast(h = 4) %>%
-  accuracy(jernbanedata)
+  accuracy(jernbanedata) %>%
+  mutate(data = "Inkl. corona")
+
+# Time series cross validation uden corona
+resultat_tscv_corona <- jernbanestretch_corona %>%
+  model(
+    ARIMA  = ARIMA(log(x1000_passagerer)),
+    ETS    = ETS(log(x1000_passagerer)),
+    SNAIVE = SNAIVE(log(x1000_passagerer))
+  ) %>%
+  forecast(h = 4) %>%
+  accuracy(jernbanedata_corona) %>%
+  mutate(data = "Uden corona")
+
+
+# Samlet TSCV-tabel
+bind_rows(resultat_tscv, resultat_tscv_corona) %>%
+  select(data, .model, key, RMSE, MAE, MAPE, MASE) %>%
+  arrange(data, key, RMSE) %>%
+  kbl(caption = "Tabel: TSCV-modelsammenligning inkl. og uden corona", digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
 
 bind_rows(resultat, resultat_tscv) %>%
   select(.model, key, .type, RMSE, MAE, MAPE) %>%
@@ -786,7 +807,7 @@ actuals <- jernbanedata %>%
   as_tibble() %>%
   select(kvartal, key, actual = x1000_passagerer)
 
-# Figur 23: RMSE per horisont
+# Figur: RMSE per horisont
 jernbanestretch %>%
   model(
     ARIMA  = ARIMA(log(x1000_passagerer)),
@@ -813,39 +834,38 @@ jernbanestretch %>%
 
 
 
-
 # prædiktionsintervaller
 
 # prædiktionsintervaller for jernbanedata
-jernbanedata |>
+jernbanedata %>%
   model(
     ARIMA = ARIMA(log(x1000_passagerer)),
     ETS   = ETS(log(x1000_passagerer))
   ) |>
-  forecast(h = 4) |>
-  hilo(level = c(80, 95)) |>
+  forecast(h = 4) %>%
+  hilo(level = c(80, 95)) %>%
   unpack_hilo(c("80%", "95%"))
 
-jernbanedata_corona |>
+jernbanedata_corona %>%
   model(
     ARIMA = ARIMA(log(x1000_passagerer)),
     ETS   = ETS(log(x1000_passagerer))
   ) |>
-  forecast(h = 4) |>
-  hilo(level = c(80, 95)) |>
+  forecast(h = 4) %>%
+  hilo(level = c(80, 95)) %>%
   unpack_hilo(c("80%", "95%"))
 
 # prædiktionsintervaller visualisering afskærer den historiske del 
 # så plottet fokuserer på de seneste år og 
 # forecast-perioden — ellers drukner intervallerne i den lange historik.
 
-jernbanedata |>
+jernbanedata %>%
   model(
     ARIMA = ARIMA(log(x1000_passagerer)),
     ETS   = ETS(log(x1000_passagerer))
   ) |>
-  forecast(h = 4) |>
-  autoplot(jernbanedata |> filter_index("2020 Q1" ~ .),
+  forecast(h = 4) %>%
+  autoplot(jernbanedata %>% filter_index("2020 Q1" ~ .),
            level = c(80, 95)) +
   facet_wrap(~ key, scales = "free_y") +
   labs(title = "Forecast med prædiktionsintervaller (80% og 95%)",
