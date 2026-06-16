@@ -361,6 +361,18 @@ model_jernbane_corona %>%
   autoplot(`log(x1000_passagerer)`, color = 'gray') +
   geom_line(aes(y = season_adjust), colour = '#0072B2')
 
+# STL 4-panel dekompositionsplot – inkl. corona
+stl_comp %>%
+  autoplot() +
+  labs(title = "STL-dekomposition – inkl. corona (log-skala)")
+
+# STL 4-panel dekompositionsplot – uden corona
+stl_comp_corona %>%
+  autoplot() +
+  labs(title = "STL-dekomposition – uden corona (log-skala)")
+
+
+
 # Augment
 # Uden coronaperiode
 model_jernbane <- jernbanedata %>%
