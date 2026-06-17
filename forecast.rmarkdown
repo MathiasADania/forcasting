@@ -93,7 +93,7 @@ pacman::p_load(
 #| warning: false
 # Upload af pakker
 pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
-               ggplot2, feasts, fable, tsibbledata, forecast, fpp3,
+               ggplot2, feasts, fable, tsibbledata, fpp3,
                fabletools, knitr, ggpubr, gridExtra, GGally, slider,
                forecast, car, shiny, glue, broom, kableExtra, gt, seasonal,
                latex2exp, ggfortify, janitor, readxl)
@@ -111,7 +111,8 @@ prognosemodeller (ETS og ARIMA) med og uden coronaperioden.
 
 ## Data og dataforberedelse
 
-Datasættet indlæses fra Danmarks Statistiks tabel BANE25. Indekset er
+Datasættet indlæses fra Danmarks Statistiks tabel BANE25 og 
+Datasættet dækker perioden 2006k1 til og med 2026k1. Indekset er
 kvartaler, nøglen (`key`) er trafiktype, og responsvariablen er antallet
 af passagerer i 1.000. Der udvælges to relevante kategorier:
 international trafik i alt samt trafik over Storebælt.
