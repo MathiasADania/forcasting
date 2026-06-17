@@ -166,12 +166,6 @@ jernbanedata_corona <- jernbanedata %>%
 
 ## Tidsserieplot
 
-Der anvendes `autoplot()` til automatisk at skabe et visuelt billede af
-tidsserien. Her ses et sæsonbetonet mønster for både international trafik
-i alt og kategorien over Storebælt.
-
-
-
 ```{r}
 #| label: fig-autoplot-inkl
 #| fig-cap: "Jernbanepassagerer inkl. corona"
@@ -193,13 +187,6 @@ jernbanedata_corona %>%
   labs(title = "Jernbanepassagerer uden corona",
        y = "1.000 passagerer", x = NULL)
 ```
-
-
-
-Med `log()`-funktionen stabiliseres variansen i serien. Dette er
-hensigtsmæssigt i modeller, der antager konstant varians
-(homoskedasticitet).
-
 
 
 ```{r}
@@ -224,14 +211,7 @@ jernbanedata_corona %>%
        y = "log(1.000 passagerer)", x = NULL)
 ```
 
-
-
 ## Sæsonplot
-
-Med `gg_season()` undersøges de underliggende sæsonmønstre, og
-udviklingen kan ses på årsbasis.
-
-
 
 ```{r}
 #| label: fig-saeson-inkl
@@ -254,16 +234,11 @@ jernbanedata_corona %>%
   labs(title = "Sæsonplot uden corona",
        y = "1.000 passagerer", x = NULL)
 ```
-
 Sæsonplottene bekræfter et konsistent Q3 peak på tværs af alle år for 
 international trafik. For Over Storebælt er sæsonudslaget mindre synligt,
 da forskellen mellem Q1 & Q3 er mindre end for international trafik. 
 I det interpolerede datasæt fremstår alle år med næsten parallelle forløb,
 hvilket vidner om et homogent sæsonmønster uden strukturbrud.
-
-
-Med `gg_subseries()` ses det generelle mønster pr. kvartal.
-
 
 ```{r}
 #| label: fig-subserie-inkl
@@ -286,19 +261,11 @@ jernbanedata_corona %>%
   labs(title = "Subserie-plot uden corona",
        y = "1.000 passagerer", x = NULL)
 ```
-
 Begge serier viser et tydeligt sæsonmønster med toppe i tredje kvartal (Q3)
 og bund i første kvartal (Q1), samt opadgående trend fra 2006 til 2026
 med undtagelse af coronaperioden (2020-2021).
 
 ## ACF og PACF
-
-ACF måler korrelationen mellem en tidsserie og dens lag-værdier og
-fortæller, om tidligere observationer kan hjælpe med at forklare de
-nuværende. PACF viser, hvor mange tidligere værdier der direkte påvirker
-den nuværende observation; når PACF ikke længere er signifikant, findes
-AR-ordenen p.
-
 
 ```{r}
 #| label: fig-acf-int-inkl
@@ -361,12 +328,6 @@ Samlet begrunder dette kandidatmodeller med
 ARIMA(p,d,q)(P,D,Q)[4], hvor de konkrete ordener bestemmes via
 stationaritetstest og AICc-sammenligning.
 
-
-Med `gg_lag()` vises et scatterplot, hvor man kan aflæse, om der er en
-lineær sammenhæng mellem en observation og dens tidligere værdier. Jo
-tydeligere lineær sammenhæng, desto større autokorrelation.
-
-
 ```{r}
 #| label: fig-lag-osb-inkl
 #| echo: true
@@ -411,14 +372,7 @@ jernbanedata_corona %>%
   labs(x = "lag(x1000_passagerer, k)")
 ```
 
-
-
 ## Deskriptive statistikker
-
-Følgende metrikker giver hurtigt et overblik over fordelingen af
-passagertal for hver serie.
-
-
 
 ```{r}
 #| label: tbl-desk-inkl
@@ -477,13 +431,6 @@ samt opdeling i 2 seperate datasæt.
 
 ## STL-features: trend- og sæsonstyrke
 
-Her beregnes trend- og sæsonstyrke. De hjælper med at argumentere for,
-hvilke modelkomponenter der er nødvendige. En høj sæsonstyrke betyder
-eksempelvis, at en sæsonel model (SARIMA eller ETS med sæson) er
-påkrævet.
-
-
-
 ```{r}
 #| label: tbl-stl-inkl
 #| echo: true
@@ -515,16 +462,9 @@ til 0,908 og sæsonstyrken øges fra 0,513 til 0,800 uden corona.
 Dette betyder at pandemiens ekstreme udsving indikerer at sæsonkomponenter
 er nødvendige i både ETS & SARIMA.
 
-
 # Transformation
 
 ## Box-Cox og Guerrero
-
-Guerrero-metoden finder automatisk den optimale lambda-værdi. Box-Cox er
-en transformation, der stabiliserer variansen i serien og styres af
-lambda; herved bliver udslagene lige store gennem hele perioden.
-
-
 
 ```{r}
 #| label: tbl-guerrero-inkl
@@ -559,7 +499,6 @@ Det corona rensede datasæt giver et mere retvisende billede med lambda -0,606
 understøtter log transformation.
 Log transformationen fastholdes konsekvent for begge serier i al efterfølgende
 modellering og fable tilbagekalkulerer automatisk til originalskala ved forecast
-
 
 ```{r}
 #| label: fig-raa-vs-log-inkl
@@ -607,12 +546,6 @@ bind_rows(
 
 # Stationaritet og differentiering
 
-KPSS-testen afgør, om en tidsserie er stationær. Nulhypotesen er, at
-serien er stationær; en p-værdi under 0,05 indikerer, at
-differentiering er nødvendig.
-
-
-
 ```{r}
 #| label: tbl-kpss
 #| echo: true
@@ -623,14 +556,6 @@ jernbanedata %>%
   kbl(caption = "KPSS-test på log(passagerer) — H0: stationær",
       digits = 4, booktabs = TRUE)
 ```
-
-
-
-`nsdiffs` angiver, hvor mange sæsondifferentieringer (D) der er
-nødvendige for at gøre serien stationær. Returneres 1, skal der
-sæsondifferentieres for at fjerne sæsonmønsteret.
-
-
 
 ```{r}
 #| label: tbl-nsdiffs
@@ -726,15 +651,11 @@ jernbanedata %>%
   labs(title = "ACF/PACF – sæsondiff (D=1, lag=4) – Over Storebælt")
 ```
 
-
-
 Dobbelt differentiering udelades, da `unitroot_ndiffs` returnerer d=0
 efter D=1. Overdifferentiering forværrer modellen, og derfor anvendes
 kun D=1.
 
 # STL-dekomposition
-
-
 
 ```{r}
 #| label: stl-komponenter
@@ -851,8 +772,6 @@ model_jernbane_corona %>%
   autoplot()
 ```
 
-
-
 Guerrero estimerer lambda ved at minimere variationskoefficienten på
 tværs af sæsoner. Et lambda tæt på 0 bekræfter, at log er det rette valg,
 mens et lambda tæt på 1 betyder, at ingen transformation er nødvendig.
@@ -863,8 +782,6 @@ mens et lambda tæt på 1 betyder, at ingen transformation er nødvendig.
 
 Data deles i en træningsperiode (til og med 2024 Q4) og en testperiode
 (fra 2025 Q1 og frem) for både datasættet inkl. og uden corona.
-
-
 
 ```{r}
 #| label: traeningssplit
@@ -885,14 +802,7 @@ jernbane_corona_test <- jernbanedata_corona %>%
   filter_index("2025 Q1" ~ .)
 ```
 
-
-
 ## Benchmark (SNAIVE)
-
-Der opbygges en benchmark med `stretch_tsibble()`, som udvider
-træningsvinduet skridt for skridt. SNAIVE anvendes som referencemodel.
-
-
 
 ```{r}
 #| label: benchmark
@@ -915,12 +825,7 @@ jernbanestretch_corona %>%
   accuracy(jernbanedata_corona)
 ```
 
-
-
 ## ETS-modeller
-
-Der estimeres flere ETS-specifikationer: en automatisk valgt model samt
-udvalgte additive og multiplikative varianter.
 
 ```{r}
 #| label: ets-fit
@@ -1017,13 +922,6 @@ fit_ets_corona %>%
   gg_tsresiduals(lag_max = 16)
 ```
 
-
-
-Ljung-Box-testen anvendes til at teste, om residualerne er ukorrelerede.
-Lag sættes til 8 (svarende til 2×M ved kvartalsdata).
-
-
-
 ```{r}
 #| label: ljung-ets
 #| echo: true
@@ -1046,7 +944,6 @@ augment(fit_ets_corona) %>%
   filter(.model == "Auto", key == "Over Storebælt") %>%
   features(.innov, ljung_box, lag = 8, dof = 0) # Altid .innov for at tjekke
 ```
-
 Ljung-Box testen afslører en svaghed i auto ETS. inkl. corona forkastes H0
 for begge serier (international: lb = 17,2, p=0,028) hvilket indikerer 
 ukorrelerede residualer og ej komplet modellering af coronadynamikken. 
@@ -1057,11 +954,6 @@ over coronaforstyrrelsen.
 
 
 ## ARIMA-modeller
-
-Der estimeres en automatisk valgt ARIMA samt fire manuelt specificerede
-SARIMA-modeller, herunder den klassiske airline-model.
-
-
 
 ```{r}
 #| label: arima-fit
@@ -1089,13 +981,6 @@ fit_arima_corona <- jernbane_corona_train %>%
     M4   = ARIMA(log(x1000_passagerer) ~ 0 + pdq(2,1,0) + PDQ(0,1,1))
   )
 ```
-
-
-
-Det faktiske antal estimerede parametre fra Auto-modellen hentes og
-anvendes som frihedsgrader (dof) i Ljung-Box-testen.
-
-
 
 ```{r}
 #| label: arima-dof
@@ -1217,10 +1102,6 @@ fit_arima_corona %>%
   labs(title = "Residualer – Auto ARIMA – Over Storebælt (uden corona)")
 ```
 
-Residualerne testes for autokorrelation. Nulhypotesen er, at
-residualerne er ukorrelerede. Lag sættes til 8 (2×M ved kvartalsdata), og
-dof svarer til antallet af estimerede ARMA-parametre i Auto-modellen.
-
 ```{r}
 #| label: ljung-arima
 #| echo: true
@@ -1253,16 +1134,7 @@ hverken ETS eller ARIMA. sandsynligvis relateret til coronaforløbet og
 efterfølgende genopretningsdynamikker. Forecasts for international trafik bør
 derfor tolkes med ekstra forsigtighed og brede prædiktionsintervaller.
 
-
 ### Optimal ARIMA-søgning
-
-Ved at sætte `stepwise = FALSE` søges alle kombinationer (ikke kun
-stepwise-stien), og `approximation = FALSE` giver eksakt likelihood og
-dermed mere præcise AIC/BIC. `order_constraint` begrænser søgerummet, så
-beregningen ikke tager for lang tid. AICc sammenligner modeller på fit
-justeret for kompleksitet — lavere AICc er bedre.
-
-
 
 ```{r}
 #| label: arima-optimal-fit
@@ -1324,12 +1196,6 @@ komplekse datasæt med corona forstyrrelser.
 
 # Modelsammenligning
 
-`accuracy()` beregner fejlmål (RMSE, MAE, MAPE, MASE) på både trænings-
-og testdata. Træningsfejlen viser in-sample fit, mens testfejlen viser
-out-of-sample prædiktionsevne.
-
-
-
 ```{r}
 #| label: resultat
 #| echo: true
@@ -1348,13 +1214,9 @@ resultat <- bind_rows(
 cols <- c("familie", ".model", "key", ".type", "RMSE", "MAE", "MAPE", "MASE")
 ```
 
-
-
-Tabellerne A-H viser fejlmål opdelt på modeltype, datasæt og split. En
-MASE under 1 betyder, at modellen slår SNAIVE-benchmarken, hvilket er
-minimumskravet for en brugbar model.
-
-
+Tabellerne A-H viser fejlmål opdelt på modeltype, datasæt og split, 
+hvor en MASE under 1 indikerer, at modellen overgår SNAIVE-benchmarken 
+og dermed er brugbar.
 
 ```{r}
 #| label: tbl-A
@@ -1460,14 +1322,6 @@ resultat %>%
       booktabs = TRUE)
 ```
 
-
-
-`slice_min`/`slice_max` finder den model med lavest og højest RMSE pr.
-gruppe og giver et hurtigt overblik over, hvilke modeller der konsekvent
-præsterer bedst.
-
-
-
 ```{r}
 #| label: tbl-opsummering
 #| echo: true
@@ -1491,16 +1345,7 @@ opsummering %>%
       booktabs = TRUE)
 ```
 
-
-
 ## Time series cross validation
-
-TSCV udvider træningsvinduerne skridt for skridt og forecaster fire
-kvartaler frem (H=4). Dette giver et mere robust estimat af
-prognosefejlen end et enkelt train/test-split. SNAIVE bruges som
-benchmark; en god model bør have lavere RMSE end SNAIVE.
-
-
 
 ```{r}
 #| label: tscv
@@ -1554,11 +1399,6 @@ favoriserer SNAIVE.
 Corona perioden forringer evalueringsgrundlaget inkl. corona kraftigt, det 
 interpolerede datasæt giver et mere retvisende billede af modellernes relative
 præstation.
-
-RMSE pr. forecast-horisont viser, om prognosefejlen stiger markant med
-horisonten. SNAIVE inkluderes som reference for at vurdere, om modellerne
-tilfører værdi over tid.
-
 
 ```{r}
 #| label: actuals
@@ -1633,15 +1473,7 @@ jernbanestretch_corona %>%
   theme_minimal()
 ```
 
-
-
 # Forecasting og prædiktion
-
-`hilo()` beregner prædiktionsintervaller på 80 % og 95 %; et bredere
-interval betyder større usikkerhed. `unpack_hilo()` adskiller
-intervallerne i separate lower/upper-kolonner til tabelvisning.
-
-
 
 ```{r}
 #| label: tbl-pred-inkl
@@ -1683,14 +1515,6 @@ jernbanedata_corona %>%
       digits = 1, booktabs = TRUE)
 ```
 
-
-
-`filter_index` afskærer historikken, så prædiktionsintervallerne er
-visuelt tydelige. Begge modeller vises i samme plot til direkte
-sammenligning af forecast og usikkerhed.
-
-
-
 ```{r}
 #| label: fig-forecast
 #| echo: true
@@ -1709,6 +1533,7 @@ jernbanedata %>%
        y = "1.000 passagerer", x = NULL) +
   theme_minimal()
 ```
+
 Forecasts er baseret på modeller estimeret på det fulde datasæt (2006Q1-2026Q1)
 med en horisont på fire kvartaler til 2027Q1. Log transformationen medfører
 assymetriske prædiktionsintervaller på originalskalaen (log normal fordeling)
@@ -1723,12 +1548,6 @@ med den højere modelusikkerhed afspejlet i ljung-box resultaterne.
 
 # Sammenfatning og konklusion
 
-Nedenfor kombineres STL-styrker, COVID-behandling og bedste model i ét
-overblik pr. serie. Det gør det nemt at sammenligne på tværs af de to
-datasæt og de to tidsserier.
-
-
-
 ```{r}
 #| label: stl-features-samlet
 #| echo: true
@@ -1739,11 +1558,6 @@ stl_features <- bind_rows(
 ) %>%
   select(key, data, trend_strength, seasonal_strength_year)
 ```
-
-
-
-`slice_min` finder den model med lavest test-RMSE pr. serie og datasæt.
-
 
 
 ```{r}
@@ -1785,8 +1599,6 @@ sammenfatning %>%
   kbl(caption = "Sammenfatningsoversigt: Nøgletal per serie og datasæt",
       digits = 3, booktabs = TRUE)
 ```
-
-## Sammenfatning & Konklusion 
 
 Seriekarakteristika:
 Begge serier har stærke trendkomponenter (0,87-0,97). 
