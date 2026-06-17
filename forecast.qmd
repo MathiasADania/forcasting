@@ -28,7 +28,7 @@ header-includes:
   - \usepackage{booktabs} # Pænere tabeller
   - \usepackage{makecell} # Bedre celler i tabeller
   - \usepackage{pdfpages} # Mulighed for at inkludere PDF-sider
-  #- \AtBeginDocument{\includepdf[pages={1}]{Forside.pdf}} # Indsæt forside som første side
+  #- \AtBeginDocument{\includepdf[pagses={1}]{Forside.pdf}} # Indsæt forside som første side
 
 crossref:
   fig-prefix: ""  # Figur prefix 
@@ -83,7 +83,6 @@ pacman::p_load(
 \newpage 
 \pagenumbering{arabic} 
 \setcounter{page}{1}
-
 \newpage
 
 ```{r}
@@ -209,6 +208,8 @@ Begge serier viser en opadgående trend fra 2006 til 2019 med et markant dyk
 under coronaperioden i 2020. Log-transformationen stabiliserer variansen og gør 
 sæsonudslagene mere konstante over tid.
 
+\newpage
+
 ## Sæsonplot
 
 ```{r}
@@ -252,6 +253,8 @@ Begge serier viser et tydeligt sæsonmønster med toppe i tredje kvartal
 (Q3) og bund i første kvartal (Q1), samt opadgående trend fra 2006 til
 2026 med undtagelse af coronaperioden (2020-2021).
 
+\newpage
+
 ## ACF og PACF
 
 ```{r}
@@ -266,6 +269,7 @@ jernbanedata %>%
   gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
   labs(title = "ACF + PACF (log, inkl. corona)")
 ```
+
 
 ```{r}
 #| label: fig-acf-osb-inkl
@@ -320,6 +324,8 @@ Samlet begrunder dette kandidatmodeller med ARIMA(p,d,q)(P,D,Q)\[4\],
 hvor de konkrete ordener bestemmes via stationaritetstest og
 AICc-sammenligning.
 
+\newpage
+
 ```{r}
 #| label: fig-lag-osb-inkl
 #| echo: true
@@ -371,6 +377,7 @@ Lag-plottene viser sammenhængen mellem en observation og dens tidligere værdie
 En tydelig lineær sammenhæng ved lag 4 bekræfter det kvartalsvise sæsonmønster i 
 begge serier.
 
+\newpage
 
 ## Deskriptive statistikker
 
@@ -396,8 +403,7 @@ kør_begge_tbl(function(data, titel) {
       min    = min(x1000_passagerer,            na.rm = TRUE),
       max    = max(x1000_passagerer,            na.rm = TRUE)
     ) %>%
-   kbl(caption = paste0("Deskriptive statistikker – ", titel),
-    digits = 1, booktabs = TRUE) %>%
+   kbl(digits = 1, booktabs = TRUE) %>%
   kable_styling(latex_options = c("striped", "hold_position"))
   
 })
@@ -412,6 +418,8 @@ Den markant større spredning i International Trafik begrunder anvendelse
 af en varians stabiliserende transformation, samt opdeling i 2 seperate
 datasæt.
 
+\newpage
+
 ## STL-features: trend- og sæsonstyrke
 
 ```{r}
@@ -425,9 +433,7 @@ kør_begge_tbl(function(data, titel) {
   data %>%
     features(x1000_passagerer, feat_stl) %>%
     select(trend_strength, seasonal_strength_year) %>%
-    kbl(caption = paste0("Trend- og sæsonstyrke – ", titel),
-        digits   = 3,
-        booktabs = TRUE) %>%
+    kbl(digits   = 3, booktabs = TRUE) %>%
     kable_styling(latex_options = c("striped", "hold_position"))
 })
 ```
@@ -439,6 +445,8 @@ dæmper sæsonmønstret minimalt. Over storebælt er effekten mere markant,
 trend styrken stiger fra 0,866 til 0,908 og sæsonstyrken øges fra 0,513
 til 0,800 uden corona. Dette betyder at pandemiens ekstreme udsving
 indikerer at sæsonkomponenter er nødvendige i både ETS & SARIMA.
+
+\newpage
 
 # Transformation
 
@@ -455,9 +463,7 @@ kør_begge_tbl(function(data, titel) {
   data %>%
     features(x1000_passagerer, features = guerrero) %>%
     rename(Lambda_Guerrero = lambda_guerrero) %>%
-    kbl(caption = paste0("Guerrero-optimeret Box-Cox lambda – ", titel),
-        digits   = 3,
-        booktabs = TRUE) %>%
+    kbl(digits   = 3, booktabs = TRUE) %>%
     kable_styling(latex_options = c("striped", "hold_position"))
 })
 ```
@@ -541,6 +547,8 @@ Auto-ARIMA vælger ARIMA(1,0,0)(1,0,0)\[4\] og ARIMA(1,0,0)(0,0,1)\[4\]
 uden differentiering. På det corona-rensede datasæt, hvor
 trendstrukturen er renere, vælger Auto-ARIMA D = 1 for begge serier.
 
+\newpage
+
 ```{r}
 #| label: fig-diff-trin-int
 #| echo: true
@@ -567,6 +575,11 @@ jernbanedata %>%
   labs(title = "Differentieringstrin – International trafik i alt",
        y = NULL, x = NULL)
 ```
+Figuren viser fire differentieringstrin for International trafik i alt. Sæsondifferentiering (D=1, lag=4) fjerner det periodiske mønster og 
+giver en tilnærmelsesvis stationær serie, hvilket bekræfter at kun D=1
+er nødvendigt.
+
+\newpage
 
 ```{r}
 #| label: fig-acf-sdiff-int
@@ -580,6 +593,11 @@ jernbanedata %>%
                plot_type = "partial", lag_max = 24) +
   labs(title = "ACF/PACF – sæsondiff (D=1, lag=4) – International")
 ```
+
+ACF viser signifikante spike ved lag 4 og 8. Dette indikerer
+tilbageværende sæsonstruktur efter én sæsondifferentiering. PACF 
+afskæres derimod efter lag 4, hvilket peger på et sæsonelt AR(1)-led 
+og understøtter en SAR(1)-specifikation.
 
 ```{r}
 #| label: fig-acf-sdiff-osb
@@ -804,15 +822,16 @@ glance(fit_ets_corona) %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 
 ```
-
-### Residualanalyse – ETS
-
 Auto ETS har lavest AICc i alle fire grupper og er dermed den foretrukne
 model ved begge datasæt: 56,13 og 66,83 inkl. corona, -156,28 og -105,30
 uden corona. To forbehold er centrale: AICc kan kun sammenlignes inden
 for samme serie og datasæt (derfor er -156,28 ikke "bedre" end 56,13),
 Her måles kun in-sample-tilpasning — ikke forudsigelsesevne. Dette
 bliver gjort på testfejlene (RMSE)
+
+\newpage
+
+### Residualanalyse – ETS
 
 ```{r}
 #| label: fig-ets-residualer-inkl
@@ -834,6 +853,10 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
 
 ```
 
+Residualerne er overordnet hvid støj med et forventet udsving omkring
+2020 (corona). ACF viser ingen signifikante spike og histogrammet er
+tilnærmelsesvist normalfordelt.
+
 ```{r}
 #| label: fig-ets-residual
 #| echo: true
@@ -852,10 +875,13 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
   cat("\n\n")
 }
 ```
+Residualerne ligger tæt på nul uden systematiske mønstre og ACF er 
+inden for konfidensintervallet. Histogrammet er tilnærmelsesvist
+normalfordelt, hvilket indikerer en tilfredsstillende modeltilpasning.
 
 ```{r}
 #| label: ljung-ets
-#| echo: true
+#| echo: false
 #| eval: true
 #| fig-pos: "H"
 for (serie in c("International trafik i alt", "Over Storebælt")) {
@@ -995,6 +1021,12 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
 }
 ```
 
+####International trafik i alt
+Residualerne er overordnet hvid støj, men med et kraftigt coronaudsving i 2020 der skævvrider histogrammet. ACF viser ingen signifikante spike.
+
+####Over Storbælt
+Residualerne er centrerede omkring nul med et markant dyk i 2020, der ligeledes skævvrider histogrammet. ACF er inden for konfidensintervallet på alle lags.
+
 ```{r}
 #| label: fig-arima-res-int-uden
 #| echo: true
@@ -1015,7 +1047,7 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
 
 ```{r}
 #| label: ljung-arima
-#| echo: true
+#| echo: false
 #| eval: true
 #| fig-cap: ""
 #| results: asis
@@ -1483,3 +1515,12 @@ historiske mønstre ikke kan forudsige. Uden corona er MASE tæt på, men
 over 1. Corona interpolationen er analysens primære metodologiske
 forbehold, da interpolerede observationer er et skøn, og resultater på
 det rensede datasæt skal tolkes derefter.
+
+
+\newpage
+
+## Bilag
+
+\appendix
+### Figur oversigt
+###  {#sec-bilag-afsnit1}
