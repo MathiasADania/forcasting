@@ -2,7 +2,6 @@
 title: "Jernbanetransport af passagerer i Danmark"
 author: "Mathias Andersen, Nicklas Helmundt & Nikolaj Aaby Larsen"
 date: today
-lang: da # Sprog (dansk)
 
 format:
   pdf:
@@ -24,7 +23,8 @@ header-includes:
   - \usepackage{makecell} # Bedre celler i tabeller
   - \usepackage{pdfpages} # Mulighed for at inkludere PDF-sider
   #- \AtBeginDocument{\includepdf[pages={1}]{Forside.pdf}} # Indsæt forside som første side
-
+  - \babelprovide[main, import]{danish} #Dansk sprog
+  
 crossref:
   fig-prefix: ""  # Figur prefix 
   sec-prefix: ""  # Sektion prefix
@@ -1351,6 +1351,7 @@ opsummering %>%
 #| label: tscv
 #| echo: true
 #| eval: true
+
 # Time series cross validation med corona
 resultat_tscv <- jernbanestretch %>%
   model(
@@ -1420,6 +1421,7 @@ actuals_corona <- jernbanedata_corona %>%
 #| echo: true
 #| eval: true
 #| fig-cap: "RMSE per forecast-horisont (h=1–4) – inkl. corona"
+#| 
 jernbanestretch %>%
   model(
     ARIMA  = ARIMA(log(x1000_passagerer)),
