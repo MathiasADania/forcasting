@@ -101,7 +101,7 @@ pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
 
 
 
-## Indledning
+# Indledning
 
 Denne rapport analyserer kvartalsvise passagertal for jernbanetransport
 i Danmark. Der fokuseres på to serier: international trafik i alt samt
@@ -109,7 +109,7 @@ trafik over Storebælt. Formålet er at beskrive serierne, vurdere deres
 sæson- og trendstruktur og dernæst opbygge og sammenligne
 prognosemodeller (ETS og ARIMA) med og uden coronaperioden.
 
-## Data og dataforberedelse
+# Data og dataforberedelse
 
 Datasættet indlæses fra Danmarks Statistiks tabel BANE25 og 
 Datasættet dækker perioden 2006k1 til og med 2026k1. Indekset er
@@ -162,9 +162,9 @@ jernbanedata_corona <- jernbanedata %>%
 
 
 
-## Eksplorativ dataanalyse
+# Eksplorativ dataanalyse
 
-### Tidsserieplot
+## Tidsserieplot
 
 Der anvendes `autoplot()` til automatisk at skabe et visuelt billede af
 tidsserien. Her ses et sæsonbetonet mønster for både international trafik
@@ -226,7 +226,7 @@ jernbanedata_corona %>%
 
 
 
-### Sæsonplot
+## Sæsonplot
 
 Med `gg_season()` undersøges de underliggende sæsonmønstre, og
 udviklingen kan ses på årsbasis.
@@ -291,7 +291,7 @@ Begge serier viser et tydeligt sæsonmønster med toppe i tredje kvartal (Q3)
 og bund i første kvartal (Q1), samt opadgående trend fra 2006 til 2026
 med undtagelse af coronaperioden (2020-2021).
 
-### ACF og PACF
+## ACF og PACF
 
 ACF måler korrelationen mellem en tidsserie og dens lag-værdier og
 fortæller, om tidligere observationer kan hjælpe med at forklare de
@@ -413,7 +413,7 @@ jernbanedata_corona %>%
 
 
 
-### Deskriptive statistikker
+## Deskriptive statistikker
 
 Følgende metrikker giver hurtigt et overblik over fordelingen af
 passagertal for hver serie.
@@ -475,7 +475,7 @@ Trafik begrunder anvendelse af en varians stabiliserende transformation,
 samt opdeling i 2 seperate datasæt.
 
 
-### STL-features: trend- og sæsonstyrke
+## STL-features: trend- og sæsonstyrke
 
 Her beregnes trend- og sæsonstyrke. De hjælper med at argumentere for,
 hvilke modelkomponenter der er nødvendige. En høj sæsonstyrke betyder
@@ -516,9 +516,9 @@ Dette betyder at pandemiens ekstreme udsving indikerer at sæsonkomponenter
 er nødvendige i både ETS & SARIMA.
 
 
-## Transformation
+# Transformation
 
-### Box-Cox og Guerrero
+## Box-Cox og Guerrero
 
 Guerrero-metoden finder automatisk den optimale lambda-værdi. Box-Cox er
 en transformation, der stabiliserer variansen i serien og styres af
@@ -605,7 +605,7 @@ bind_rows(
 
 
 
-## Stationaritet og differentiering
+# Stationaritet og differentiering
 
 KPSS-testen afgør, om en tidsserie er stationær. Nulhypotesen er, at
 serien er stationær; en p-værdi under 0,05 indikerer, at
@@ -732,7 +732,7 @@ Dobbelt differentiering udelades, da `unitroot_ndiffs` returnerer d=0
 efter D=1. Overdifferentiering forværrer modellen, og derfor anvendes
 kun D=1.
 
-## STL-dekomposition
+# STL-dekomposition
 
 
 
@@ -857,9 +857,9 @@ Guerrero estimerer lambda ved at minimere variationskoefficienten på
 tværs af sæsoner. Et lambda tæt på 0 bekræfter, at log er det rette valg,
 mens et lambda tæt på 1 betyder, at ingen transformation er nødvendig.
 
-## Modellering
+# Modellering
 
-### Træningssplit
+## Træningssplit
 
 Data deles i en træningsperiode (til og med 2024 Q4) og en testperiode
 (fra 2025 Q1 og frem) for både datasættet inkl. og uden corona.
@@ -887,7 +887,7 @@ jernbane_corona_test <- jernbanedata_corona %>%
 
 
 
-### Benchmark (SNAIVE)
+## Benchmark (SNAIVE)
 
 Der opbygges en benchmark med `stretch_tsibble()`, som udvider
 træningsvinduet skridt for skridt. SNAIVE anvendes som referencemodel.
@@ -917,7 +917,7 @@ jernbanestretch_corona %>%
 
 
 
-### ETS-modeller
+## ETS-modeller
 
 Der estimeres flere ETS-specifikationer: en automatisk valgt model samt
 udvalgte additive og multiplikative varianter.
@@ -965,7 +965,7 @@ glance(fit_ets_corona) %>%
       booktabs = TRUE)
 ```
 
-#### Residualanalyse – ETS
+### Residualanalyse – ETS
 
 Auto ETS opnår laveste AICc for begge serier i begge datasæt. Inkl. corona 112,1
 (international) og 56,1 (Storebælt), med de manuelle varianter liggende 5-14 
@@ -1056,7 +1056,7 @@ Dette er sandsynligvis grundet kompleks dynamik i international rejseadfærd ud
 over coronaforstyrrelsen.
 
 
-### ARIMA-modeller
+## ARIMA-modeller
 
 Der estimeres en automatisk valgt ARIMA samt fire manuelt specificerede
 SARIMA-modeller, herunder den klassiske airline-model.
@@ -1167,7 +1167,7 @@ Uden corona vælger auto ARIMA: ARIMA(0,0,1)(0,1,0)[4] med drift (international)
 og ARIMA(1,0,0)(0,1,2)[4] (Storebælt). Begge med D=1, konsistent med en 
 tydeligere sæsontrend. 
 
-#### Residualanalyse – ARIMA
+### Residualanalyse – ARIMA
 
 ```{r}
 #| label: fig-arima-res-int-inkl
@@ -1254,7 +1254,7 @@ efterfølgende genopretningsdynamikker. Forecasts for international trafik bør
 derfor tolkes med ekstra forsigtighed og brede prædiktionsintervaller.
 
 
-#### Optimal ARIMA-søgning
+### Optimal ARIMA-søgning
 
 Ved at sætte `stepwise = FALSE` søges alle kombinationer (ikke kun
 stepwise-stien), og `approximation = FALSE` giver eksakt likelihood og
@@ -1322,7 +1322,7 @@ auto allerede finder det globale optimum.
 Resultaterne bekræfter at stepwise søgning ikke altid er tilstrækkeligt på
 komplekse datasæt med corona forstyrrelser.
 
-## Modelsammenligning
+# Modelsammenligning
 
 `accuracy()` beregner fejlmål (RMSE, MAE, MAPE, MASE) på både trænings-
 og testdata. Træningsfejlen viser in-sample fit, mens testfejlen viser
@@ -1493,7 +1493,7 @@ opsummering %>%
 
 
 
-### Time series cross validation
+## Time series cross validation
 
 TSCV udvider træningsvinduerne skridt for skridt og forecaster fire
 kvartaler frem (H=4). Dette giver et mere robust estimat af
@@ -1635,7 +1635,7 @@ jernbanestretch_corona %>%
 
 
 
-## Forecasting og prædiktion
+# Forecasting og prædiktion
 
 `hilo()` beregner prædiktionsintervaller på 80 % og 95 %; et bredere
 interval betyder større usikkerhed. `unpack_hilo()` adskiller
@@ -1721,7 +1721,7 @@ stabil, moderat vækst for storeblælt konsistent med lavere trendstyrke.
 For international trafik er 80% & 95% prædiktionsintervallerne brede, konsistent
 med den højere modelusikkerhed afspejlet i ljung-box resultaterne.
 
-## Sammenfatning og konklusion
+# Sammenfatning og konklusion
 
 Nedenfor kombineres STL-styrker, COVID-behandling og bedste model i ét
 overblik pr. serie. Det gør det nemt at sammenligne på tværs af de to
@@ -1786,7 +1786,7 @@ sammenfatning %>%
       digits = 3, booktabs = TRUE)
 ```
 
-### Sammenfatning & Konklusion 
+## Sammenfatning & Konklusion 
 
 Seriekarakteristika:
 Begge serier har stærke trendkomponenter (0,87-0,97). 
