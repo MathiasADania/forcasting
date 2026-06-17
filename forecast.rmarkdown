@@ -55,6 +55,8 @@ pacman::p_load(
 
 
 
+
+
 <!-- Forklaring: -->
 
 <!-- # bruges til kapitler. Hvert nyt kapitel starter med #. -->
@@ -85,6 +87,8 @@ pacman::p_load(
 
 
 
+
+
 ```{r}
 #| label: pakker-analyse
 #| echo: false
@@ -98,6 +102,8 @@ pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
                forecast, car, shiny, glue, broom, kableExtra, kable, gt, seasonal,
                latex2exp, ggfortify, janitor, readxl)
 ```
+
+
 
 
 
@@ -116,6 +122,8 @@ Datasættet dækker perioden 2006k1 til og med 2026k1. Indekset er
 kvartaler, nøglen (`key`) er trafiktype, og responsvariablen er antallet
 af passagerer i 1.000. Der udvælges to relevante kategorier:
 international trafik i alt samt trafik over Storebælt.
+
+
 
 
 
@@ -139,10 +147,14 @@ jernbanedata <- jernbanedata %>%
   as_tsibble(index = kvartal, key = key)
 ```
 
+
+
 Der laves også et datasæt uden coronaperioden, da nedlukningerne ikke
 betragtes som et gentagende fænomen. Her anvendes `forecast::na.interp()`
 til at udfylde NA-felterne med en lineær interpolation mellem perioden
 før og efter corona.
+
+
 
 ```{r}
 #| label: data-uden-corona
@@ -180,9 +192,13 @@ kør_begge_tbl <- function(f) {
 }
 ```
 
+
+
 # Eksplorativ dataanalyse
 
 ## Tidsserieplot
+
+
 
 
 ```{r}
@@ -211,7 +227,11 @@ kør_begge(function(data, titel) {
          x     = NULL)
 })
 ```
+
+
 ## Sæsonplot
+
+
 
 ```{r}
 #| label: fig-saeson-inkl
@@ -226,11 +246,15 @@ kør_begge(function(data, titel) {
          x     = NULL)
 })
 ```
+
+
 Sæsonplottene bekræfter et konsistent Q3 peak på tværs af alle år for 
 international trafik. For Over Storebælt er sæsonudslaget mindre synligt,
 da forskellen mellem Q1 & Q3 er mindre end for international trafik. 
 I det interpolerede datasæt fremstår alle år med næsten parallelle forløb,
 hvilket vidner om et homogent sæsonmønster uden strukturbrud.
+
+
 
 
 ```{r}
@@ -246,11 +270,15 @@ kør_begge(function(data, titel) {
          x     = NULL)
 })
 ```
+
+
 Begge serier viser et tydeligt sæsonmønster med toppe i tredje kvartal (Q3)
 og bund i første kvartal (Q1), samt opadgående trend fra 2006 til 2026
 med undtagelse af coronaperioden (2020-2021).
 
 ## ACF og PACF
+
+
 
 ```{r}
 #| label: fig-acf-int-inkl
@@ -300,6 +328,8 @@ jernbanedata_corona %>%
   labs(title = "ACF + PACF – Over Storebælt (log, uden corona)")
 ```
 
+
+
 ACF Plottene for rådata (Log skala) viser lag som, eksponentiel aftagen uden
 klart cutoff, som er normalt for ikke stationære serier med trend.
 Signifikante toppe optræder ved lag 4 & 8. (kvartalsvis sæsonperiode)
@@ -312,6 +342,8 @@ AR-komponent.
 Samlet begrunder dette kandidatmodeller med
 ARIMA(p,d,q)(P,D,Q)[4], hvor de konkrete ordener bestemmes via
 stationaritetstest og AICc-sammenligning.
+
+
 
 
 ```{r}
@@ -358,7 +390,11 @@ jernbanedata_corona %>%
   labs(x = "lag(x1000_passagerer, k)")
 ```
 
+
+
 ## Deskriptive statistikker
+
+
 
 ```{r}
 #| label: tbl-desk-inkl
@@ -387,6 +423,8 @@ kør_begge_tbl(function(data, titel) {
 })
 ```
 
+
+
 International trafik i alt viser et gennemsnit på 3076 passagerer og en 
 varianskoeffecient på 29% (SD=893), med et spænd fra 619 til 5.315 drevet af
 coronanedgangen. 
@@ -399,6 +437,8 @@ samt opdeling i 2 seperate datasæt.
 
 
 ## STL-features: trend- og sæsonstyrke
+
+
 
 ```{r}
 #| label: tbl-stl-inkl
@@ -415,6 +455,8 @@ kør_begge_tbl(function(data, titel) {
 })
 ```
 
+
+
 STL features bekræfter de visuelle observationer kvantitativt.
 International trafik i alt har høj trend styrke 
 (0,965 & 0,962 inkl/ekskl. corona) og sæsonstyrke (0,813/0,856) hvor
@@ -427,6 +469,8 @@ er nødvendige i både ETS & SARIMA.
 # Transformation
 
 ## Box-Cox og Guerrero
+
+
 
 ```{r}
 #| label: tbl-guerrero-inkl
@@ -444,6 +488,8 @@ kør_begge_tbl(function(data, titel) {
 })
 ```
 
+
+
 Guerrero metoden estimerer inkl. corona en lambda på 0,855 (international) og
 Lambda 2,00 (storebælt). Disse værdier er dog kunstigt oppustede af 
 coronaperiodens udsving, og er ikke repræsentative for den underliggende varians
@@ -453,6 +499,8 @@ Det corona rensede datasæt giver et mere retvisende billede med lambda -0,606
 understøtter log transformation.
 Log transformationen fastholdes konsekvent for begge serier i al efterfølgende
 modellering og fable tilbagekalkulerer automatisk til originalskala ved forecast
+
+
 
 ```{r}
 #| label: fig-raa-vs-log-inkl
@@ -477,7 +525,11 @@ kør_begge(function(data, titel) {
 })
 ```
 
+
+
 # Stationaritet og differentiering
+
+
 
 
 ```{r}
@@ -525,6 +577,8 @@ jernbanedata %>%
       digits = 0, booktabs = TRUE)
 ```
 
+
+
 KPSS testen kan ikke afvise stationaritets hypotesen (P > 0,10) for nogen serie
 på log skala. trods synlig opadgående trend, afvises den ikke som ikke stationær
 Dette skyldes coronaperiodens dyk og efterfølgende genopretning der skaber et 
@@ -533,6 +587,8 @@ corona, og Auto-ARIMA vælger ARIMA(1,0,0)(1,0,0)[4] og ARIMA(1,0,0)(0,0,1)[4]
 uden differentiering.
 På det corona-rensede datasæt, hvor trendstrukturen er renere, 
 vælger Auto-ARIMA D = 1 for begge serier.
+
+
 
 
 ```{r}
@@ -585,11 +641,15 @@ jernbanedata %>%
   labs(title = "ACF/PACF – sæsondiff (D=1, lag=4) – Over Storebælt")
 ```
 
+
+
 Dobbelt differentiering udelades, da `unitroot_ndiffs` returnerer d=0
 efter D=1. Overdifferentiering forværrer modellen, og derfor anvendes
 kun D=1.
 
 # STL-dekomposition
+
+
 
 ```{r}
 #| label: stl-komponenter
@@ -636,6 +696,8 @@ kør_begge(function(data, titel) {
          x     = NULL)
 })
 ```
+
+
 STL dekompositioner identificerer trend, sæson og remainder for begge serier.
 Trendkomponenten viser stabil vækst i international trafik frem til 2019 med et
 markant dyk i 2020 (corona). Over storebælt har en mere jævn trend med mindre 
@@ -644,6 +706,8 @@ Sæsonkomponenten er periodisk og stabil for begge serier, hvilket er særlig
 tydeligt for international trafik. Remainder komponenten afslører coronaperioden
 som et klart ikke sæsonalt strukturbrud, som er mest markant i 2020 Q2 og
 understøtter konstruktion af det interpolerede datasæt.
+
+
 
 
 ```{r}
@@ -675,6 +739,8 @@ kør_begge(function(data, titel) {
          x     = NULL)
 })
 ```
+
+
 Guerrero estimerer lambda ved at minimere variationskoefficienten på
 tværs af sæsoner. Et lambda tæt på 0 bekræfter, at log er det rette valg,
 mens et lambda tæt på 1 betyder, at ingen transformation er nødvendig.
@@ -685,6 +751,8 @@ mens et lambda tæt på 1 betyder, at ingen transformation er nødvendig.
 
 Data deles i en træningsperiode (til og med 2024 Q4) og en testperiode
 (fra 2025 Q1 og frem) for både datasættet inkl. og uden corona.
+
+
 
 ```{r}
 #| label: traeningssplit
@@ -705,7 +773,11 @@ jernbane_corona_test <- jernbanedata_corona %>%
   filter_index("2025 Q1" ~ .)
 ```
 
+
+
 ## Benchmark (SNAIVE)
+
+
 
 ```{r}
 #| label: benchmark
@@ -729,7 +801,11 @@ kør_begge_tbl(function(data, titel) {
 })
 ```
 
+
+
 ## ETS-modeller
+
+
 
 ```{r}
 #| label: ets-fit
@@ -771,12 +847,16 @@ glance(fit_ets_corona) %>%
       booktabs = TRUE)
 ```
 
+
+
 ### Residualanalyse – ETS
 
 Auto ETS opnår laveste AICc for begge serier i begge datasæt. Inkl. corona 112,1
 (international) og 56,1 (Storebælt), med de manuelle varianter liggende 5-14 
 enheder højere, og uden corona -105,1 og -155,9, markant lavere. Dette afspejler
 reduceret modelusikkerhed. AICc værdier er kun sammenlignelige for samme datasæt
+
+
 
 
 ```{r}
@@ -843,6 +923,8 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
   cat("\n\n")
 }
 ```
+
+
 Ljung-Box testen afslører en svaghed i auto ETS. inkl. corona forkastes H0
 for begge serier (international: lb = 17,2, p=0,028) hvilket indikerer 
 ukorrelerede residualer og ej komplet modellering af coronadynamikken. 
@@ -853,6 +935,8 @@ over coronaforstyrrelsen.
 
 
 ## ARIMA-modeller
+
+
 
 
 ```{r}
@@ -922,6 +1006,8 @@ glance(fit_arima_corona) %>%
       booktabs = TRUE)
 ```
 
+
+
 Inkl. corona vælger auto ARIMA: ARIMA(1,0,0)(1,0,0)[4] for international trafik
 (AICc = 5,41), og ARIMA(1,0,0)(0,0,1)[4] for storebælt (AICc = -59,8). Begge
 stationære (d=D=0), som er konsistent med stationaritetstestene.
@@ -935,6 +1021,8 @@ og ARIMA(1,0,0)(0,1,2)[4] (Storebælt). Begge med D=1, konsistent med en
 tydeligere sæsontrend. 
 
 ### Residualanalyse – ARIMA
+
+
 
 ```{r}
 #| label: fig-arima-res-int-inkl
@@ -991,6 +1079,8 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
 }
 ```
 
+
+
 ARIMA residualerne er delvist bedre end ETS. For storebælt er residualerne 
 marginalt ikke signifikante inkl. corona (lb=11,0 & p=0,052) og klart 
 white noise uden corona (lb=5,1 & p=0,401). For international trafik forkastes
@@ -1001,6 +1091,8 @@ efterfølgende genopretningsdynamikker. Forecasts for international trafik bør
 derfor tolkes med ekstra forsigtighed og brede prædiktionsintervaller.
 
 ### Optimal ARIMA-søgning
+
+
 
 ```{r}
 #| label: arima-optimal-fit
@@ -1040,6 +1132,8 @@ for (fit in list(fit_arima_optimal, fit_arima_optimal_corona)) {
 }
 ```
 
+
+
 Den exhaustive søgning forbedrer AICc i alle tilfælde.
 Inkl. Corona: International trafik fra 5,41 til -4,75 (-10,2 enheder) & 
 Storebælt fra -59,8 til -75,1 (-15,3 enheder). 
@@ -1050,6 +1144,8 @@ Resultaterne bekræfter at stepwise søgning ikke altid er tilstrækkeligt på
 komplekse datasæt med corona forstyrrelser.
 
 # Modelsammenligning
+
+
 
 ```{r}
 #| label: resultat
@@ -1089,9 +1185,13 @@ resultat <- bind_rows(
   mutate(across(where(is.numeric), ~ round(.x, 2)))
 ```
 
+
+
 Tabellerne A-H viser fejlmål opdelt på modeltype, datasæt og split, 
 hvor en MASE under 1 indikerer, at modellen overgår SNAIVE-benchmarken 
 og dermed er brugbar.
+
+
 
 ```{r}
 #| label: klarøring
@@ -1135,9 +1235,13 @@ for (i in seq_len(nrow(kombinationer))) {
 }
 ```
 
+
+
 `slice_min`/`slice_max` finder den model med lavest og højest RMSE pr.
 gruppe og giver et hurtigt overblik over, hvilke modeller der konsekvent
 præsterer bedst.
+
+
 
 ```{r}
 #| label: tbl-opsummering
@@ -1163,7 +1267,11 @@ opsummering %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
+
+
 ## Time series cross validation
+
+
 
 ```{r}
 #| label: tscv
@@ -1204,6 +1312,8 @@ bind_rows(resultat_tscv, resultat_tscv_corona) %>%
 
 ```
 
+
+
 TSCV er den metodisk mest robuste evaluering. En central begrænsning er at ingen
 model opnår MASE < 1 på nogen kombination, Det er altså ikke alle modeller der 
 slår SNAIVE benchmark modellen.
@@ -1217,6 +1327,8 @@ favoriserer SNAIVE.
 Corona perioden forringer evalueringsgrundlaget inkl. corona kraftigt, det 
 interpolerede datasæt giver et mere retvisende billede af modellernes relative
 præstation.
+
+
 
 ```{r}
 #| label: actuals
@@ -1273,7 +1385,11 @@ kør_begge(function(data, titel) {
 })
 ```
 
+
+
 # Forecasting og prædiktion
+
+
 
 ```{r}
 #| label: tbl-pred-inkl
@@ -1347,6 +1463,8 @@ kør_begge(function(data, titel) {
 })
 ```
 
+
+
 Forecasts er baseret på modeller estimeret på det fulde datasæt (2006Q1-2026Q1)
 med en horisont på fire kvartaler til 2027Q1. Log transformationen medfører
 assymetriske prædiktionsintervaller på originalskalaen (log normal fordeling)
@@ -1361,6 +1479,8 @@ med den højere modelusikkerhed afspejlet i ljung-box resultaterne.
 
 # Sammenfatning og konklusion
 
+
+
 ```{r}
 #| label: stl-features-samlet
 #| echo: true
@@ -1371,7 +1491,6 @@ stl_features <- bind_rows(
 ) %>%
   select(key, data, trend_strength, seasonal_strength_year)
 ```
-
 
 ```{r}
 #| label: bedste-model
@@ -1413,6 +1532,8 @@ sammenfatning %>%
       digits = 2, booktabs = TRUE) %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
+
+
 
 Seriekarakteristika:
 Begge serier har stærke trendkomponenter (0,87-0,97). 
