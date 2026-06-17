@@ -91,10 +91,10 @@ pacman::p_load(
 pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
                ggplot2, feasts, fable, tsibbledata, forecast, fpp3,
                fabletools, knitr, ggpubr, gridExtra, GGally, slider,
-               forecast, car, shiny, glue, broom, kableExtra, gt, seasonal,
+               car, shiny, glue, broom, kableExtra, gt, seasonal,
                latex2exp, ggfortify, janitor, readxl)
 ```
-
+ 
 ## Indledning
 
 Denne rapport analyserer kvartalsvise passagertal for jernbanetransport
@@ -111,18 +111,19 @@ af passagerer i 1.000. Der udvælges to relevante kategorier:
 international trafik i alt samt trafik over Storebælt.
 
 ```{r}
-#| label: indlaes-data
+#| label: indlæs-data
 #| message: false
 #| warning: false
-# Indhentning af data
-jernbanedata <- read_excel("data/jernbanetransport af passagerer.xlsx",
+jernbanedata_rå <- read_excel("data/jernbanetransport af passagerer.xlsx",
                            sheet = "BANE25"
                            )
+```
 
-# Dataforberedelse
-# Her forberedes datasættet - Der vælges index, key og respons bliver
-# passagerer. Derudover udvælges relevante key-kategorier
-jernbanedata <- jernbanedata %>%
+```{r}
+#| label: klargøring-data
+#| message: false
+#| warning: false
+jernbanedata <- jernbanedata_rå %>%
   clean_names() %>%
   mutate(kvartal = str_replace(kvartal, "K", "Q")) %>%
   mutate(kvartal = yearquarter(kvartal)) %>%
@@ -147,9 +148,9 @@ jernbanedata_corona <- jernbanedata %>%
   ungroup()
 ```
 
-## Eksplorativ dataanalyse
+# Eksplorativ dataanalyse
 
-### Tidsserieplot
+## Tidsserieplot
 
 Der anvendes `autoplot()` til automatisk at skabe et visuelt billede af
 tidsserien. Her ses et sæsonbetonet mønster for både international trafik
@@ -203,7 +204,7 @@ jernbanedata_corona %>%
        y = "log(1.000 passagerer)", x = NULL)
 ```
 
-### Sæsonplot
+## Sæsonplot
 
 Med `gg_season()` undersøges de underliggende sæsonmønstre, og
 udviklingen kan ses på årsbasis.
@@ -254,7 +255,7 @@ jernbanedata_corona %>%
        y = "1.000 passagerer", x = NULL)
 ```
 
-### ACF og PACF
+## ACF og PACF
 
 ACF måler korrelationen mellem en tidsserie og dens lag-værdier og
 fortæller, om tidligere observationer kan hjælpe med at forklare de
@@ -358,7 +359,7 @@ jernbanedata_corona %>%
   labs(x = "lag(x1000_passagerer, k)")
 ```
 
-### Deskriptive statistikker
+## Deskriptive statistikker
 
 Følgende metrikker giver hurtigt et overblik over fordelingen af
 passagertal for hver serie.
@@ -407,7 +408,7 @@ jernbanedata_corona %>%
       booktabs = TRUE)
 ```
 
-### STL-features: trend- og sæsonstyrke
+## STL-features: trend- og sæsonstyrke
 
 Her beregnes trend- og sæsonstyrke. De hjælper med at argumentere for,
 hvilke modelkomponenter der er nødvendige. En høj sæsonstyrke betyder
@@ -436,9 +437,9 @@ jernbanedata_corona %>%
       booktabs = TRUE)
 ```
 
-## Transformation
+# Transformation
 
-### Box-Cox og Guerrero
+## Box-Cox og Guerrero
 
 Guerrero-metoden finder automatisk den optimale lambda-værdi. Box-Cox er
 en transformation, der stabiliserer variansen i serien og styres af
@@ -510,7 +511,7 @@ bind_rows(
        y = NULL, x = NULL)
 ```
 
-## Stationaritet og differentiering
+# Stationaritet og differentiering
 
 KPSS-testen afgør, om en tidsserie er stationær. Nulhypotesen er, at
 serien er stationær; en p-værdi under 0,05 indikerer, at
@@ -619,7 +620,7 @@ Dobbelt differentiering udelades, da `unitroot_ndiffs` returnerer d=0
 efter D=1. Overdifferentiering forværrer modellen, og derfor anvendes
 kun D=1.
 
-## STL-dekomposition
+# STL-dekomposition
 
 ```{r}
 #| label: stl-komponenter
@@ -731,9 +732,9 @@ Guerrero estimerer lambda ved at minimere variationskoefficienten på
 tværs af sæsoner. Et lambda tæt på 0 bekræfter, at log er det rette valg,
 mens et lambda tæt på 1 betyder, at ingen transformation er nødvendig.
 
-## Modellering
+# Modellering
 
-### Træningssplit
+## Træningssplit
 
 Data deles i en træningsperiode (til og med 2024 Q4) og en testperiode
 (fra 2025 Q1 og frem) for både datasættet inkl. og uden corona.
@@ -757,7 +758,7 @@ jernbane_corona_test <- jernbanedata_corona %>%
   filter_index("2025 Q1" ~ .)
 ```
 
-### Benchmark (SNAIVE)
+## Benchmark (SNAIVE)
 
 Der opbygges en benchmark med `stretch_tsibble()`, som udvider
 træningsvinduet skridt for skridt. SNAIVE anvendes som referencemodel.
@@ -783,7 +784,7 @@ jernbanestretch_corona %>%
   accuracy(jernbanedata_corona)
 ```
 
-### ETS-modeller
+## ETS-modeller
 
 Der estimeres flere ETS-specifikationer: en automatisk valgt model samt
 udvalgte additive og multiplikative varianter.
@@ -831,7 +832,7 @@ glance(fit_ets_corona) %>%
       booktabs = TRUE)
 ```
 
-#### Residualanalyse – ETS
+### Residualanalyse – ETS
 
 ```{r}
 #| label: fig-ets-res-int-inkl
@@ -903,7 +904,7 @@ augment(fit_ets_corona) %>%
   features(.innov, ljung_box, lag = 8, dof = 0) # Altid .innov for at tjekke
 ```
 
-### ARIMA-modeller
+## ARIMA-modeller
 
 Der estimeres en automatisk valgt ARIMA samt fire manuelt specificerede
 SARIMA-modeller, herunder den klassiske airline-model.
@@ -996,7 +997,7 @@ glance(fit_arima_corona) %>%
       booktabs = TRUE)
 ```
 
-#### Residualanalyse – ARIMA
+### Residualanalyse – ARIMA
 
 ```{r}
 #| label: fig-arima-res-int-inkl
@@ -1073,7 +1074,7 @@ augment(fit_arima_corona) %>%
   features(.innov, ljung_box, lag = 8, dof = dof_corona_osb)
 ```
 
-#### Optimal ARIMA-søgning
+### Optimal ARIMA-søgning
 
 Ved at sætte `stepwise = FALSE` søges alle kombinationer (ikke kun
 stepwise-stien), og `approximation = FALSE` giver eksakt likelihood og
@@ -1130,7 +1131,7 @@ glance(fit_arima_optimal_corona) %>%
       booktabs = TRUE)
 ```
 
-## Modelsammenligning
+# Modelsammenligning
 
 `accuracy()` beregner fejlmål (RMSE, MAE, MAPE, MASE) på både trænings-
 og testdata. Træningsfejlen viser in-sample fit, mens testfejlen viser
@@ -1289,7 +1290,7 @@ opsummering %>%
       booktabs = TRUE)
 ```
 
-### Time series cross validation
+## Time series cross validation
 
 TSCV udvider træningsvinduerne skridt for skridt og forecaster fire
 kvartaler frem (H=4). Dette giver et mere robust estimat af
@@ -1412,7 +1413,7 @@ jernbanestretch_corona %>%
   theme_minimal()
 ```
 
-## Forecasting og prædiktion
+# Forecasting og prædiktion
 
 `hilo()` beregner prædiktionsintervaller på 80 % og 95 %; et bredere
 interval betyder større usikkerhed. `unpack_hilo()` adskiller
@@ -1481,7 +1482,7 @@ jernbanedata %>%
   theme_minimal()
 ```
 
-## Sammenfatning og konklusion
+# Sammenfatning og konklusion
 
 Nedenfor kombineres STL-styrker, COVID-behandling og bedste model i ét
 overblik pr. serie. Det gør det nemt at sammenligne på tværs af de to
