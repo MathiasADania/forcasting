@@ -151,6 +151,7 @@ jernbanedata_corona <- jernbanedata %>%
 #| label: setup-funktioner
 #| echo: false
 #| eval: true
+#| fig-pos: "H"
 # til plots
 kør_begge <- function(f) {
   gridExtra::grid.arrange(
@@ -178,6 +179,7 @@ kør_begge_tbl <- function(f) {
 ```{r}
 #| label: fig-autoplot-inkl
 #| fig-cap: "Jernbanepassagerer"
+#| fig-pos: "H"
 # Autoplot af passagertal inkl. corona
 kør_begge(function(data, titel) {
   data %>%
@@ -193,6 +195,7 @@ kør_begge(function(data, titel) {
 #| echo: true
 #| eval: true
 #| fig-cap: "Log-transformerede jernbanepassagerer"
+#| fig-pos: "H"
 kør_begge(function(data, titel) {
   data %>%
     autoplot(log(x1000_passagerer)) +
@@ -209,6 +212,7 @@ kør_begge(function(data, titel) {
 #| echo: true
 #| eval: true
 #| fig-cap: "Sæsonplot"
+#| fig-pos: "H"
 kør_begge(function(data, titel) {
   data %>%
     gg_season(x1000_passagerer) +
@@ -230,6 +234,7 @@ strukturbrud.
 #| echo: true
 #| eval: true
 #| fig-cap: "Subserie-plot"
+#| fig-pos: "H"
 kør_begge(function(data, titel) {
   data %>%
     gg_subseries(x1000_passagerer) +
@@ -250,11 +255,12 @@ Begge serier viser et tydeligt sæsonmønster med toppe i tredje kvartal
 #| echo: true
 #| eval: true
 #| fig-cap: "ACF + PACF – International trafik i alt (log, inkl. corona)"
+#| fig-pos: "H"
 jernbanedata %>%
   filter(key == "International trafik i alt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
   gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
-  labs(title = "ACF + PACF – International trafik i alt (log, inkl. corona)")
+  labs(title = "ACF + PACF (log, inkl. corona)")
 ```
 
 ```{r}
@@ -262,11 +268,13 @@ jernbanedata %>%
 #| echo: true
 #| eval: true
 #| fig-cap: "ACF + PACF – Over Storebælt (log, inkl. corona)"
+#| fig-pos: "H"
+
 jernbanedata %>%
   filter(key == "Over Storebælt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
   gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
-  labs(title = "ACF + PACF – Over Storebælt (log, inkl. corona)")
+  labs(title = "ACF + PACF (log, inkl. corona)")
 ```
 
 ```{r}
@@ -274,11 +282,12 @@ jernbanedata %>%
 #| echo: true
 #| eval: true
 #| fig-cap: "ACF + PACF – International trafik i alt (log, uden corona)"
+#| fig-pos: "H"
 jernbanedata_corona %>%
   filter(key == "International trafik i alt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
   gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
-  labs(title = "ACF + PACF – International trafik i alt (log, uden corona)")
+  labs(title = "ACF + PACF (log, uden corona)")
 ```
 
 ```{r}
@@ -286,11 +295,12 @@ jernbanedata_corona %>%
 #| echo: true
 #| eval: true
 #| fig-cap: "ACF + PACF – Over Storebælt (log, uden corona)"
+#| fig-pos: "H"
 jernbanedata_corona %>%
   filter(key == "Over Storebælt") %>%
   mutate(x1000_passagerer = log(x1000_passagerer)) %>%
   gg_tsdisplay(x1000_passagerer, plot_type = "partial", lag_max = 24) +
-  labs(title = "ACF + PACF – Over Storebælt (log, uden corona)")
+  labs(title = "ACF + PACF (log, uden corona)")
 ```
 
 ACF Plottene for rådata (Log skala) viser lag som, eksponentiel aftagen
@@ -311,6 +321,7 @@ AICc-sammenligning.
 #| echo: true
 #| eval: true
 #| fig-cap: "Lag-plot – Over Storebælt (inkl. corona)"
+#| fig-pos: "H"
 jernbanedata %>%
   filter(key == "Over Storebælt") %>%
   gg_lag(x1000_passagerer, geom = "point") +
@@ -322,6 +333,7 @@ jernbanedata %>%
 #| echo: true
 #| eval: true
 #| fig-cap: "Lag-plot – International trafik i alt (inkl. corona)"
+#| fig-pos: "H"
 jernbanedata %>%
   filter(key == "International trafik i alt") %>%
   gg_lag(x1000_passagerer, geom = "point") +
@@ -333,6 +345,7 @@ jernbanedata %>%
 #| echo: true
 #| eval: true
 #| fig-cap: "Lag-plot – Over Storebælt (uden corona)"
+#| fig-pos: "H"
 jernbanedata_corona %>%
   filter(key == "Over Storebælt") %>%
   gg_lag(x1000_passagerer, geom = "point") +
@@ -344,6 +357,7 @@ jernbanedata_corona %>%
 #| echo: true
 #| eval: true
 #| fig-cap: "Lag-plot – International trafik i alt (uden corona)"
+#| fig-pos: "H"
 jernbanedata_corona %>%
   filter(key == "International trafik i alt") %>%
   gg_lag(x1000_passagerer, geom = "point") +
@@ -358,6 +372,8 @@ jernbanedata_corona %>%
 #| eval: true
 #| results: asis
 #| tbl-cap: "Deskriptive statistikker"
+#| fig-pos: "H"
+
 kør_begge_tbl(function(data, titel) {
   data %>%
     as_tibble() %>%
@@ -396,6 +412,7 @@ datasæt.
 #| eval: true
 #| results: asis
 #| tbl-cap: "Trend- og sæsonstyrke inkl. corona"
+#| fig-pos: "H"
 kør_begge_tbl(function(data, titel) {
   data %>%
     features(x1000_passagerer, feat_stl) %>%
@@ -425,6 +442,7 @@ indikerer at sæsonkomponenter er nødvendige i både ETS & SARIMA.
 #| eval: true
 #| results: asis
 #| tbl-cap: "Guerrero-optimeret Box-Cox lambda inkl. corona"
+#| fig-pos: "H"
 kør_begge_tbl(function(data, titel) {
   data %>%
     features(x1000_passagerer, features = guerrero) %>%
@@ -454,6 +472,7 @@ automatisk til originalskala ved forecast. Dette understøttes af figur 1
 #| echo: true
 #| eval: true
 #| tbl-cap: "KPSS-test på log(passagerer) — H0: stationær"
+#| fig-pos: "H"
 jernbanedata %>%
   features(log(x1000_passagerer), unitroot_kpss) %>%
   kbl(caption = "KPSS-test på log(passagerer) — H0: stationær",
@@ -467,6 +486,7 @@ jernbanedata %>%
 #| echo: true
 #| eval: true
 #| tbl-cap: "Anbefalet antal sæsondifferentieringer (D)"
+#| fig-pos: "H"
 jernbanedata %>%
   features(log(x1000_passagerer), unitroot_nsdiffs) %>%
   kbl(caption = "Anbefalet antal sæsondifferentieringer (D)",
@@ -480,6 +500,7 @@ jernbanedata %>%
 #| echo: true
 #| eval: true
 #| tbl-cap: "Anbefalet antal ordinære differentieringer (d)"
+#| fig-pos: "H"
 jernbanedata %>%
   features(log(x1000_passagerer), unitroot_ndiffs) %>%
   kbl(caption = "Anbefalet antal ordinære differentieringer (d)",
@@ -493,6 +514,7 @@ jernbanedata %>%
 #| echo: true
 #| eval: true
 #| tbl-cap: "Anbefalet d efter sæsondifferentiering (D=1)"
+#| fig-pos: "H"
 jernbanedata %>%
   mutate(sdiff_log = difference(log(x1000_passagerer), lag = 4)) %>%
   features(sdiff_log, unitroot_ndiffs) %>%
@@ -516,6 +538,7 @@ trendstrukturen er renere, vælger Auto-ARIMA D = 1 for begge serier.
 #| echo: true
 #| eval: true
 #| fig-cap: "Differentieringstrin – International trafik i alt"
+#| fig-pos: "H"
 jernbanedata %>%
   filter(key == "International trafik i alt") %>%
   as_tibble() %>%
@@ -542,6 +565,7 @@ jernbanedata %>%
 #| echo: true
 #| eval: true
 #| fig-cap: "ACF/PACF – sæsondiff (D=1, lag=4) – International"
+#| fig-pos: "H"
 jernbanedata %>%
   filter(key == "International trafik i alt") %>%
   gg_tsdisplay(difference(log(x1000_passagerer), lag = 4),
@@ -554,6 +578,7 @@ jernbanedata %>%
 #| echo: true
 #| eval: true
 #| fig-cap: "ACF/PACF – sæsondiff (D=1, lag=4) – Over Storebælt"
+#| fig-pos: "H"
 jernbanedata %>%
   filter(key == "Over Storebælt") %>%
   gg_tsdisplay(difference(log(x1000_passagerer), lag = 4),
@@ -571,6 +596,7 @@ kun D=1.
 #| label: stl-komponenter
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 # STL inkl. corona
 stl_comp <- function(data) {
   data %>%
@@ -587,6 +613,7 @@ stl_comp <- function(data) {
 #| echo: true
 #| eval: true
 #| fig-cap: "Sæsonjusteret serie – inkl. corona"
+#| fig-pos: "H"
 kør_begge(function(data, titel) {
   stl_comp(data) %>%
     as_tsibble() %>%
@@ -603,6 +630,7 @@ kør_begge(function(data, titel) {
 #| echo: true
 #| eval: true
 #| fig-cap: "STL-dekomposition – inkl. corona (log-skala)"
+#| fig-pos: "H"
 kør_begge(function(data, titel) {
   stl_comp(data) %>%
     autoplot() +
@@ -626,7 +654,7 @@ af det interpolerede datasæt.
 #| label: augment-stl
 #| echo: true
 #| eval: true
-# Augment - inkl. corona
+#| fig-pos: "H"
 model_jernbane <- function(data) {
   data %>%
     model(
@@ -643,6 +671,7 @@ model_jernbane <- function(data) {
 #| echo: true
 #| eval: true
 #| fig-cap: "Fittede værdier og residualer (STL) – inkl. corona"
+#| fig-pos: "H"
 kør_begge(function(data, titel) {
   model_jernbane(data) %>%
     autoplot(.resid) +
@@ -668,11 +697,10 @@ Data deles i en træningsperiode (til og med 2024 Q4) og en testperiode
 #| label: traeningssplit
 #| echo: true
 #| eval: true
-# Træningsdata: 2006 Q1 til 2024 Q4
+#| fig-pos: "H"
 jernbane_train <- jernbanedata %>%
   filter_index(. ~ "2024 Q4")
 
-# Testdata: 2025 Q1 til slutningen
 jernbane_test <- jernbanedata %>%
   filter_index("2025 Q1" ~ .)
 
@@ -690,6 +718,7 @@ jernbane_corona_test <- jernbanedata_corona %>%
 #| echo: true
 #| eval: true
 #| results: asis
+#| fig-pos: "H"
 lav_stretch <- function(data) {
   data %>%
     stretch_tsibble(.init = 32, .step = 1)
@@ -715,6 +744,7 @@ kør_begge_tbl(function(data, titel) {
 #| echo: true
 #| eval: true
 #| results: asis
+#| fig-pos: "H"
 lav_ets <- function(data) {
   data %>%
     model(
@@ -735,6 +765,7 @@ fit_ets_corona <- lav_ets(jernbane_corona_train)
 #| eval: true
 #| results: asis
 #| tbl-cap: "ETS-modelsammenligning inkl. corona (AICc)"
+#| fig-pos: "H"
 glance(fit_ets) %>%
   select(key, .model, AICc, BIC) %>%
   arrange(AICc) %>%
@@ -749,6 +780,7 @@ glance(fit_ets) %>%
 #| echo: true
 #| eval: true
 #| tbl-cap: "ETS-modelsammenligning uden corona (AICc)"
+#| fig-pos: "H"
 glance(fit_ets_corona) %>%
   select(key, .model, AIC, AICc) %>%
   arrange(AICc) %>%
@@ -773,7 +805,7 @@ bliver gjort på testfejlene (RMSE)
 #| eval: true
 #| results: asis
 #| fig-cap: "Residualer – Auto ETS – International (inkl. corona)"
-
+#| fig-pos: "H"
 for (serie in c("International trafik i alt", "Over Storebælt")) {
   print(
     fit_ets %>%
@@ -792,7 +824,7 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
 #| eval: true
 #| results: asis
 #| fig-cap: "Residualer – Auto ETS – International (uden corona)"
-
+#| fig-pos: "H"
 for (serie in c("International trafik i alt", "Over Storebælt")) {
   print(
     fit_ets_corona %>%
@@ -808,6 +840,7 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
 #| label: ljung-ets
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 for (serie in c("International trafik i alt", "Over Storebælt")) {
   augment(fit_ets) %>%
     filter(.model == "Auto", key == serie) %>%
@@ -848,6 +881,7 @@ international rejseadfærd ud over coronaforstyrrelsen.
 #| label: arima-fit
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 lav_arima <- function(data) {
   data %>%
     model(
@@ -867,6 +901,7 @@ fit_arima_corona <- lav_arima(jernbane_corona_train)
 #| label: arima-dof
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 hent_dof <- function(fit, serie) {
   fit %>%
     filter(key == serie) %>%
@@ -892,6 +927,7 @@ cat("Over Storebælt uden corona: dof =", dof_osb_corona, "\n")
 #| echo: true
 #| eval: true
 #| tbl-cap: "ARIMA-modelsammenligning inkl. corona (AICc)"
+#| fig-pos: "H"
 glance(fit_arima) %>%
   select(key, .model, sigma2, log_lik, AIC, AICc, BIC) %>%
   arrange(key, AICc) %>%
@@ -906,6 +942,7 @@ glance(fit_arima) %>%
 #| echo: true
 #| eval: true
 #| tbl-cap: "ARIMA-modelsammenligning uden corona (AICc)"
+#| fig-pos: "H"
 glance(fit_arima_corona) %>%
   select(key, .model, sigma2, log_lik, AIC, AICc, BIC) %>%
   arrange(key, AICc) %>%
@@ -936,6 +973,7 @@ tydeligere sæsontrend.
 #| eval: true
 #| results: asis
 #| fig-cap: "Residualer – Auto ARIMA (inkl. corona)"
+#| fig-pos: "H"
 for (serie in c("International trafik i alt", "Over Storebælt")) {
   print(
     fit_arima %>%
@@ -953,6 +991,7 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
 #| eval: true
 #| results: asis
 #| fig-cap: "Residualer – Auto ARIMA – (uden corona)"
+#| fig-pos: "H"
 for (serie in c("International trafik i alt", "Over Storebælt")) {
   print(
     fit_arima_corona %>%
@@ -969,20 +1008,27 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
 #| echo: true
 #| eval: true
 #| results: asis
-# Ljung-Box – inkl. corona
+#| fig-pos: "H"
 for (serie in c("International trafik i alt", "Over Storebælt")) {
   dof <- hent_dof(fit_arima, serie)
   augment(fit_arima) %>%
     filter(.model == "Auto", key == serie) %>%
-    features(.innov, ljung_box, lag = 8, dof = dof)
+    features(.innov, ljung_box, lag = 8, dof = dof) %>%
+    kbl(digits   = 2, booktabs = TRUE) %>%
+    kable_styling(latex_options = c("striped", "HOLD_position")) %>%
+    print()
+  cat("\n\n")
 }
 
-# Ljung-Box – uden corona
 for (serie in c("International trafik i alt", "Over Storebælt")) {
   dof <- hent_dof(fit_arima_corona, serie)
-  augment(fit_arima) %>%
+  augment(fit_arima_corona) %>%
     filter(.model == "Auto", key == serie) %>%
-    features(.innov, ljung_box, lag = 8, dof = dof)
+    features(.innov, ljung_box, lag = 8, dof = dof) %>%
+    kbl(digits   = 2, booktabs = TRUE) %>%
+    kable_styling(latex_options = c("striped", "HOLD_position")) %>%
+    print()
+  cat("\n\n")
 }
 ```
 
@@ -1002,6 +1048,7 @@ tolkes med ekstra forsigtighed og brede prædiktionsintervaller.
 #| label: arima-optimal-fit
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 lav_arima_optimal <- function(data) {
   data %>%
     model(
@@ -1025,6 +1072,7 @@ fit_arima_optimal_corona <- lav_arima_optimal(jernbane_corona_train)
 #| eval: true
 #| results: asis
 #| tbl-cap: "Optimal ARIMA vs. Auto – inkl. corona (AICc)"
+#| fig-pos: "H"
 for (fit in list(fit_arima_optimal, fit_arima_optimal_corona)) {
   titel <- if (identical(fit, fit_arima_optimal)) "Inkl. corona" else "Uden corona"
   glance(fit) %>%
@@ -1053,6 +1101,7 @@ forstyrrelser.
 #| label: resultat
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 resultat <- bind_rows(
   fit_arima %>% 
     accuracy() %>%
@@ -1095,6 +1144,7 @@ dermed er brugbar.
 #| label: klarøring
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 kombinationer <- expand.grid(
   data    = c("Inkl. corona", "Uden corona"),
   familie = c("ARIMA", "ETS"),
@@ -1110,7 +1160,8 @@ tabel_labels <- c("A", "B", "C", "D", "E", "F", "G", "H")
 #| echo: true
 #| eval: true
 #| results: asis
-cols <- c(".model", "key", ".type", "RMSE", "MAE", "MAPE", "MASE")
+#| fig-pos: "H"
+cols <- c(".model", "key", ".type", "RMSE")
 
 for (i in seq_len(nrow(kombinationer))) {
   type_val    <- kombinationer$type[i]
@@ -1141,6 +1192,7 @@ præsterer bedst.
 #| label: tbl-opsummering
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 #| tbl-cap: "Opsummering: Bedste og dårligste model per gruppe"
 opsummering <- resultat %>%
   group_by(data, familie, .type, key) %>%
@@ -1164,6 +1216,7 @@ opsummering %>%
 #| label: tscv
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 # Time series cross validation med corona
 lav_tscv <- function(stretch, reference, data_label) {
   stretch %>%
@@ -1189,6 +1242,7 @@ resultat_tscv_corona <- lav_tscv(lav_stretch(jernbanedata_corona),
 #| label: tbl-tscv
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 #| tbl-cap: "TSCV-modelsammenligning inkl. og uden corona"
 bind_rows(resultat_tscv, resultat_tscv_corona) %>%
   select(data, .model, key, RMSE, MAE, MAPE, MASE) %>%
@@ -1216,6 +1270,7 @@ retvisende billede af modellernes relative præstation.
 #| label: actuals
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 lav_actuals <- function(data) {
   data %>%
     as_tibble() %>%
@@ -1230,6 +1285,7 @@ actuals_corona <- lav_actuals(jernbanedata_corona)
 #| label: fig-rmse-horisont-inkl
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 #| fig-cap: "RMSE per forecast-horisont (h=1–4)"
 lav_rmse_plot <- function(stretch, actuals_data, titel) {
   stretch %>%
@@ -1273,6 +1329,7 @@ kør_begge(function(data, titel) {
 #| label: tbl-pred-uden
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 #| tbl-cap: "Forecast og prædiktionsintervaller (80% og 95%)"
 #| results: asis
 
@@ -1289,9 +1346,7 @@ lav_pred_tbl <- function(data, titel) {
            `80%_lower`, `80%_upper`,
            `95%_lower`, `95%_upper`) %>%
     as_tibble() %>%
-    kbl(caption  = paste0("Forecast og prædiktionsintervaller – ", titel),
-        digits   = 0,
-        booktabs = TRUE) %>%
+    kbl(digits   = 0, booktabs = TRUE) %>%
     kable_styling(latex_options = c("striped", "hold_position")) %>%
     print()
   cat("\n\n")
@@ -1304,6 +1359,7 @@ kør_begge_tbl(lav_pred_tbl)
 #| label: fig-forecast
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 #| fig-cap: "Forecast med prædiktionsintervaller (80% og 95%)"
 kør_begge(function(data, titel) {
   data %>%
@@ -1315,9 +1371,7 @@ kør_begge(function(data, titel) {
     autoplot(data %>% filter_index("2020 Q1" ~ .),
              level = c(80, 95)) +
     facet_wrap(~ key, scales = "free_y") +
-    labs(title = paste0("Forecast med prædiktionsintervaller – ", titel),
-         y     = "1.000 passagerer",
-         x     = NULL) +
+    labs(y = "1.000 passagerer", x = NULL) +
     theme_minimal()
 })
 ```
@@ -1342,6 +1396,7 @@ modelusikkerhed afspejlet i ljung-box resultaterne.
 #| label: stl-features-samlet
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 stl_features <- bind_rows(
   jernbanedata        %>% features(x1000_passagerer, feat_stl) %>% mutate(data = "Inkl. corona"),
   jernbanedata_corona %>% features(x1000_passagerer, feat_stl) %>% mutate(data = "Uden corona")
@@ -1353,6 +1408,7 @@ stl_features <- bind_rows(
 #| label: bedste-model
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 bedste <- resultat %>%
   filter(.type == "Test") %>%
   group_by(data, key) %>%
@@ -1364,6 +1420,7 @@ bedste <- resultat %>%
 #| label: tbl-sammenfatning
 #| echo: true
 #| eval: true
+#| fig-pos: "H"
 #| tbl-cap: "Sammenfatningsoversigt: Nøgletal per serie og datasæt"
 sammenfatning <- stl_features %>%
   left_join(bedste, by = c("key", "data")) %>%
@@ -1375,18 +1432,17 @@ sammenfatning <- stl_features %>%
   ) %>%
   select(
     Serie        = key,
-    Datasæt      = data,
+    datasæt      = data,
     Trend        = trend_strength,
     Sæson        = seasonal_strength_year,
     COVID        = COVID_impact,
     Bedste_model,
     RMSE
   ) %>%
-  arrange(Serie, Datasæt)
+  arrange(Serie, datasæt)
 
 sammenfatning %>%
-  kbl(caption = "Sammenfatningsoversigt: Nøgletal per serie og datasæt",
-      digits = 2, booktabs = TRUE) %>%
+  kbl(digits = 2, booktabs = TRUE) %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
