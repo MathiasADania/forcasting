@@ -95,7 +95,7 @@ pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
                latex2exp, ggfortify, janitor, readxl)
 ```
  
-## Indledning
+# Indledning
 
 Denne rapport analyserer kvartalsvise passagertal for jernbanetransport
 i Danmark fra 2006 Q1 til 2026 Q1. Der fokuseres på to serier: 
@@ -104,7 +104,7 @@ trafik over Storebælt. Formålet er at beskrive serierne, vurdere deres
 sæson- og trendstruktur og dernæst opbygge og sammenligne
 prognosemodeller (ETS og ARIMA) med og uden coronaperioden.
 
-## Data og dataforberedelse
+# Data og dataforberedelse
 
 Datasættet indlæses fra Danmarks Statistiks tabel BANE25. Indekset er
 kvartaler, nøglen (`key`) er trafiktype, og responsvariablen er antallet
