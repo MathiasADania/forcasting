@@ -782,6 +782,7 @@ reduceret modelusikkerhed. AICc værdier er kun sammenlignelige for samme datas�
 #| label: fig-ets-residualer-inkl.
 #| echo: true
 #| eval: true
+#| results: asis
 #| fig-cap: "Residualer – Auto ETS – International (inkl. corona)"
 
 for (serie in c("International trafik i alt", "Over Storebælt")) {
@@ -800,6 +801,7 @@ for (serie in c("International trafik i alt", "Over Storebælt")) {
 #| label: fig-ets-residual
 #| echo: true
 #| eval: true
+#| results: asis
 #| fig-cap: "Residualer – Auto ETS – International (uden corona)"
 
 for (serie in c("International trafik i alt", "Over Storebælt")) {
