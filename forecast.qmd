@@ -451,30 +451,8 @@ Det corona rensede datasæt giver et mere retvisende billede med lambda -0,606
 (international) og -0,051 (Storebælt), hvor storebælt er tæt på 0, og dermed
 understøtter log transformation.
 Log transformationen fastholdes konsekvent for begge serier i al efterfølgende
-modellering og fable tilbagekalkulerer automatisk til originalskala ved forecast
-
-```{r}
-#| label: fig-raa-vs-log-inkl
-#| echo: true
-#| eval: true
-#| fig-cap: "Rå vs. log-transformeret inkl. corona"
-kør_begge(function(data, titel) {
-  bind_rows(
-    data %>%
-      as_tibble() %>%
-      mutate(type = "Rå passagertal"),
-    data %>%
-      as_tibble() %>%
-      mutate(x1000_passagerer = log(x1000_passagerer),
-             type = "log(passagerer)")
-  ) %>%
-    ggplot(aes(x = kvartal, y = x1000_passagerer)) +
-    geom_line() +
-    facet_grid(type ~ key, scales = "free_y") +
-    labs(title = paste0("Rå vs. log-transformeret – ", titel),
-         y = NULL, x = NULL)
-})
-```
+modellering og fable tilbagekalkulerer automatisk til originalskala ved 
+forecast. Dette understøttes af figur 1 & 2
 
 # Stationaritet og differentiering
 
@@ -487,7 +465,9 @@ kør_begge(function(data, titel) {
 jernbanedata %>%
   features(log(x1000_passagerer), unitroot_kpss) %>%
   kbl(caption = "KPSS-test på log(passagerer) — H0: stationær",
-      digits = 4, booktabs = TRUE)
+      digits = 4, booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
 ```
 
 ```{r}
@@ -498,7 +478,9 @@ jernbanedata %>%
 jernbanedata %>%
   features(log(x1000_passagerer), unitroot_nsdiffs) %>%
   kbl(caption = "Anbefalet antal sæsondifferentieringer (D)",
-      digits = 0, booktabs = TRUE)
+      digits = 0, booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
 ```
 
 ```{r}
@@ -509,7 +491,9 @@ jernbanedata %>%
 jernbanedata %>%
   features(log(x1000_passagerer), unitroot_ndiffs) %>%
   kbl(caption = "Anbefalet antal ordinære differentieringer (d)",
-      digits = 0, booktabs = TRUE)
+      digits = 0, booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
 ```
 
 ```{r}
@@ -521,7 +505,9 @@ jernbanedata %>%
   mutate(sdiff_log = difference(log(x1000_passagerer), lag = 4)) %>%
   features(sdiff_log, unitroot_ndiffs) %>%
   kbl(caption = "Anbefalet d efter sæsondifferentiering (D=1)",
-      digits = 0, booktabs = TRUE)
+      digits = 0, booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
 ```
 
 KPSS testen kan ikke afvise stationaritets hypotesen (P > 0,10) for nogen serie
@@ -756,7 +742,9 @@ fit_ets_corona <- lav_ets(jernbane_corona_train)
 glance(fit_ets) %>%
   arrange(AICc) %>%
   kbl(caption = "ETS-modelsammenligning inkl. corona (AICc)", digits = 2,
-      booktabs = TRUE)
+      booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
 ```
 
 ```{r}
@@ -767,7 +755,9 @@ glance(fit_ets) %>%
 glance(fit_ets_corona) %>%
   arrange(AICc) %>%
   kbl(caption = "ETS-modelsammenligning uden corona (AICc)", digits = 2,
-      booktabs = TRUE)
+      booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
 ```
 
 ### Residualanalyse – ETS
@@ -908,7 +898,9 @@ glance(fit_arima) %>%
   select(key, .model, sigma2, log_lik, AIC, AICc, BIC) %>%
   arrange(key, AICc) %>%
   kbl(caption = "ARIMA-modelsammenligning inkl. corona (AICc)", digits = 2,
-      booktabs = TRUE)
+      booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
 ```
 
 ```{r}
@@ -920,7 +912,9 @@ glance(fit_arima_corona) %>%
   select(key, .model, sigma2, log_lik, AIC, AICc, BIC) %>%
   arrange(key, AICc) %>%
   kbl(caption = "ARIMA-modelsammenligning uden corona (AICc)", digits = 2,
-      booktabs = TRUE)
+      booktabs = TRUE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"))
+
 ```
 
 Inkl. corona vælger auto ARIMA: ARIMA(1,0,0)(1,0,0)[4] for international trafik
