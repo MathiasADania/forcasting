@@ -1540,3 +1540,4 @@ sammenfatning %>%
   kbl(caption = "Sammenfatningsoversigt: Nøgletal per serie og datasæt",
       digits = 3, booktabs = TRUE)
 ```
+
