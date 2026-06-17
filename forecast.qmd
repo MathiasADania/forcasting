@@ -1,6 +1,6 @@
 ---
-title: "forcast eksamenen"
-author: "Mathias Andersen"
+title: "Jernbanetransport af passagerer i Danmark"
+author: "Mathias Andersen, Nicklas Helmundt & Nikolaj Aaby Larsen"
 date: today
 lang: da # Sprog (dansk)
 
@@ -98,7 +98,8 @@ pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
 ## Indledning
 
 Denne rapport analyserer kvartalsvise passagertal for jernbanetransport
-i Danmark. Der fokuseres på to serier: international trafik i alt samt
+i Danmark fra 2006 Q1 til 2026 Q1. Der fokuseres på to serier: 
+international trafik i alt samt
 trafik over Storebælt. Formålet er at beskrive serierne, vurdere deres
 sæson- og trendstruktur og dernæst opbygge og sammenligne
 prognosemodeller (ETS og ARIMA) med og uden coronaperioden.
