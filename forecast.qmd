@@ -4,6 +4,11 @@ author: "Mathias Andersen, Nicklas Helmundt & Nikolaj Aaby Larsen"
 date: today
 lang: da # Sprog (dansk)
 
+execute:
+  warning: false
+  message: false
+  echo: false
+
 format:
   pdf:
     documentclass: article # LaTeX documentclass
@@ -89,8 +94,6 @@ pacman::p_load(
 #| label: pakker-analyse
 #| echo: false
 #| eval: true
-#| message: false
-#| warning: false
 # Upload af pakker
 pacman::p_load(tidyverse, gghighlight, hrbrthemes, tsibble, lubridate,
                ggplot2, feasts, fable, tsibbledata, fpp3,
@@ -121,8 +124,6 @@ international trafik i alt samt trafik over Storebælt.
 
 ```{r}
 #| label: indlaes-data
-#| message: false
-#| warning: false
 # Indhentning af data
 jernbanedata <- read_excel("data/jernbanetransport af passagerer.xlsx",
                            sheet = "BANE25"
@@ -146,8 +147,6 @@ før og efter corona.
 
 ```{r}
 #| label: data-uden-corona
-#| message: false
-#| warning: false
 jernbanedata_corona <- jernbanedata %>%
   filter_index(. ~ "2019 Q4", "2022 Q2" ~ .) %>%
   tsibble::fill_gaps() %>%
